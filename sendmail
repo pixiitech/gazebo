@@ -1,0 +1,14 @@
+#!/bin/bash
+##CageFS proxyexec wrapper - ver 12
+USR=`/usr/bin/whoami`
+TOKEN=`/bin/cat /var/.cagefs/.cagefs.token`
+CWD=`pwd`
+
+if [ -e /var/.cagefs/origin ]; then
+ORIGIN=`/bin/cat /var/.cagefs/origin`
+REMOTE="/usr/bin/ssh -F /etc/ssh/cagefs-rexec_config $USR@$ORIGIN"
+else
+REMOTE=""
+fi
+
+$REMOTE /usr/sbin/proxyexec -c cagefs.sock "$USR" "$TOKEN" "$CWD" SENDMAIL $@

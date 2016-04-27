@@ -1,0 +1,36 @@
+# Ignore all gedit tilde files:
+*~
+
+# Ignore PHPMailer:
+PHPMailer/
+
+# Ignore swiftmailer:
+swiftmailer/
+
+# Ignore old TinyMCE:
+tinymce-old/
+
+# Ignore securimage:
+securimage/
+
+# Ignore Backup files:
+backups/*
+
+# Ignore pics
+images/community/*
+images/violation/*
+
+# Ignore customized files:
+docs/
+web-content/
+departureform.php
+elevatorform.php
+captchatest.php
+floorplan.php
+holdharmless*.php
+marineloungeform.php
+moveinoutform.php
+overnightguestform*.php
+vendoraccessform.php
+vendors.php
+

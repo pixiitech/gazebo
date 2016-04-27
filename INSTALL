@@ -1,0 +1,41 @@
+Gazebo Installation Instructions:
+
+
+for Version 0.6:
+
+1. Install IIS or Apache, MySQL, and WordPress. Configure WordPress.
+2. Create the 'gazebo' directory on the root of the webserver directory and copy gazebo files to it
+3. Set up a theme (required)
+4. Copy the contents of the included wp_files directory into  wp-content/themes/<your theme>/
+5. Add the following lines to  wp-content/themes/<your theme>/header.php
+	After the following code:
+				<div class="ak-search">
+					<?php get_search_form(); ?>
+				</div>
+	Add:			
+				<?php include "gazebo-login-prompt.php"; ?>
+
+	Optionally, Replace the following code:
+				<?php wp_nav_menu( array( 
+				'theme_location' => 'primary' ) ); ?>
+	With:
+				<?php include "gazebo-menu-selector.php"; ?>
+	  	--For using multiple menus by user's access level.
+	  	--Modify gazebo-menu-selector.php to match your menu names in Wordpress. Defaults are: Tenant, Owner & Staff, and Public
+
+6. Modify php.ini and change max_upload to 18M or larger
+7. If using cPanel, create the gazebo database (named gazebo) in the web portal first and add privileges for your user to access the db.
+8. Create database structure. Copy and paste the content of SQLTABLES into a MySQL prompt. If using cPanel, omit the 'CREATE DATABASE' command.
+9. Input the following line to the MySQL prompt:
+        INSERT INTO wp_usermeta (user_id, meta_key, meta_value) VALUES (1, 'gazebo_level', 8);
+   This will give your wordpress admin user privileges to administer Gazebo.
+10. In WP Admin, change the Permalinks setting to Default. The Gazebo link handler will not work properly on other settings.
+11. Install the Table Sorter plugin. https://wordpress.org/plugins/table-sorter/installation/
+12. Install the jQuery updater plugin.
+13. Create 'container pages' in Wordpress for the Gazebo pages by creating a new page and setting the template to 'Gazebo Template'. Type simply the name of the .php file in the page contents. Do not include the path to the gazebo directory as this is handled by the template.
+14. For resname.php, create a special container page using the 'Gazebo Resident Name Selector' and resname.php as the the content.
+15. Open a command prompt and enter the following commands, substituting <theme> with your theme directory:
+	cd wp-content/themes/<theme>
+	ln -s ../../../gazebo/config.php
+
+

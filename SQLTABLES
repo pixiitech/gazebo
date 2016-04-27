@@ -1,0 +1,77 @@
+CREATE DATABASE Gazebo;
+USE Gazebo;
+
+CREATE TABLE Properties (Unit varchar(10) NOT NULL, PRIMARY KEY(Unit), Subdivision int, Address varchar(40), City varchar(20), Zip varchar(10), Residx int, Tenantidx int);
+
+CREATE TABLE Residents (Idx int NOT NULL AUTO_INCREMENT, PRIMARY KEY(Idx), FirstName varchar(60), LastName varchar(60), FirstName2 varchar(60), LastName2 varchar(60), Phone1 varchar(15), Phone2 varchar(15), Phone3 varchar(15), Phone4 varchar(15), Phone1Type varchar(15), Phone2Type varchar(15), Phone3Type varchar(15), Phone4Type varchar(15), MailingAddress varchar(60), MailingAddress2 varchar(60), Country varchar(60), State varchar(60), City varchar(60), Zip varchar(15), Email varchar(40), Email2 varchar(40), Type int(1), Vehicle varchar(30), Tag varchar(12), PublishName int(1), PublishMailingAddress int(1), PublishPhone1 int(1), PublishPhone2 int(1), PublishEmail int(1), GuestInfo varchar(200), Comments varchar(200));
+
+CREATE TABLE Violations (Idx int NOT NULL AUTO_INCREMENT, PRIMARY KEY(Idx), Unit varchar(11), Time datetime, Tag varchar(12), Name varchar(60), Type int, ReportedBy varchar(20), Description varchar(200), Pic varchar(60), ActionStatus int, ActionLog varchar(400));
+
+CREATE TABLE Login (Idx int NOT NULL AUTO_INCREMENT, PRIMARY KEY(Idx), Username varchar(35), Password varchar(20), Level int, Residx int, ColorScheme int, 24HrTime int, DebugMode int, ResetToken varchar(50), ResetTokenExpires datetime, EmailReg int);
+
+CREATE TABLE Subdivisions (Id int NOT NULL AUTO_INCREMENT, PRIMARY KEY(Id), Name varchar(20));
+
+CREATE TABLE Packages (Idx int NOT NULL AUTO_INCREMENT, PRIMARY KEY(Idx), ReceiveTime datetime, PickupTime datetime, Unit varchar(11), Recipient varchar(60), Description varchar(200), Type int, EntryTime datetime, ReceivedBy varchar(18), ReturnedBy varchar(18));
+
+CREATE TABLE WorkOrders (Idx int NOT NULL AUTO_INCREMENT, PRIMARY KEY (Idx), Username varchar(50), Name varchar(60), Unit varchar(11), Summary varchar(50), Description varchar(300), StatusText varchar(300), AssignedTo varchar(50), ApprovedBy varchar(50), Status int, Submitted datetime, Completed datetime);
+
+CREATE TABLE Amenities (Idx int NOT NULL AUTO_INCREMENT, PRIMARY KEY (Idx), Name varchar(60));
+
+CREATE TABLE Events (Idx int(11) primary key auto_increment, StartTime datetime, EndTime datetime, TimeCreated datetime, CreatedBy varchar(20), Text varchar(50), Description varchar(300), Icon varchar(25), Amenity int(11));
+
+CREATE TABLE ViolationTypes (Idx int primary key auto_increment, Name varchar(40), Action1 varchar(40), Action2 varchar(40), Action3 varchar(40), Action4 varchar(40), Expiration int);
+
+CREATE TABLE Settings (Idx int primary key auto_increment, Type varchar(40), Name varchar(40), Format varchar(20), Description varchar(60), Value varchar(400));
+
+CREATE TABLE Forms (Idx int NOT NULL AUTO_INCREMENT, PRIMARY KEY (Idx), Title varchar(50), Text varchar(2000), Type int, Email varchar(50));
+
+CREATE TABLE SecureFileMeta (Idx int NOT NULL AUTO_INCREMENT, PRIMARY KEY (Idx), Filename varchar(50), Description varchar(200), Size int, MIME varchar(50), Minlevel varchar(20), Behavior varchar(20));
+
+CREATE TABLE SecureFileData (Idx int NOT NULL AUTO_INCREMENT, PRIMARY KEY (Idx), Data mediumblob);
+
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Community", "Name", "text", "Community Name", "Community Name");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Community", "Logo", "text", "Logo", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Community", "MailingAddress", "text", "Mailing Address", "Mailing Address");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Community", "Phone", "text", "Office Phone", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Community", "Fax", "text", "Office Fax", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Community", "PropertyMgrName", "text", "Property Manager Name", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Community", "PropertyMgrEmail", "text", "Property Manager Email", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Community", "PresidentName", "text", "President Name", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Community", "PresidentEmail", "text", "President Email", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Community", "SecretaryName", "text", "Assistant Name", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Community", "SecretaryEmail", "text", "Assistant Email", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Community", "Type", "option", "Condo or HOA", "Condo");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "TenantRegistration", "yesno", "Allow Tenant Registration", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "TenantExpiration", "text", "Default Tenant Login Expiration (days)", "180");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "DefaultPW", "text", "Default Reset Password", "12345");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "ShowGuestInfo", "yesno", "Show Guest Info", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "PublishNameLock", "yesno", "Lock Publish Name Setting", "true");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "PublishNameDefault", "yesno", "Default Publish Name Setting", "true");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "PublishPhone1Default", "yesno", "Default Publish Home Phone Setting", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "PublishPhone2Default", "yesno", "Default Publish Cell Phone Setting", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "PublishMailingAddressDefault", "yesno", "Default Publish Mailing Address Setting", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "PublishEmailDefault", "yesno", "Default Publish Email Setting", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "WPPostDefaultMinLevel", "levelbox", "Default WP Post Security Level", "2");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "SecureFileDefaultBehavior", "sfdefaultbehavior", "Secure File Link Default Behavior", "download");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "DisplayUppercaseNames", "yesno", "Display resident names in uppercase", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "DisplayLastFirst", "yesno", "Display resident names as Last, First", "true");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "DualRegistration", "yesno", "Enable Dual Registration for each Resident", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "RegistrationValidationByEmail", "yesno", "Validate registration by email in database", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "InvertPublishSettings", "yesno", "Invert Publish Settings Display", "false");
+
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Violations", "ViolationExpiration", "text", "Violation Expiration (days)", "180");
+
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "FormEmail", "text", "Send Resident Forms to:", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "WorkOrderEmail", "text", "Send Work Orders to:", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "RegisterEmail", "text", "Send new registration notifications to:", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "ResidentInfoChangeEmail", "text", "Send resident info change notifications to:" ,"");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "WebmasterEmail", "text", "Webmaster Email:" ,"");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "EBlastDefaultRecipients", "textbox", "Email Blast Default Recipient List (separator is ;)", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "SMTPHost", "text", "SMTP Mail Host (leave blank for local server)", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "SMTPPort", "text", "SMTP Port", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "SMTPAuth", "authtype", "SMTP Authentication", "none");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "SMTPUsername", "text", "SMTP Username", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "SMTPPassword", "password", "SMTP Password", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "FromAddress", "text", "From Email Address", "");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "FromName", "text", "Display name on email originating from site", "");
+
