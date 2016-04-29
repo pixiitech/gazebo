@@ -10,7 +10,6 @@ include "menu-web.php";
 }; ?>
 
 <?php
-
 if ( isset( $_POST['Username'] ))
 {
 	$image = new Securimage();
@@ -71,7 +70,7 @@ if ( isset( $_POST['Username'] ))
 		echo "Reset token failed to save.<br />";
 
 	    $commname = fetchSetting('Name', $con);
-	    $resetlink = pageLink("resetpass", "token={$token}");
+	    $resetlink = pageLink("resetpass", "token={$token}", null, true);
 	    //Send email with a GET link to resetpass.php?token= ...
 	    $subject = "{$commname} Website - Password Reset";
 	    $message = "You have requested a password reset for the {$commname} website.\n\r\n\r";
@@ -79,6 +78,7 @@ if ( isset( $_POST['Username'] ))
 	    $message .= "The following link will allow you to reset your password:\n\r\n\r ";
 	    $message .= "<a href='" . $resetlink . "'>" . $resetlink . "</a>\n\r";
 	    $mailresult = mail($email, $subject, $message);
+
 	    if ( $mailresult )
 		echo "Password reset email sent. Please follow the link in the email to reset your password in the next 24 hours.<br />";
 	    else
@@ -91,7 +91,7 @@ if ( !$success )
     echo "
     <table class='main'><tr><td>
     <h2>Forgot username or password</h2>
-    <form name='forgot' method='post' action='" . pageLink('forgotpass', "", NULL, true) . "'>
+    <form name='forgot' method='post' action='" . pageLink('forgotpass') . "'>
     Username or Email: <input type='text' name='Username' size='40' required='required' /><br />
     Captcha Image: <div style='text-align:center'>";
     echo Securimage::getCaptchaHtml(array('securimage_path'=>$securimagedir, 'image_attributes'=>array('align'=>'center')));

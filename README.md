@@ -528,6 +528,8 @@ COMPLETED:
 - residents.php - Added separators between information of 1st and 2nd residents in list
 - library.php - Added formatPhone function to format phone numbers in resident list
 - residents.php - Fixed bug where PublishName was getting unchecked - changed behavior so it is the same as other publish settings, only hidden when PublishNameLock setting is enabled
+- library.php - Added additional argument to pageLink to return the full URL (only for standalone)
+- forgotpass.php - Fixed bug in standalone where email link did not have full URL
 
 DB CHANGES:
 Added settings for SMTP email:

@@ -14,9 +14,18 @@ function pageLink($pagename, $args = "", $container = NULL, $fullpath=false)
 {
   global $modules, $cms, $wp_container_pagename;
   global $wp_binary_container, $wp_popup_container;
-  $thelink = ""
-  if ($fullpath) {
-		$url =  "//{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+  $thelink = "";
+  if ($fullpath && ($cms != "wp")) {
+		if (strtolower(substr($_SERVER['SERVER_PROTOCOL'], 0, 5)) == "https")
+		   $url = "https://";
+		else
+		   $url = "http://";
+		$url .= $_SERVER['SERVER_NAME'];
+
+		if (($_SERVER['SERVER_PORT'] != 80) && ($_SERVER['SERVER_PORT'] != 443))
+		   $url .= ":" . $_SERVER['SERVER_PORT'];
+
+		$url .=  "/";
 		$escaped_url = htmlspecialchars( $url, ENT_QUOTES, 'UTF-8' );
 		$thelink .= $escaped_url;
   }
