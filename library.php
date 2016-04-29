@@ -10,54 +10,58 @@
 			    $container - Optional. The Wordpress page ID of the container page being referenced.
 */
 
-function pageLink($pagename, $args = "", $container = NULL)
+function pageLink($pagename, $args = "", $container = NULL, $fullpath=false)
 {
-    global $modules, $cms, $wp_container_pagename;
-    global $wp_binary_container, $wp_popup_container;
-
-    for ( $i = 0; $i < count($modules); $i++ )
-        if ( $modules[$i][0] == $pagename )
-	{
-            if ( $cms == "wp" ) {
-		if ( $container != NULL ) {
-		    $thelink = get_page_link(get_page_by_title($container)->ID);
+  global $modules, $cms, $wp_container_pagename;
+  global $wp_binary_container, $wp_popup_container;
+  $thelink = ""
+  if ($fullpath) {
+		$url =  "//{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+		$escaped_url = htmlspecialchars( $url, ENT_QUOTES, 'UTF-8' );
+		$thelink .= $escaped_url;
+  }
+  for ( $i = 0; $i < count($modules); $i++ )
+    if ( $modules[$i][0] == $pagename )
+		{
+	    if ( $cms == "wp" ) {
+				if ( $container != NULL ) {
+				    $thelink .= get_page_link(get_page_by_title($container)->ID);
+				}
+				else if ( $pagename == 'securefile' ) {
+				    $thelink .= get_page_link(get_page_by_title($wp_binary_container)->ID);
+				}
+				else if ( $pagename == 'help' ) {
+				    $thelink .= get_page_link(get_page_by_title($wp_popup_container)->ID);
+				}
+				else if ( $pagename == 'resname' ) {
+				    $thelink .= get_page_link(get_page_by_title($wp_popup_container)->ID);
+				}
+				else if ( $pagename == 'eblaster' ) {
+				    $thelink .= get_page_link(get_page_by_title($wp_popup_container)->ID);
+				}
+				else {
+				    $thelink .= get_page_link(get_page_by_title($wp_container_pagename)->ID);
+				}
+				if ( $pagename == 'securefile' ) {
+				}
+				else if ( $args != "" ) {
+				    $args = "page={$pagename}&" . $args;
+				}
+				else {
+				    $args = "page={$pagename}";
+				}
+			}
+			else {
+			  $thelink .= $modules[$i][0] . ".php";
+			}
+		  if (( $cms == "wp" ) && ( $args != "" ))
+		    return $thelink . "&" . $args;
+		  else if ( $args != "" )
+			  return $thelink . "?" . $args;
+		  else 
+			  return $thelink;
 		}
-		else if ( $pagename == 'securefile' ) {
-		    $thelink = get_page_link(get_page_by_title($wp_binary_container)->ID);
-		}
-		else if ( $pagename == 'help' ) {
-		    $thelink = get_page_link(get_page_by_title($wp_popup_container)->ID);
-		}
-		else if ( $pagename == 'resname' ) {
-		    $thelink = get_page_link(get_page_by_title($wp_popup_container)->ID);
-		}
-		else if ( $pagename == 'eblaster' ) {
-		    $thelink = get_page_link(get_page_by_title($wp_popup_container)->ID);
-		}
-		else {
-		    $thelink = get_page_link(get_page_by_title($wp_container_pagename)->ID);
-		}
-		if ( $pagename == 'securefile' ) {
-
-		}
-		else if ( $args != "" ) {
-		    $args = "page={$pagename}&" . $args;
-		}
-		else {
-		    $args = "page={$pagename}";
-		}
-	    }
-	    else
-	       $thelink = $modules[$i][0] . ".php";
-
-	    if (( $cms == "wp" ) && ( $args != "" ))
-	        return $thelink . "&" . $args;
-	    else if ( $args != "" )
-		return $thelink . "?" . $args;
-	    else 
-		return $thelink;
-	}
-    return NULL;
+  return NULL;
 }
 
 /* pageID - Get page ID

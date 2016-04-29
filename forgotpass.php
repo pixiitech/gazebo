@@ -91,7 +91,7 @@ if ( !$success )
     echo "
     <table class='main'><tr><td>
     <h2>Forgot username or password</h2>
-    <form name='forgot' method='post' action='" . pageLink('forgotpass') . "'>
+    <form name='forgot' method='post' action='" . pageLink('forgotpass', "", NULL, true) . "'>
     Username or Email: <input type='text' name='Username' size='40' required='required' /><br />
     Captcha Image: <div style='text-align:center'>";
     echo Securimage::getCaptchaHtml(array('securimage_path'=>$securimagedir, 'image_attributes'=>array('align'=>'center')));

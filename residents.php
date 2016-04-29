@@ -752,7 +752,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		    {
 		        echo $phone3;
 		    }
-		    else if ( $row['PublishPhone3'] ) {
+		    else if ( $row['PublishPhone1'] ) {
 		        echo $phone3;
 		    }
 		}
@@ -779,7 +779,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		    {
 		        echo $phone4;
 		    }
-		    else if ( $row['PublishPhone4'] ) {
+		    else if ( $row['PublishPhone2'] ) {
 		        echo $phone4;
 		    }
 		}
