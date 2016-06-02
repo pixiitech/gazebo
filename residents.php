@@ -4,9 +4,9 @@ $printable = true;
 require 'gazebo-header.php'; 
 
 //Resident fields here are 
-// DB fieldname => [Associated publish field (null=not shown in roster),
-//								  searchability (null or an array of field names that are searched when processed),
-//									publish (true=field is a publish field)]
+// DB fieldname => [0 - Associated publish boolean field name (null=not shown in roster),
+//					1 - searchability (null or an array of field names that are searched when processed),
+//					2 - publish (true=field is a publish boolean field)]
 $fields = [
 	"FirstName" => ["PublishName", ["FirstName", "FirstName2"], false],
 	"LastName" => ["PublishName", ["LastName", "LastName2"], false],
@@ -16,8 +16,8 @@ $fields = [
 	"Phone2" => ["PublishPhone2", null, false],
 	"Phone3" => [null, null, false],
 	"Phone4" => [null, null, false],
-	"Phone1Type" => [null, null, false],
-	"Phone2Type" => [null, null, false],
+	"Phone1Type" => ["PublishPhone1", null, false],
+	"Phone2Type" => ["PublishPhone2", null, false],
 	"Phone3Type" => [null, null, false],
 	"Phone4Type" => [null, null, false],	
 	"MailingAddress" => ["PublishMailingAddress", ["MailingAddress", "MailingAddress2"], false], 
@@ -30,7 +30,7 @@ $fields = [
 	"Email2" => ["PublishEmail2", null, false],
 	"Comments" => [null, null, false],
 	"GuestInfo" => [null, null, false],
-	"Type" => [null, ["Type"], false],
+	"Type" => ["PublishName", ["Type"], false],
 	"PublishName" => [null, null, true],
 	"PublishPhone1" => [null, null, true],
 	"PublishPhone2" => [null, null, true],
@@ -50,21 +50,20 @@ var defaultPublishEmail = <?php echo fetchSetting( 'PublishEmailDefault', $con )
 var invertPublishSettings = <?php echo fetchSetting( 'InvertPublishSettings', $con ); ?>;
 
 // Insert JS callback function - called when insert option is selected
-
 var insertCallback = function() {
 <?php
 			//loop through each publish setting, generate JS to set the default
 		if (fetchSetting('InvertPublishSettings', $con) == 'true') {
 		  foreach ($fields as $key => $value) {
 		  	if ($value[2]) {
-			    echo "document.forms['recordinput'].elements['{$key}'].checked = contradict(default{$key});"
+			    echo "document.forms['recordinput'].elements['{$key}'].checked = contradict(default{$key});";
 			  }
 		  }
 		} 
 		else {
 		  foreach ($fields as $key => $value) {
 		  	if ($value[2]) {
-			    echo "document.forms['recordinput'].elements['{$key}'].checked = default{$key};"
+			    echo "document.forms['recordinput'].elements['{$key}'].checked = default{$key};";
 			  }
 		  }			
 		}
@@ -72,7 +71,6 @@ var insertCallback = function() {
 }
 
 // Search JS callback function - called when search option is selected
-
 var searchCallback = function() {
     document.forms['recordinput'].elements['Idx'].value = '';
 }
@@ -81,7 +79,6 @@ var searchCallback = function() {
 // 		Arguments: fn - Number of form function to switch to (1 - 7)
 //			   args - Array of data to fill in each field. 
 //				  Format: [[FirstName, "first"], [LastName, "last"], ... ]
-
 function fillInForm(fn, args)
 {
     var updateFields = function (FieldArray) {
@@ -443,7 +440,7 @@ foreach($fields as $key => $value) {
 		}
 	}
 	// Mysql escape all fields
-	$_POST[$key] = mysql_real_escape_string($_POST[$key]);
+	$_POST[$key] = mysqli_real_escape_string($con, $_POST[$key]);
 }
 
 if ( $_POST['Type'] == "Owner" )
@@ -466,7 +463,6 @@ switch ( $_POST['function']) {
 	}
 
 	//Save SQL Record
-
 	$querystring = "UPDATE Residents SET ";
 	foreach($fields as $key => $value) {
 		if ($key == 'Type') {
@@ -478,7 +474,7 @@ switch ( $_POST['function']) {
 	$querystring = substr($querystring, 0, strlen($querystring) - 2); //Chop off last comma space
 	$querystring .= "	WHERE Idx={$_POST['Idx']}";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 		echo "Resident {$_POST['FirstName']} {$_POST['LastName']} updated.<br />";
 	else
@@ -499,7 +495,6 @@ switch ( $_POST['function']) {
 	}
 
 	//Save SQL Record
-	
 	$querystring = "INSERT INTO Residents (";
 	foreach($fields as $key => $value) {
 		$querystring .= $key . ", ";
@@ -516,7 +511,7 @@ switch ( $_POST['function']) {
 	$querystring = substr($querystring, 0, strlen($querystring) - 2); //Chop off last comma space
 	$querystring .= ")";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( !$result )
 	{
 		errorMessage("Resident {$_POST['FirstName']} {$_POST['LastName']} failed to save.<br />", 3);
@@ -526,8 +521,8 @@ switch ( $_POST['function']) {
 	{
 	    $querystring = "SELECT Idx FROM Residents WHERE FirstName='{$_POST['FirstName']}' AND LastName='{$_POST['LastName']}'";
 	    debugText($querystring);
-	    $result = mysql_query($querystring, $con);
-	    $row = mysql_fetch_array($result);
+	    $result = mysqli_query($con, $querystring);
+	    $row = mysqli_fetch_array($result);
 	    echo "Resident {$_POST['FirstName']} {$_POST['LastName']} saved. Idx={$row['Idx']}<br />";
 	}
 	$_POST['function'] = 'search';
@@ -547,7 +542,7 @@ switch ( $_POST['function']) {
 	}
 	$querystring = "DELETE FROM Residents WHERE Idx={$_POST['Idx']}";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 		echo "Resident #{$_POST["Idx"]} deleted.<br />";
 	else
@@ -590,9 +585,9 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		if ($value[1]) { //If searchability is not null, search provided fields
 			if ($_POST[$key] != "") {
 				$lKey = strtolower($_POST[$key]);
-				$querystring .= " AND ("
+				$querystring .= " AND (";
 				for($t = 0; $t < count($value[1]); $t++) {
-					if ($t > 0) $querystring .= " OR "
+					if ($t > 0) $querystring .= " OR ";
 					$querystring .= "LOWER({$key}) LIKE '%{$lKey}%'";
 				}
 				$querystring .= ")";
@@ -607,7 +602,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	    debugText("Using Saved Query:" . $querystring);
 	}
 	echo "<script>document.forms['recordinput'].elements['SavedQuery'].value = \"{$querystring}\";</script>";
-	$result = mysql_query($querystring, $con); 
+	$result = mysqli_query($con, $querystring); 
 	//Display table
 	$k=0;
 	$results=0;
@@ -617,7 +612,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	    echo "<th>Del</th>";
 	echo "</tr></thead><tbody>";
 	//Loop through data
-	while ( $row = mysql_fetch_array($result) )
+	while ( $row = mysqli_fetch_array($con, $result) )
 	{
 		if ( !($row['PublishName']) && ( $_SESSION['Level'] < $level_security ) )
 		    continue;
@@ -627,7 +622,6 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		else
 		    $selectOpt = 7;
 
-
 		// Prepare Data
 		$fullAddress = $row['MailingAddress'];
 		if ( ( $row['MailingAddress2'] != NULL ) && ( $row['MailingAddress2'] != '' ) ) {
@@ -636,8 +630,8 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		if ( ( $row['City'] != NULL ) && ( $row['City'] != '' ) ) {
 		    $fullAddress .= "<br />" . $row['City'] . ", " . $row['State'] . " " . $row['ZIP'] . "  " . $row['Country'];
 		}
-		$guestinfo = mysql_real_escape_string($row['GuestInfo']);
-		$comments = mysql_real_escape_string($row['Comments']);
+		$guestinfo = mysqli_real_escape_string($con, $row['GuestInfo']);
+		$comments = mysqli_real_escape_string($con, $row['Comments']);
 		$phone1 = formatPhone($row['Phone1'], $row['Phone1Type']);
 		$phone2 = formatPhone($row['Phone2'], $row['Phone2Type']);
 		$phone3 = formatPhone($row['Phone3'], $row['Phone3Type']);
@@ -651,43 +645,20 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		$anchor = "";
 
 		//Prepare link (roster view)
-		if ( $_SESSION['Level']	< $level_security )
-		{
-                    $anchor .= "<a href=\"#top\" onclick=\"fillInForm({$selectOpt}, [['Idx', '{$row['Idx']}'], ";
-		    $anchor .= "['FirstName', '{$row['FirstName']}'], ['FirstName2', '{$row['FirstName2']}'], ";
-		    $anchor .= "['LastName', '{$row['LastName']}'], ['LastName2', '{$row['LastName2']}'], ";
-		    $anchor .= "['Phone1Type', '" . ($row['PublishPhone1'] ? $row['Phone1Type'] : '') . "'], ";
-		    $anchor .= "['Phone2Type', '" . ($row['PublishPhone2'] ? $row['Phone2Type'] : '') . "'], ";
-		    $anchor .= "['Phone1', '" . ($row['PublishPhone1'] ? $row['Phone1'] : '') . "'], ";
-		    $anchor .= "['Phone2', '" . ($row['PublishPhone2'] ? $row['Phone2'] : '') . "'], ";
-		    $anchor .= "['MailingAddress', '" . ($row['PublishMailingAddress'] ? $row['MailingAddress'] : '') . "'], ";
-		    $anchor .= "['MailingAddress2', '" . ($row['PublishMailingAddress'] ? $row['MailingAddress2'] : '') . "'], ";
-		    $anchor .= "['City', '" . ($row['PublishMailingAddress'] ? $row['City'] : '') . "'], ";
-		    $anchor .= "['State', '" . ($row['PublishMailingAddress'] ? $row['State'] : '') . "'], ";
-		    $anchor .= "['ZIP', '" . ($row['PublishMailingAddress'] ? $row['ZIP'] : '') . "'], ";
-		    $anchor .= "['Country', '" . ($row['PublishMailingAddress'] ? $row['Country'] : '') . "'], ";
-		    $anchor .= "['Email', '" . ($row['PublishEmail'] ? $row['Email'] : '') . "'], ";
-		    $anchor .= "['Type', '{$row['Type']}']]);\">";
-		}
-		else  //Prepare link (admin view)
-		{
-                    $anchor .= "<a href=\"#top\" onclick=\"fillInForm({$selectOpt}, 
-	[['Idx', '{$row['Idx']}'], ['FirstName', '{$row['FirstName']}'], ['FirstName2', '{$row['FirstName2']}'], 
-        ['LastName', '{$row['LastName']}'], ['LastName2', '{$row['LastName2']}'], 
-	['Phone1Type', '{$row['Phone1Type']}'], ['Phone2Type', '{$row['Phone2Type']}'], 
-	['Phone3Type', '{$row['Phone3Type']}'], ['Phone4Type', '{$row['Phone4Type']}'],
-	['Phone1', '{$row['Phone1']}'], ['Phone2', '{$row['Phone2']}'], 
-	['Phone3', '{$row['Phone3']}'], ['Phone4', '{$row['Phone4']}'],
-	['MailingAddress', '{$row['MailingAddress']}'], ['MailingAddress2', '{$row['MailingAddress2']}'], 
-	['City', '{$row['City']}'], ['State', '{$row['State']}'], 
-	['ZIP', '{$row['ZIP']}'], ['Country', '{$row['Country']}'], ['Email', '{$row['Email']}'], 
-	['Email2', '{$row['Email2']}'], ['Type', '{$row['Type']}'],
-	['Comments', '{$comments}'], 
-	['GuestInfo', '{$guestinfo}'], ['PublishName', '{$row['PublishName']}'],
-	['PublishPhone1', '{$row['PublishPhone1']}'], ['PublishPhone2', '{$row['PublishPhone2']}'],
-	['PublishMailingAddress', '{$row['PublishMailingAddress']}'],
-	['PublishEmail', '{$row['PublishEmail']}']]);\">";
-		}
+        $anchor .= "<a href=\"#top\" onclick=\"fillInForm({$selectOpt}, [['Idx', '{$row['Idx']}'], ";
+        foreach($fields as $key => $value) {
+        	//Non-admin login, publish field is specified, and publish field = 1
+        	if ( $_SESSION['Level'] < $level_security ) {
+        	  if ($value[0] && $row[$value[0]]) { 
+        	    $anchor .= "['{$key}', '{$row[$key]}'], ";
+        	  }
+        	}
+        	else { //Admin login
+        	  $anchor .= "['{$key}', '{$row[$key]}'], ";
+        	}
+        }
+		$anchor = substr($anchor, 0, strlen($anchor) - 2) . "]);\">";
+
 		//Begin record
 		echo "<tr>";
 
@@ -776,6 +747,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		        echo $fullAddress;
 		}
 		echo "</td>";
+
 		//Display email
 		echo "<td>";
 		if (( trim($row['Email']) != "" ) && 
@@ -792,7 +764,6 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		echo "</td>";
 
 		//Delete link
-
 		if ( $_SESSION['Level'] >= $editlevel )
 		{ 
 		    echo "<td>";	
@@ -818,28 +789,18 @@ if ( isset( $_GET['Idx'] ) && ( $_SESSION['Level'] >= $level_security ))
 {
 	$querystring = "SELECT * FROM Residents WHERE Idx={$_GET['Idx']}";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($con, $querystring);
+	$row = mysqli_fetch_array($result);
 	if ( $row == NULL ) {
 		echo "Resident not found.<br />";
 	}
 	else {
-    		echo "<script>fillInForm(4, [['Idx', '{$row['Idx']}'], 
-	['FirstName', '{$row['FirstName']}'], ['FirstName2', '{$row['FirstName2']}'], 
-	['LastName', '{$row['LastName']}'], ['LastName2', '{$row['LastName2']}'], 
-	['Phone1Type', '{$row['Phone1Type']}'], ['Phone2Type', '{$row['Phone2Type']}'], 
-	['Phone3Type', '{$row['Phone3Type']}'], ['Phone4Type', '{$row['Phone4Type']}'],
-	['Phone1', '{$row['Phone1']}'], ['Phone2', '{$row['Phone2']}'], 
-	['Phone3', '{$row['Phone3']}'], ['Phone4', '{$row['Phone4']}'],
-	['MailingAddress', '{$row['MailingAddress']}'], ['MailingAddress2', '{$row['MailingAddress2']}'], 
-	['City', '{$row['City']}'], ['State', '{$row['State']}'], 
-	['ZIP', '{$row['ZIP']}'], ['Country', '{$row['Country']}'], ['Email', '{$row['Email']}'], 
-	['Email2', '{$row['Email2']}'], ['Type', '{$row['Type']}'],
-	['Comments', '{$row['Comments']}'], ['GuestInfo', '{$row['GuestInfo']}'], ['PublishName', '{$row['PublishName']}'],
-	['PublishPhone1', '{$row['PublishPhone1']}'], ['PublishPhone2', '{$row['PublishPhone2']}'],
-
-	['PublishMailingAddress', '{$row['PublishMailingAddress']}'],
-	['PublishEmail', '{$row['PublishEmail']}']]);</script>";
+    	$autoscript = "<script>fillInForm(4, [['Idx', '{$row['Idx']}'], ";
+    	foreach($fields as $key => $value) {
+    		$autoscript .= "['{$key}', '{$row[$key]}'], ";
+    	}
+		$autoscript = substr($autoscript, 0, strlen($autoscript) - 2) . "]);</script>";
+		echo $autoscript;
 	}
 }
 

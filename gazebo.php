@@ -56,7 +56,7 @@ if ( !class_exists ('wp_gazebo_plugin')) {
 	function gazebo_publish_options() {
 		include_once "config.php";
 		include_once "library.php";
-		$dbconnector = connect_gazebo_DB();
+		$dbconnector = connect_gazebo_DB("mysqli");
 		$editingpost = $post;
 		global $post, $editingpost;
 		$gazebo_minlevel = $post->gazebo_minlevel;
@@ -97,7 +97,7 @@ if ( !class_exists ('wp_gazebo_plugin')) {
 		echo "</p>
 		</div>
 		</fieldset>";
-		mysql_close($dbconnector);
+		mysqli_close($dbconnector);
 	}
 
 	// Main parse filter - Access Control and Processing of <gazebo ... > tags
@@ -192,7 +192,7 @@ if ( !class_exists ('wp_gazebo_plugin')) {
 
 	    // Disconnect DB connection
 	    if ( isset( $dbconnector ) ) {
-	        mysql_close( $dbconnector );
+	        mysqli_close( $dbconnector );
 	    }
 	    return $output;
 	}
@@ -228,8 +228,8 @@ if ( !class_exists ('wp_gazebo_plugin')) {
 	
 		$querystring = "SELECT Idx, Email, Email2 FROM Residents WHERE Email = '{$username}' OR Email2 = '{$username}'";	
 	        $dbconnector = connect_gazebo_DB();
-		$result = mysql_query($querystring, $dbconnector);
-		$row = mysql_fetch_array($result);
+		$result = mysqli_query($dbconnector, $querystring);
+		$row = mysqli_fetch_array($result);
 		if ( $row ) {
 		    if ( fetchSetting( 'DualRegistration', $dbconnector ) == 'true' ) {
 
@@ -249,7 +249,7 @@ if ( !class_exists ('wp_gazebo_plugin')) {
 			$username = $user->user_login;
 		    }
 		}
-		mysql_close($dbconnector);
+		mysqli_close($dbconnector);
 	    }
 	    //return $user;
 	}

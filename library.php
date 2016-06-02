@@ -196,11 +196,11 @@ function connect_WP_DB($type = "") {
 /******* Retrieve Settings *******/
 function fetchSetting($setting, $con)
 {
-    $result = mysql_query("SELECT Value FROM Settings WHERE Name = '{$setting}'", $con);
+    $result = mysqli_query($con, "SELECT Value FROM Settings WHERE Name = '{$setting}'");
     $value = NULL;
     if ($result)
     {
-	$row = mysql_fetch_array($result);
+	$row = mysqli_fetch_array($result);
 	$value = $row['Value'];
     }
     return $value;
@@ -235,24 +235,24 @@ function fetchResname($residx, $con = NULL, $ucase = 'false', $lastfirst = 'fals
 	    $con = connect_gazebo_DB();
 	    $closeit = true;
 	}
-	$result = mysql_query("SELECT FirstName, LastName from Residents WHERE Idx = {$residx}", $con);
+	$result = mysqli_query($con, "SELECT FirstName, LastName from Residents WHERE Idx = {$residx}");
 	if ($result)
 	{
-	    $row = mysql_fetch_array($result);
+	    $row = mysqli_fetch_array($result);
 	    $name = displayName($row['FirstName'], $row['LastName'], $ucase, $lastfirst);
 	}
 	else
 	    $name = NULL;
 	if ( $closeit )
-	    mysql_close($con);
+	    mysqli_close($con);
 	return $name;
 }
 
 function fetchResidxFromUnit($unit, $con)
 {
 	$querystring = "SELECT Residents.Idx FROM Residents, Properties WHERE Properties.Unit = '{$unit}' AND Properties.Residx = Residents.Idx";
-	$result = mysql_query($querystring, $con);
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($con, $querystring);
+	$row = mysqli_fetch_array($result);
 	if (!$row)
 		return false;
 	else
@@ -262,8 +262,8 @@ function fetchResidxFromUnit($unit, $con)
 function fetchAddress($unit, $con)
 {
 	$querystring = "SELECT Address FROM Residents WHERE Unit = {$unit}";
-	$result = mysql_query($querystring, $con);
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($con, $querystring);
+	$row = mysqli_fetch_array($result);
 	if (!$row)
 		return false;
 	else
@@ -278,10 +278,10 @@ function fetchResidentEmail($residx, $con, $num = 1)
 	    $field = "Email" . $num;
 	}
 	$querystring = "SELECT {$field} FROM Residents WHERE Idx = {$residx}";
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if (!$result)
 	    return false;
-	$row = mysql_fetch_array($result);
+	$row = mysqli_fetch_array($result);
 	if (!$row)
 		return false;
 	else
@@ -289,8 +289,8 @@ function fetchResidentEmail($residx, $con, $num = 1)
 }
 function fetchSubdivision($subidx, $con)
 {	
-	$result = mysql_query("SELECT Name from Subdivisions WHERE Id = {$subidx}", $con);
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($con, "SELECT Name from Subdivisions WHERE Id = {$subidx}");
+	$row = mysqli_fetch_array($result);
 	if (!$row)
 	    return false;
 	else
@@ -299,10 +299,10 @@ function fetchSubdivision($subidx, $con)
 function fetchSubidx($subname, $con)
 {
 	$querystring = "SELECT Id from Subdivisions WHERE Name = '{$subname}'";
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ($_SESSION['Level'] >= $level_developer)
 	    echo $querystring . "<br />";
-	$row = mysql_fetch_array($result);
+	$row = mysqli_fetch_array($result);
 	if (!$row)
 	    return false;
 	else
@@ -311,8 +311,8 @@ function fetchSubidx($subname, $con)
 function validateUnit($unit, $con)
 {
     $lUnit = strtolower($unit);
-    $result = mysql_query("SELECT Unit FROM Properties WHERE LOWER(Unit) = '{$lUnit}'", $con);
-    $row = mysql_fetch_array($result);
+    $result = mysqli_query($con, "SELECT Unit FROM Properties WHERE LOWER(Unit) = '{$lUnit}'");
+    $row = mysqli_fetch_array($result);
     if (!$row)
 	return false;
     else
@@ -323,8 +323,8 @@ function residentExists($i, $con)
 	$querystring = "SELECT Idx FROM Residents WHERE Idx = {$i}";
 	if ($_SESSION["Level"] == $level_developer)
 	    echo $querystring . "<br />";
-	$result = mysql_query($querystring, $con);
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($con, $querystring);
+	$row = mysqli_fetch_array($result);
 	if (!$row)
 	    return false;
 	else
@@ -344,10 +344,10 @@ function fetchUnit($residx, $con, $type = NULL)
 	        $querystring = "SELECT Unit FROM Properties WHERE Residx = '{$residx}' OR Tenantidx = '{$residx}'";
 		break;
 	}
-	$result = mysql_query($querystring, $con);
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($con, $querystring);
+	$row = mysqli_fetch_array($result);
 	$units = array();
-	for ( $i = 0; $row != NULL; $row = mysql_fetch_array($result) )
+	for ( $i = 0; $row != NULL; $row = mysqli_fetch_array($result) )
 	{
 		$units[$i] = $row['Unit'];
 		$i++;
@@ -376,10 +376,10 @@ function formatPhone($number, $type) {
 
 /******* Secure File functions *******/
 function secureFileExists($fname, $con){
-	$fname = mysql_real_escape_string(strtolower($fname));
+	$fname = mysqli_real_escape_string($con, strtolower($fname));
 	$querystring = "SELECT Idx FROM SecureFileMeta WHERE LOWER(Filename) = '{$fname}'";
-	$result = mysql_query($querystring, $con);
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($con, $querystring);
+	$row = mysqli_fetch_array($result);
 	if ( $row != NULL ) {
 	    return true;
 	}
@@ -537,8 +537,8 @@ function userExists($user, $con)
 	}
 	else {
 	    $querystring = "SELECT Username FROM Login WHERE LOWER(Username) = '{$user}'";
-	    $result = mysql_query($querystring, $con);
-	    $exists = mysql_fetch_array($result);
+	    $result = mysqli_query($con, $querystring);
+	    $exists = mysqli_fetch_array($result);
 	}
 	if (!$exists)
 	    return false;
@@ -551,8 +551,8 @@ function workorderExists($i, $con)
 	$querystring = "SELECT Idx FROM WorkOrders WHERE Idx = {$i}";
 	if ($_SESSION["Level"] == $level_developer)
 	    echo $querystring . "<br />";
-	$result = mysql_query($querystring, $con);
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($con, $querystring);
+	$row = mysqli_fetch_array($result);
 	if (!$row)
 	    return false;
 	else
@@ -599,8 +599,8 @@ function packageExists($i, $con)
 {
 	$querystring = "SELECT Idx FROM Packages WHERE Idx = {$i}";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($con, $querystring);
+	$row = mysqli_fetch_array($result);
 	if (!$row)
 	    return false;
 	else
@@ -613,8 +613,8 @@ function violationExists($i, $con)
 	$querystring = "SELECT Idx FROM Violations WHERE Idx = {$i}";
 	if ($_SESSION["Level"] >= $level_developer)
 	    echo $querystring . "<br />";
-	$result = mysql_query($querystring, $con);
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($con, $querystring);
+	$row = mysqli_fetch_array($result);
 	if (!$row)
 	    return false;
 	else
@@ -625,9 +625,9 @@ function getOrdinalViolation($violationidx, $unit, $con, $type )
 {
 	$pkviolation_expiration = fetchSetting("ViolationExpiration", $con);
 	$querystring = "SELECT * FROM Violations WHERE Type={$type} AND Unit='{$unit}' AND Time > DATE_SUB(CURDATE(), INTERVAL {$pkviolation_expiration} DAY) ORDER BY Time";
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	$i = 0;
-	while ( $row = mysql_fetch_array($result) )
+	while ( $row = mysqli_fetch_array($result) )
 	{
 		$i++;
 		if ( $row['Idx'] == $violationidx )
@@ -639,8 +639,8 @@ function getOrdinalViolation($violationidx, $unit, $con, $type )
 function lookupViolationLetter($type, $actionstatus, $con)
 {
     $querystring = "SELECT Action{$actionstatus} FROM ViolationTypes WHERE Idx={$type}";
-    $result = mysql_query($querystring, $con);
-    $row = mysql_fetch_array($result);
+    $result = mysqli_query($con, $querystring);
+    $row = mysqli_fetch_array($result);
     return $row['Action' . $actionstatus];
 }
 function expired($time, $con)
