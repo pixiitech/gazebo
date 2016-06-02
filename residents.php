@@ -2,6 +2,41 @@
 $pagename = "residents";
 $printable = true;
 require 'gazebo-header.php'; 
+
+//Resident fields here are 
+// DB fieldname => [Associated publish field (null=not shown in roster),
+//								  searchability (null or an array of field names that are searched when processed),
+//									publish (true=field is a publish field)]
+$fields = [
+	"FirstName" => ["PublishName", ["FirstName", "FirstName2"], false],
+	"LastName" => ["PublishName", ["LastName", "LastName2"], false],
+	"FirstName2" => ["PublishName", null, false],
+	"LastName2" => ["PublishName", null, false],
+	"Phone1" => ["PublishPhone1", ["Phone1", "Phone2", "Phone3", "Phone4"], false],
+	"Phone2" => ["PublishPhone2", null, false],
+	"Phone3" => [null, null, false],
+	"Phone4" => [null, null, false],
+	"Phone1Type" => [null, null, false],
+	"Phone2Type" => [null, null, false],
+	"Phone3Type" => [null, null, false],
+	"Phone4Type" => [null, null, false],	
+	"MailingAddress" => ["PublishMailingAddress", ["MailingAddress", "MailingAddress2"], false], 
+	"MailingAddress2" => ["PublishMailingAddress", null, false],
+	"City" => ["PublishMailingAddress", ["City"], false],
+	"State" => ["PublishMailingAddress", ["State"], false],
+	"ZIP" => ["PublishMailingAddress", ["ZIP"], false],
+	"Country" => ["PublishMailingAddress", ["Country"], false],
+	"Email" => ["PublishEmail", ["Email", "Email2"], false],
+	"Email2" => ["PublishEmail2", null, false],
+	"Comments" => [null, null, false],
+	"GuestInfo" => [null, null, false],
+	"Type" => [null, ["Type"], false],
+	"PublishName" => [null, null, true],
+	"PublishPhone1" => [null, null, true],
+	"PublishPhone2" => [null, null, true],
+	"PublishMailingAddress" => [null, null, true],
+	"PublishEmail" => [null, null, true]
+];
 ?>
 
 <script>
@@ -17,21 +52,23 @@ var invertPublishSettings = <?php echo fetchSetting( 'InvertPublishSettings', $c
 // Insert JS callback function - called when insert option is selected
 
 var insertCallback = function() {
-
-    if ( invertPublishSettings == true ) {
-	document.forms['recordinput'].elements['PublishName'].checked = contradict(defaultPublishName)
-	document.forms['recordinput'].elements['PublishPhone1'].checked = contradict(defaultPublishPhone1);
-	document.forms['recordinput'].elements['PublishPhone2'].checked = contradict(defaultPublishPhone2);
-	document.forms['recordinput'].elements['PublishMailingAddress'].checked = contradict(defaultPublishMailingAddress);
-	document.forms['recordinput'].elements['PublishEmail'].checked = contradict(defaultPublishEmail);
-    }
-    else {
-	document.forms['recordinput'].elements['PublishName'].checked = defaultPublishName;
-	document.forms['recordinput'].elements['PublishPhone1'].checked = defaultPublishPhone1;
-	document.forms['recordinput'].elements['PublishPhone2'].checked = defaultPublishPhone2;
-	document.forms['recordinput'].elements['PublishMailingAddress'].checked = defaultPublishMailingAddress;
-	document.forms['recordinput'].elements['PublishEmail'].checked = defaultPublishEmail;
-    }
+<?php
+			//loop through each publish setting, generate JS to set the default
+		if (fetchSetting('InvertPublishSettings', $con) == 'true') {
+		  foreach ($fields as $key => $value) {
+		  	if ($value[2]) {
+			    echo "document.forms['recordinput'].elements['{$key}'].checked = contradict(default{$key});"
+			  }
+		  }
+		} 
+		else {
+		  foreach ($fields as $key => $value) {
+		  	if ($value[2]) {
+			    echo "document.forms['recordinput'].elements['{$key}'].checked = default{$key};"
+			  }
+		  }			
+		}
+?>
 }
 
 // Search JS callback function - called when search option is selected
@@ -196,20 +233,11 @@ else {
 
 function errorMessage($msg, $fn)
 {
-    echo "<script>fillInForm({$fn}, [['Idx', '{$_POST['Idx']}'],
-	['FirstName', '{$_POST['FirstName']}'], ['FirstName2', '{$_POST['FirstName2']}'], 
-	['LastName', '{$_POST['LastName']}'], ['LastName2', '{$_POST['LastName2']}'], 
-	['Phone1Type', '{$_POST['Phone1Type']}'], ['Phone2Type', '{$_POST['Phone2Type']}'], 
-	['Phone3Type', '{$_POST['Phone3Type']}'], ['Phone4Type', '{$_POST['Phone4Type']}'],
-	['Phone1', '{$_POST['Phone1']}'], ['Phone2', '{$_POST['Phone2']}'], 
-	['Phone3', '{$_POST['Phone3']}'], ['Phone4', '{$_POST['Phone4']}'],
-	['MailingAddress', '{$_POST['MailingAddress']}'], ['MailingAddress2', '{$_POST['MailingAddress2']}'], 
-	['City', '{$_POST['City']}'], ['State', '{$_POST['State']}'], 
-	['ZIP', '{$_POST['ZIP']}'], ['Country', '{$_POST['Country']}'], ['Email', '{$_POST['Email']}'], ['Email2', '{$_POST['Email2']}'],  ['Type', '{$_POST['Type']}'],
-	['Comments', '{$_POST['Comments']}'], ['GuestInfo', '{$_POST['GuestInfo']}'], ['PublishName', '{$_POST['PublishName']}'],
-	['PublishPhone1', '{$_POST['PublishPhone1']}'], ['PublishPhone2', '{$_POST['PublishPhone2']}'],
-	['PublishMailingAddress', '{$_POST['PublishMailingAddress']}'],
-	['PublishEmail', '{$_POST['PublishEmail']}']]);</script>";
+    echo "<script>fillInForm({$fn}, [";
+    foreach($fields as $key => $value) {
+    	echo "['{$key}', '{$_POST[$key]}'],";
+    }
+		echo "]);</script>";
     echo "<br />";
 }
 echo "<form name='recordinput' method='post' action='" . pageLink("residents") . "' enctype='multipart/form-data' ><p class='center'>
@@ -402,42 +430,22 @@ if ( !isset($_POST["function"]) ) {
 }
 
 //Prepare data
-$_POST['FirstName'] = mysql_real_escape_string($_POST['FirstName']);
-$_POST['FirstName2'] = mysql_real_escape_string($_POST['FirstName2']);
-$_POST['LastName'] = mysql_real_escape_string($_POST['LastName']);
-$_POST['LastName2'] = mysql_real_escape_string($_POST['LastName2']);
-$_POST['Phone1'] = mysql_real_escape_string($_POST['Phone1']);
-$_POST['Phone2'] = mysql_real_escape_string($_POST['Phone2']);
-$_POST['Phone3'] = mysql_real_escape_string($_POST['Phone3']);
-$_POST['Phone4'] = mysql_real_escape_string($_POST['Phone4']);
-$_POST['MailingAddress'] = mysql_real_escape_string($_POST['MailingAddress']);
-$_POST['MailingAddress2'] = mysql_real_escape_string($_POST['MailingAddress2']);
-$_POST['City'] = mysql_real_escape_string($_POST['City']);
-$_POST['State'] = mysql_real_escape_string($_POST['State']);
-$_POST['ZIP'] = mysql_real_escape_string($_POST['ZIP']);
-$_POST['Country'] = mysql_real_escape_string($_POST['Country']);
-$_POST['Email'] = mysql_real_escape_string($_POST['Email']);
-$_POST['Email2'] = mysql_real_escape_string($_POST['Email2']);
-$_POST['Comments'] = mysql_real_escape_string($_POST['Comments']);
-$_POST['GuestInfo'] = mysql_real_escape_string($_POST['GuestInfo']);
-
-if ( !isset($_POST['PublishName']) ) $_POST['PublishName'] = '0';
-    else $_POST['PublishName'] = '1';
-if ( !isset($_POST['PublishPhone1']) ) $_POST['PublishPhone1'] = '0';
-    else $_POST['PublishPhone1'] = '1';
-if ( !isset($_POST['PublishPhone2']) ) $_POST['PublishPhone2'] = '0';
-    else $_POST['PublishPhone2'] = '1';
-if ( !isset($_POST['PublishMailingAddress']) ) $_POST['PublishMailingAddress'] = '0';
-    else $_POST['PublishMailingAddress'] = '1';
-if ( !isset($_POST['PublishEmail']) ) $_POST['PublishEmail'] = '0';
-    else $_POST['PublishEmail'] = '1';
-if ( $invertPublishSettings == 'true' ) {
-    $_POST['PublishName'] = contradict($_POST['PublishName']);
-    $_POST['PublishPhone1'] = contradict($_POST['PublishPhone1']);
-    $_POST['PublishPhone2'] = contradict($_POST['PublishPhone2']);
-    $_POST['PublishMailingAddress'] = contradict($_POST['PublishMailingAddress']);
-    $_POST['PublishEmail'] = contradict($_POST['PublishEmail']);
+foreach($fields as $key => $value) {
+	if ($value[2]) { //Publish fields
+		if ( !isset($_POST[$key]) ) {
+			$_POST[$key] = '0';
+		}
+		else {
+			$_POST[$key] = '1';
+		}
+		if ( $invertPublishSettings == 'true' ) {
+    		$_POST[$key] = contradict($_POST[$key]);
+		}
+	}
+	// Mysql escape all fields
+	$_POST[$key] = mysql_real_escape_string($_POST[$key]);
 }
+
 if ( $_POST['Type'] == "Owner" )
     $type = 0;
 else if ( $_POST['Type'] == "Tenant" )
@@ -459,20 +467,16 @@ switch ( $_POST['function']) {
 
 	//Save SQL Record
 
-	$querystring = "UPDATE Residents SET FirstName='{$_POST['FirstName']}', FirstName2='{$_POST['FirstName2']}',
-			LastName='{$_POST['LastName']}', LastName2='{$_POST['LastName2']}',
-			Phone1Type='{$_POST['Phone1Type']}', Phone2Type='{$_POST['Phone2Type']}',
-			Phone3Type='{$_POST['Phone3Type']}', Phone4Type='{$_POST['Phone4Type']}',
-			Phone1='{$_POST['Phone1']}', Phone2='{$_POST['Phone2']}',
-			Phone3='{$_POST['Phone3']}', Phone4='{$_POST['Phone4']}',
- 			MailingAddress='{$_POST['MailingAddress']}',
-			MailingAddress2='{$_POST['MailingAddress2']}', City='{$_POST['City']}',
-			State='{$_POST['State']}', ZIP='{$_POST['ZIP']}', Country='{$_POST['Country']}',
-			Email='{$_POST['Email']}', Email2='{$_POST['Email2']}', Type={$type}, Comments='{$_POST['Comments']}',
-			GuestInfo='{$_POST['GuestInfo']}',
-			PublishName='{$_POST['PublishName']}', PublishPhone1='{$_POST['PublishPhone1']}',
-			PublishPhone2='{$_POST['PublishPhone2']}', PublishMailingAddress='{$_POST['PublishMailingAddress']}', 
-			PublishEmail='{$_POST['PublishEmail']}' WHERE Idx={$_POST['Idx']}";
+	$querystring = "UPDATE Residents SET ";
+	foreach($fields as $key => $value) {
+		if ($key == 'Type') {
+			$querystring .= "Type={$type}, ";
+		}
+		else
+		  $querystring .= "{$key}='{$_POST[$key]}', ";
+	}
+	$querystring = substr($querystring, 0, strlen($querystring) - 2); //Chop off last comma space
+	$querystring .= "	WHERE Idx={$_POST['Idx']}";
 	debugText($querystring);
 	$result = mysql_query($querystring, $con);
 	if ( $result )
@@ -496,21 +500,21 @@ switch ( $_POST['function']) {
 
 	//Save SQL Record
 	
-	$querystring = "INSERT INTO Residents (FirstName, FirstName2, LastName, LastName2, Phone1, Phone2, Phone3, Phone4, Phone1Type,  Phone2Type, Phone3Type, Phone4Type, MailingAddress, MailingAddress2, City, State, ZIP, Country, Email, Email2, Type, Comments, GuestInfo,
-			 PublishName, PublishMailingAddress,
-			 PublishPhone1, PublishPhone2, PublishEmail) VALUES
-
-			('{$_POST['FirstName']}', '{$_POST['FirstName2']}',
-			 '{$_POST['LastName']}', '{$_POST['LastName2']}',
- 			'{$_POST['Phone1']}', '{$_POST['Phone2']}', 
-			'{$_POST['Phone3']}', '{$_POST['Phone4']}',
- 			'{$_POST['Phone1Type']}', '{$_POST['Phone2Type']}', 
-			'{$_POST['Phone3Type']}', '{$_POST['Phone4Type']}',
-			'{$_POST['MailingAddress']}', '{$_POST['MailingAddress2']}', 
-			'{$_POST['City']}', '{$_POST['State']}', '{$_POST['ZIP']}', '{$_POST['Country']}',
-			'{$_POST['Email']}', '{$_POST['Email2']}', {$type}, '{$_POST['Comments']}', '{$_POST['GuestInfo']}',
-			'{$_POST['PublishName']}', '{$_POST['PublishMailingAddress']}', '{$_POST['PublishPhone1']}', 
-			'{$_POST['PublishPhone2']}', '{$_POST['PublishEmail']}')";
+	$querystring = "INSERT INTO Residents (";
+	foreach($fields as $key => $value) {
+		$querystring .= $key . ", ";
+	}
+	$querystring = substr($querystring, 0, strlen($querystring) - 2); //Chop off last comma space
+	$querystring .= ") VALUES (";
+	foreach($fields as $key => $value) {
+		if ($key == "Type") {
+		  $querystring .= "'{$type}', ";
+		}
+		else
+		  $querystring .= "'{$_POST[$key]}', ";
+	}	
+	$querystring = substr($querystring, 0, strlen($querystring) - 2); //Chop off last comma space
+	$querystring .= ")";
 	debugText($querystring);
 	$result = mysql_query($querystring, $con);
 	if ( !$result )
@@ -572,44 +576,6 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	if ( $_POST['Idx'] != "" ) {
 		$querystring .= " AND Residents.Idx = " . intval($_POST['Idx']);
 	}
-	if ( $_POST['FirstName'] != "" ) {
-		$lFirstName = strtolower($_POST['FirstName']);
-		$querystring .= " AND (LOWER(FirstName) LIKE '%{$lFirstName}%' OR LOWER(FirstName2) LIKE '%{$lFirstName}%')";
-	}
-	if ( $_POST['LastName'] != "" ) {
-		$lLastName = strtolower($_POST['LastName']);
-		$querystring .= " AND (LOWER(LastName) LIKE '%{$lLastName}%' OR LOWER(LastName2) LIKE '%{$lLastName}%')";
-	}
-	if ( $_POST['Phone1'] != "" ) {
-		$querystring .= " AND (Phone1 LIKE '%{$_POST['Phone1']}%' OR";
-		$querystring .= " Phone2 LIKE '%{$_POST['Phone1']}%' OR";
-		$querystring .= " Phone3 LIKE '%{$_POST['Phone1']}%' OR";
-		$querystring .= " Phone4 LIKE '%{$_POST['Phone1']}%')";
-	}
-	if ( $_POST['MailingAddress'] != "" ) {
-		$lMailingAddress = strtolower($_POST['MailingAddress']);
-		$querystring .= " AND LOWER(MailingAddress) LIKE '%{$lMailingAddress}%'";
-	}
-	if ( $_POST['City'] != "" ) {
-		$lCity = strtolower($_POST['City']);
-		$querystring .= " AND LOWER(City) LIKE '%{$lCity}%'";
-	}
-	if ( $_POST['State'] != "" ) {
-		$lState = strtolower($_POST['State']);
-		$querystring .= " AND LOWER(State) LIKE '%{$lState}%'";
-	}
-	if ( $_POST['ZIP'] != "" ) {
-		$lZIP = strtolower($_POST['ZIP']);
-		$querystring .= " AND LOWER(ZIP) LIKE '%{$lZIP}%'";
-	}
-	if ( $_POST['Country'] != "" ) {
-		$lCountry = strtolower($_POST['Country']);
-		$querystring .= " AND LOWER(Country) LIKE '%{$lCountry}%'";
-	}
-	if ( $_POST['Email'] != "" ) {
-		$lEmail = strtolower($_POST['Email']);
-		$querystring .= " AND ((LOWER(Email) LIKE '%{$lEmail}%') OR (LOWER(Email2) LIKE '%{$lEmail}%'))";
-	}
 	if ( $_POST['Type'] == "Owner" ) {
 		$querystring .= " AND Residents.Type = 0";
 	}
@@ -620,6 +586,20 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		$querystring .= " AND Properties.Unit = " . intval($_POST['Unit']);
 		$querystring .= " AND Properties.Residx = Residents.Idx";
 	}
+	foreach($fields as $key => $value) {
+		if ($value[1]) { //If searchability is not null, search provided fields
+			if ($_POST[$key] != "") {
+				$lKey = strtolower($_POST[$key]);
+				$querystring .= " AND ("
+				for($t = 0; $t < count($value[1]); $t++) {
+					if ($t > 0) $querystring .= " OR "
+					$querystring .= "LOWER({$key}) LIKE '%{$lKey}%'";
+				}
+				$querystring .= ")";
+			}
+		}
+	}
+
 	//Perform query
 	debugText("Original Query:" . $querystring);
 	if ( $useSavedQuery == 'yes' ) {
