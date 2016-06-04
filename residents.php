@@ -3,11 +3,22 @@ $pagename = "residents";
 $printable = true;
 require 'gazebo-header.php'; 
 
+if (!isset($_POST['Idx'])) {
+	$_POST['Idx'] = "";
+}
+if (!isset($_POST['SavedQuery'])) {
+	$_POST['SavedQuery'] = "";
+}
+if (!isset($_POST['Unit'])) {
+	$_POST['Unit'] = "";
+}
+$useSavedQuery = false;
 //Resident fields here are 
 // DB fieldname => [0 - Associated publish boolean field name (null=not shown in roster),
 //					1 - searchability (null or an array of field names that are searched when processed),
 //					2 - publish (true=field is a publish boolean field)]
 $fields = [
+	// "Idx" => ["PublishName", null, false],
 	"FirstName" => ["PublishName", ["FirstName", "FirstName2"], false],
 	"LastName" => ["PublishName", ["LastName", "LastName2"], false],
 	"FirstName2" => ["PublishName", null, false],
@@ -30,13 +41,18 @@ $fields = [
 	"Email2" => ["PublishEmail2", null, false],
 	"Comments" => [null, null, false],
 	"GuestInfo" => [null, null, false],
-	"Type" => ["PublishName", ["Type"], false],
+	"Type" => ["PublishName", null, false],
 	"PublishName" => [null, null, true],
 	"PublishPhone1" => [null, null, true],
 	"PublishPhone2" => [null, null, true],
 	"PublishMailingAddress" => [null, null, true],
 	"PublishEmail" => [null, null, true]
 ];
+foreach($fields as $key => $value) {
+	if (!isset($_POST[$key])) {
+		$_POST[$key] = "";
+	}
+}
 ?>
 
 <script>
@@ -612,7 +628,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	    echo "<th>Del</th>";
 	echo "</tr></thead><tbody>";
 	//Loop through data
-	while ( $row = mysqli_fetch_array($con, $result) )
+	while ( $row = mysqli_fetch_array($result) )
 	{
 		if ( !($row['PublishName']) && ( $_SESSION['Level'] < $level_security ) )
 		    continue;

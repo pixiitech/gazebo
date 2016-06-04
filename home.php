@@ -16,11 +16,11 @@ if ($module_workorders)
 	echo "<strong>Open <a href='" . pageLink("workorder") . "'>Work Orders</a></strong>";
 	$querystring = "SELECT * FROM WorkOrders WHERE (Status = {$status_submitted} OR Status = {$status_approved})";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con); 
+	$result = mysqli_query($con, $querystring); 
 	$k=0;
 	$results=0;
 	echo "<table class='criteria' style='width:100%'><tr><th>WO#</th><th>Status</th><th>Unit</th><th>Summary</th><th>Name</th><th>Submitted</th><th>Assigned To</th><th>Approved By</th></tr>";
-	while ( $row = mysql_fetch_array($result) )
+	while ( $row = mysqli_fetch_array($result) )
 	{
             echo "<tr>";
             if ( $_SESSION['Level'] >= $editlevel )
@@ -34,7 +34,7 @@ if ($module_workorders)
             echo "</td><td>";
 	    echo $row['Unit'];
 	    echo "</td><td>";
-            echo mysql_real_escape_string($row['Summary']);
+            echo mysqli_real_escape_string($con, $row['Summary']);
 	    echo "</td><td>";
 	    echo $row['Name'];
 	    echo "</td><td>";
@@ -55,11 +55,11 @@ if ($module_packages)
 	echo "<strong><a href='" . pageLink("packages") . "'>Packages</a> Awaiting Pickup</strong>";
 	$querystring = "SELECT * FROM Packages WHERE PickupTime = 0";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con); 
+	$result = mysqli_query($con, $querystring); 
 	$k=0;
 	$results=0;
 	echo "<table class='criteria' style='width:100%'><tr><th>Index#</th><th>Unit</th><th>For</th><th>Receive Time</th><th>Received By</th><th>Carrier</th></tr>";
-	while ( $row = mysql_fetch_array($result) )
+	while ( $row = mysqli_fetch_array($result) )
 	{
 	  	echo "<tr>";
                 $pic = $gazebo_imagedir . carrierPic($row['Type']);
@@ -67,7 +67,7 @@ if ($module_packages)
                     $selectOpt = 4;
                 else
                     $selectOpt = 2;
-                $picture = $imagedir . $row['Pic'];
+                // $picture = $imagedir . $row['Pic'];
                 echo "<td>";
                 echo $row['Idx'];
                 echo "</td><td>";

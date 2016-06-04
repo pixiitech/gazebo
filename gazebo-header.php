@@ -63,6 +63,6 @@ else { /* CMS - display div so that entire page responds to color schemes */
 }
 
 /* Connect MySQL DB */
-$con = connect_gazebo_DB();
+$con = connect_gazebo_DB("mysqli");
 
 ?>

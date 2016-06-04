@@ -359,7 +359,7 @@ function fetchUnit($residx, $con, $type = NULL)
 // X: (xxx) xxx-xxxx
 // If $type argument is 'international' simply return the phone number as is
 function formatPhone($number, $type) {
-    $prefix = "";
+    $prefix = $suffix = "";
     if ($number == NULL) {
 	return "";
     }
