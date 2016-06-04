@@ -3,16 +3,11 @@ $pagename = "residents";
 $printable = true;
 require 'gazebo-header.php'; 
 
-if (!isset($_POST['Idx'])) {
-	$_POST['Idx'] = "";
-}
-if (!isset($_POST['SavedQuery'])) {
-	$_POST['SavedQuery'] = "";
-}
-if (!isset($_POST['Unit'])) {
-	$_POST['Unit'] = "";
+foreach(['Idx', 'SavedQuery', 'Unit'] as $key) {
+	$_POST[$key] = "";
 }
 $useSavedQuery = false;
+$type = 0;
 //Resident fields here are 
 // DB fieldname => [0 - Associated publish boolean field name (null=not shown in roster),
 //					1 - searchability (null or an array of field names that are searched when processed),
@@ -38,7 +33,7 @@ $fields = [
 	"ZIP" => ["PublishMailingAddress", ["ZIP"], false],
 	"Country" => ["PublishMailingAddress", ["Country"], false],
 	"Email" => ["PublishEmail", ["Email", "Email2"], false],
-	"Email2" => ["PublishEmail2", null, false],
+	"Email2" => ["PublishEmail", null, false],
 	"Comments" => [null, null, false],
 	"GuestInfo" => [null, null, false],
 	"Type" => ["PublishName", null, false],
@@ -773,7 +768,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		if (( $row['LastName2'] != NULL) && ( $row['LastName2'] != "" ) ) {
 		    echo "<hr>";
 		    if (( trim($row['Email2']) != "" ) && 
-		        (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail2'] ))) {
+		        (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail'] ))) {
 		        echo "<a href='mailto:{$row['Email2']}'>" . $row['Email2'] . "</a>";
 		    }
 		}

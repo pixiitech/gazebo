@@ -65,4 +65,6 @@ else { /* CMS - display div so that entire page responds to color schemes */
 /* Connect MySQL DB */
 $con = connect_gazebo_DB("mysqli");
 
+/* Supress undefined errors */
+error_reporting( error_reporting() & ~E_NOTICE );
 ?>

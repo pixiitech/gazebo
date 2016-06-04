@@ -25,19 +25,19 @@ if ( isset( $_POST['AMNew-Name'] ) && ( $_POST['AMNew-Name'] != '' ) && ( $_POST
 {
     $querystring = "SELECT Name FROM Amenities WHERE Name = '{$_POST['AMNew-Name']}'";
     debugText($querystring);
-    $result1 = mysql_query( $querystring, $con );
+    $result1 = mysqli_query($con, $querystring);
     $querystring = "SELECT Idx FROM Amenities WHERE Idx = {$_POST['AMNew-Idx']}";
     debugText($querystring);
-    $result2 = mysql_query( $querystring, $con );
+    $result2 = mysqli_query($con,$querystring);
     if ( !is_numeric( $_POST['AMNew-Idx'] ))
     {
 	echo "Please enter a numeric index.<br />";
     }
-    else if ( $row = mysql_fetch_array($result1) )
+    else if ( $row = mysqli_fetch_array($result1) )
     {
 	echo "Amenity '" . $row['Name'] . "' is already taken! Please choose another name.<br />";
     }
-    else if ( $row = mysql_fetch_array($result2) )
+    else if ( $row = mysqli_fetch_array($result2) )
     {
 	echo "Amenity #" . $row['Idx'] . " is already taken! Please choose another number.<br />";
     }
@@ -46,7 +46,7 @@ if ( isset( $_POST['AMNew-Name'] ) && ( $_POST['AMNew-Name'] != '' ) && ( $_POST
 	$querystring = "INSERT INTO Amenities (Idx, Name) VALUES ";
 	$querystring .= "( {$_POST['AMNew-Idx']}, '{$_POST['AMNew-Name']}' )";
         debugText($querystring);
-	$result = mysql_query( $querystring, $con );
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 	    echo $_POST['AMNew-Name'] . " successfully added!";
 	else
@@ -57,19 +57,19 @@ if ( isset( $_POST['AMNew-Name'] ) && ( $_POST['AMNew-Name'] != '' ) && ( $_POST
 
 /* Make changes to Amenities Types */
 $querystring = "SELECT * FROM Amenities";
-$result = mysql_query($querystring, $con);
-while ( $row = mysql_fetch_array($result) )
+$result = mysqli_query($con, $querystring);
+while ( $row = mysqli_fetch_array($result) )
 {
     if ( isset( $_POST['AM' . $row['Idx'] . '-delete'] ))
     {
 	$querystring = "DELETE FROM Amenities WHERE Idx={$row['Idx']}";
 	debugText($querystring);
-	$result = mysql_query( $querystring, $con );
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 	{
 	    echo "Amenity #{$row['Idx']} '{$row['Name']}' deleted.";
 	    $querystring = "SELECT * FROM Amenities";
-	    $result = mysql_query($querystring, $con);
+	    $result = mysqli_query($con, $querystring);
 	}
 	else
 	    echo "Amenity #{$row['Idx']} '{$row['Name']}' failed to delete.";
@@ -83,12 +83,12 @@ while ( $row = mysql_fetch_array($result) )
 	    $oldname = $row['Name'];
 	    $querystring = "UPDATE Amenities SET Name='{$_POST['AM' . $row['Idx'] . '-name']}' WHERE Idx = {$row[Idx]}";
     	    debugText($querystring);
-	    $result = mysql_query($querystring, $con);
+	    $result = mysqli_query($con, $querystring);
 	    if ($result)
 	    {
 	        echo "Changed name of amenity '{$oldname}' to '{$_POST['AM' . $row['Idx'] . '-name']}'.<br />";
 	        $querystring = "SELECT * FROM Amenities";
-	        $result = mysql_query($querystring, $con);
+	        $result = mysqli_query($con, $querystring);
 	    }
 	    else
 	        echo "Failed to change name of amenity '{$oldname}' to '{$_POST['AM' . $row['Idx'] . '-name']}'.<br />";
@@ -99,7 +99,7 @@ while ( $row = mysql_fetch_array($result) )
 	if ( $change == 1 )
 	{
 	    $querystring = "SELECT * FROM Amenities";
-	    $result = mysql_query($querystring, $con);
+	    $result = mysqli_query($con, $querystring);
 	}
     }
 }
@@ -109,9 +109,9 @@ echo "<div style='text-align:center'>";
 echo "<form id='ammgr' name='ammgr' method='post' action='" . pageLink($pagename) . "'>";
 echo "<table style='margin:0px auto' border=1 cellpadding=4 ><tbody><tr><th>#</th><th>Name</th><th>Delete</th></tr>";
 $querystring = "SELECT * FROM Amenities";
-$result = mysql_query($querystring, $con);
+$result = mysqli_query($con, $querystring);
 $lastId = 0;
-while ( $row = mysql_fetch_array($result) )
+while ( $row = mysqli_fetch_array($result) )
 {
     echo "<tr><td>{$row['Idx']}</td><td><input type='text' name='AM{$row['Idx']}-name' value='{$row['Name']}' /></td>";
     echo "<td><input type='checkbox' name='AM{$row['Idx']}-delete' /></td></tr>";

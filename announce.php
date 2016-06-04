@@ -47,7 +47,7 @@ function fillInForm(fn, fields) {
     var updateFields = function (FieldArray) {
 	for ( var i = 0; i < FieldArray.length; i++ )
 	{
-	    if (FieldArray[i][0] == 'Icon')
+	    if ((FieldArray[i][0] == 'Icon') && (FieldArray[i][1]))
 		document.forms['recordinput'].elements[FieldArray[i][1]].checked = true;
 	    else if (FieldArray[i][0] == 'Amenity')
 	        document.forms['recordinput'].elements['Amenity'].selectedIndex = FieldArray[i][1];
@@ -104,6 +104,19 @@ textarea
 <?php 
 require "authcheck.php";
 
+if (!isset($_POST['SavedQuery'])) {
+	$_POST['SavedQuery'] = "";
+}
+$useSavedQuery = false;
+
+//Announcement fields 
+$fields = ["Text", "Icon", "Description", "Amenity", "StartTime", "EndTime", "Idx", "Subject", "CreatedBy", "Timecreated"];
+foreach($fields as $key) {
+	if (!isset($_POST[$key])) {
+	  $_POST[$key] = "";
+	}
+}
+
 //Build Icon Lists
 echo "<script>var iconlist = [];</script>";
 for ( $i = 0; $i < count($iconlist); $i++ )
@@ -111,10 +124,11 @@ for ( $i = 0; $i < count($iconlist); $i++ )
 
 //Build Amenities Lists
 $querystring = "SELECT * FROM Amenities ORDER BY Idx";
-$result = mysql_query($querystring, $con);
+$result = mysqli_query($con, $querystring);
 $amenities = array();
+
 echo "<script>var amenities = [];</script>";
-for ( $i = 1; $row = mysql_fetch_array($result); $i++ )
+for ( $i = 1; $row = mysqli_fetch_array($result); $i++ )
 {
     $amenities[$row['Idx']] = $row['Name'];
     echo "<script>amenities[{$i}] = '{$row['Name']}';</script>";
@@ -122,10 +136,10 @@ for ( $i = 1; $row = mysql_fetch_array($result); $i++ )
 
 //Build Subdivision List
 $querystring = "SELECT * FROM Subdivisions ORDER BY Id";
-$result = mysql_query($querystring, $con);
+$result = mysqli_query($con, $querystring);
 $SubdivTypes = array();
 echo "<script>var SubdivTypes = [];</script>";
-for ( $i = 1; $row = mysql_fetch_array($result); $i++ )
+for ( $i = 1; $row = mysqli_fetch_array($result); $i++ )
 {
     $SubdivTypes[$row['Id']] = $row['Name'];
     echo "<script>SubdivTypes[{$i}] = '{$row['Name']}';</script>";
@@ -159,74 +173,75 @@ echo "
         <input id='StartDay' type='text' size='2' name='StartDay' />/
         <input id='StartYear' type='text' size='2' name='StartYear' />&nbsp;&nbsp;&nbsp;
         <select name='StartHour'>";
-        for ( $i = 0; $i < 24; $i++ )
-	{
-	    if (( $_SESSION['24HrTime'] != 'on' ) && ( $i >= 12 ) ) {
-		break;
-	    }
-	    if (( $_SESSION['24HrTime'] != 'on' ) && ( $i == 0 )) {
-		 $j = 12;
-	    }
-	    else {
-		$j = $i;
-	    }
-            echo "<option value={$i}>{$j}</option>";
-	}
-        echo "</select>:<select name='StartMinute'>";
-        for ( $i = 0; $i < 4; $i++ )
-            echo "<option value='" . $i * 15 . "'>" . padInt2($i * 15) . "</option>";
-        echo "</select>&nbsp;";
-	echo "<select name='StartAMPM'"; 
-	if ( $_SESSION['24HrTime'] == 'on' ) {
-	    echo "hidden='hidden' ";
-	}
-	echo ">";
-	echo "<option value='AM'>AM</option><option value='PM'>PM</option>";
-	echo "</select>";
+for ( $i = 0; $i < 24; $i++ )
+{
+    if (( $_SESSION['24HrTime'] != 'on' ) && ( $i >= 12 ) ) {
+	break;
+    }
+    if (( $_SESSION['24HrTime'] != 'on' ) && ( $i == 0 )) {
+	 $j = 12;
+    }
+    else {
+	$j = $i;
+    }
+        echo "<option value={$i}>{$j}</option>";
+}
+    echo "</select>:<select name='StartMinute'>";
+    for ( $i = 0; $i < 4; $i++ )
+        echo "<option value='" . $i * 15 . "'>" . padInt2($i * 15) . "</option>";
+    echo "</select>&nbsp;";
+echo "<select name='StartAMPM'"; 
+if ( $_SESSION['24HrTime'] == 'on' ) {
+    echo "hidden='hidden' ";
+}
+echo ">";
+echo "<option value='AM'>AM</option><option value='PM'>PM</option>";
+echo "</select>";
 
 echo " To: <input id='EndMonth' type='text' size='2' name='EndMonth' />/
         <input id='EndDay' type='text' size='2' name='EndDay' />/
         <input id='EndYear' type='text' size='2' name='EndYear' />&nbsp;&nbsp;&nbsp;
         <select name='EndHour'>";
-        for ( $i = 0; $i < 24; $i++ )
-	{
-	    if (( $_SESSION['24HrTime'] != 'on' ) && ( $i >= 12 ) ) {
-		break;
-	    }
-	    if (( $_SESSION['24HrTime'] != 'on' ) && ( $i == 0 )) {
-		 $j = 12;
-	    }
-	    else {
-		$j = $i;
-	    }
-            echo "<option value={$i}>{$j}</option>";
-	}
-        echo "</select>:<select name='EndMinute'>";
-        for ( $i = 0; $i < 4; $i++ )
-            echo "<option value='" . $i * 15 . "'>" . padInt2($i * 15) . "</option>";
-        echo "</select>";
-	echo "<select name='EndAMPM'"; 
-	if ( $_SESSION['24HrTime'] == 'on' ) {
-	    echo "hidden='hidden' ";
-	}
-	echo ">";
-	echo "<option value='AM'>AM</option><option value='PM'>PM</option>";
-	echo "</select>";
-	echo "</td></tr>";
+for ( $i = 0; $i < 24; $i++ )
+{
+    if (( $_SESSION['24HrTime'] != 'on' ) && ( $i >= 12 ) ) {
+	break;
+    }
+    if (( $_SESSION['24HrTime'] != 'on' ) && ( $i == 0 )) {
+	 $j = 12;
+    }
+    else {
+	$j = $i;
+    }
+        echo "<option value={$i}>{$j}</option>";
+}
+echo "</select>:<select name='EndMinute'>";
+for ( $i = 0; $i < 4; $i++ )
+    echo "<option value='" . $i * 15 . "'>" . padInt2($i * 15) . "</option>";
+echo "</select>";
+echo "<select name='EndAMPM'"; 
+if ( $_SESSION['24HrTime'] == 'on' ) {
+    echo "hidden='hidden' ";
+}
+echo ">";
+echo "<option value='AM'>AM</option><option value='PM'>PM</option>";
+echo "</select>";
+echo "</td></tr>";
 echo "<tr class='formfields Insert Update'><td>Select Icon: ";
-        for ( $i = 0; $i < count($iconlist); $i++ )
-        {
-            echo "<input type='radio' name='Icon' value='{$iconlist[$i]}' id='{$iconlist[$i]}'";
-	    echo " /><img src='" . $gazebo_imagedir . $iconlist[$i] . "' style='height:40px; width:40px' />";
-        }
-        echo "</td></tr>";
+echo "<input type='radio' name='Icon' value='' id='none' />None";
+for ( $i = 0; $i < count($iconlist); $i++ )
+{
+    echo "<input type='radio' name='Icon' value='{$iconlist[$i]}' id='{$iconlist[$i]}'";
+	echo " /><img src='" . $gazebo_imagedir . $iconlist[$i] . "' style='height:40px; width:40px' />";
+}
+echo "</td></tr>";
 
-	echo "<tr class='formfields Insert Update'><td>Reserved Amenity:<select name='Amenity'><option value='None'>None</option>";
-        for ( $i = 1; $i <= count($amenities); $i++ )
-        {
-            echo "<option value='{$i}'";
-            echo ">" . $amenities[$i] . "</option>";
-        }
+echo "<tr class='formfields Insert Update'><td>Reserved Amenity:<select name='Amenity'><option value='0'>None</option>";
+for ( $i = 1; $i <= count($amenities); $i++ )
+{
+    echo "<option value='{$i}'";
+    echo ">" . $amenities[$i] . "</option>";
+}
 echo "</select></td></tr>";
 //Display mailer
 echo "<tr class='formfields Insert'><td>Email to: <input id='EmailStaff' name='EmailStaff' type='checkbox' checked=true />Staff  ";
@@ -265,13 +280,13 @@ switch ($_POST["function"])
 					  $_POST['StartHour'], $_POST['StartMinute']);
 	$end_sqltime = assembleDateTime($_POST['EndMonth'], $_POST['EndDay'], $_POST['EndYear'],
 					  $_POST['EndHour'], $_POST['EndMinute']);
-	$_POST['Description'] = replaceDoubleQuotes(mysql_real_escape_string($_POST['Description']));
-	$_POST['Subject'] = replaceDoubleQuotes(mysql_real_escape_string($_POST['Subject']));
+	$_POST['Description'] = replaceDoubleQuotes(mysqli_real_escape_string($con, $_POST['Description']));
+	$_POST['Subject'] = replaceDoubleQuotes(mysqli_real_escape_string($con, $_POST['Subject']));
 	$querystring = "INSERT INTO Events (Timecreated, CreatedBy, Text, Icon, Description, Amenity, StartTime, EndTime) VALUES
-			('{$sqltime}', '{$_SESSION['Username']}', '{$_POST['Text']}', '{$_POST['Icon']}', '{$_POST['Description']}',
+			('{$cur_sqltime}', '{$_SESSION['Username']}', '{$_POST['Text']}', '{$_POST['Icon']}', '{$_POST['Description']}',
 			 '{$_POST['Amenity']}', '{$begin_sqltime}', '{$end_sqltime}')";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 		echo "Announcement saved.<br />";
 	else
@@ -298,12 +313,12 @@ switch ($_POST["function"])
 					  $_POST['StartHour'], $_POST['StartMinute']);
 	$end_sqltime = assembleDateTime($_POST['EndMonth'], $_POST['EndDay'], $_POST['EndYear'],
 					  $_POST['EndHour'], $_POST['EndMinute']);
-	$_POST['Description'] = replaceDoubleQuotes(mysql_real_escape_string($_POST['Description']));
-	$_POST['Subject'] = replaceDoubleQuotes(mysql_real_escape_string($_POST['Subject']));
+	$_POST['Description'] = replaceDoubleQuotes(mysqli_real_escape_string($con, $_POST['Description']));
+	$_POST['Subject'] = replaceDoubleQuotes(mysqli_real_escape_string($con, $_POST['Subject']));
 	$querystring = "UPDATE Events SET Text='{$_POST['Text']}', Icon='{$_POST['Icon']}', Description='{$_POST['Description']}', Amenity='{$_POST['Amenity']}',
 			 StartTime='{$begin_sqltime}', EndTime='{$end_sqltime}' WHERE Idx='{$_POST['Idx']}'";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 		echo "Announcement saved.<br />";
 	else
@@ -318,7 +333,7 @@ switch ($_POST["function"])
   case "delete":
 	$querystring = "DELETE FROM Events WHERE Idx={$_POST['Idx']}";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 		echo "Event #{$_POST["Idx"]} deleted.<br />";
 	else
@@ -368,9 +383,9 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	    debugText("Using Saved Query:" . $querystring);
 	}
 	echo "<script>document.forms['recordinput'].elements['SavedQuery'].value = \"{$querystring}\";</script>";
-	$result = mysql_query($querystring, $con); 
+	$result = mysqli_query($con, $querystring); 
 	$results=0;
-	while ( $row = mysql_fetch_array( $result ) )
+	while ( $row = mysqli_fetch_array( $result ) )
 	{
 	    $startTime = parseTime($row['StartTime']);
 	    $endTime = parseTime($row['EndTime']);
@@ -411,7 +426,11 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	    echo "<td>" . $endTime['Month'] . "/" . $endTime['Day'] . "/";
 	    echo $endTime['Year'] . " " . displayTime($endTime['Hour'], $endTime['Minute']) . "</td>";
             echo "<td>{$row['CreatedBy']}</td>";
-            echo "<td>{$amenities[$row['Amenity']]}</td>";
+            echo "<td>";
+            if ($row['Amenity'] != 0) {
+				echo $amenities[$row['Amenity']];
+            }
+            echo "</td>";
             echo "<td><a href='#top' onclick=\"fillInForm(5, [['Idx', '{$row['Idx']}'], ['Text', '{$row['Text']}']]);\">X</a></tr>";
 	    $results++;
 	}
