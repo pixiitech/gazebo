@@ -19,9 +19,10 @@ a.calendar,a:visited.calendar,span.calendar
 {
 display:block;
 font-weight:bold;
-font-size:0.8em;
-color:{$colors["text-color"]};
-background-color:{$colors["table-background-color"]};
+font-size:0.8em;";
+// color:{$colors["text-color"]};
+// background-color:{$colors["table-background-color"]};
+echo "
 text-align:center;
 padding:2px;
 }
@@ -30,9 +31,10 @@ a:hover.calendar,a:active.calendar,a.calendar-selected
 {
 display:block;
 font-weight:bold;
-font-size:0.8em;
-color:{$colors["link-lbox-color"]};
-background-color:{$colors["link-lbox-hover-bgcolor"]};
+font-size:0.8em;";
+// color:{$colors["link-lbox-color"]};
+// background-color:{$colors["link-lbox-hover-bgcolor"]};
+echo "
 text-align:center;
 padding:2px;
 }

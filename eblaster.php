@@ -139,7 +139,7 @@ $querystring = "SELECT Residents.FirstName, Residents.LastName, Residents.FirstN
 
 //Perform query and display list
 debugText( $querystring );
-$result = mysql_query($querystring, $con);
+$result = mysqli_query($con, $querystring);
 
 echo "<form name='mailer' method='post' action='" . pageLink($pagename, "postid={$_GET['postid']}") . "'>";
 if ( $cms == "wp" ) {
@@ -155,7 +155,7 @@ echo "</th><th><b>Name</b></th><th><b>Unit #</b></th><th><b>Email</b></th></tr><
 echo "<tbody>";
 $tally = 1;
 //Pull resident email addresses
-while ( $row = mysql_fetch_array($result) ) {
+while ( $row = mysqli_fetch_array($result) ) {
     if (( $row['Email'] != "" ) && ( $row['Email'] != NULL )) {
         echo "<tr><td><input type='checkbox' class='recipient' name='selected-{$tally}' checked='checked' /></td>";
 	$name = displayName($row['FirstName'], $row['LastName'], $ucase, $lastfirst);

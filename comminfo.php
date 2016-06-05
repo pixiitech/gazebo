@@ -19,18 +19,18 @@ function SetChangedFlag()
 require 'authcheck.php';
 
 $querystring = "SELECT * FROM Settings WHERE Type = 'Community'";
-$result = mysql_query($querystring, $con);
+$result = mysqli_query($con, $querystring);
 
-if ( $_POST['changed'] == 'yes' )
+if ( isset($_POST['changed']) && $_POST['changed'] == 'yes' )
 {
-    while ( $row = mysql_fetch_array($result) )
+    while ( $row = mysqli_fetch_array($result) )
     {
-	if (( $row['Name'] == 'Logo' ) && ( $row['Name'] == 'Idx' ))
+	if (( $row['Name'] == 'Logo' ) || ( $row['Name'] == 'Idx' ))
 	    continue;
         if ( $_POST[$row['Name']] != $row['Value'] )
         {
 	    $querystring2 = "UPDATE Settings SET Value = '{$_POST[$row['Name']]}' WHERE Name = '{$row['Name']}'";
-            $result2 = mysql_query($querystring2, $con);
+            $result2 = mysqli_query($con, $querystring2);
 	    debugText($querystring2);
             if ($result2)
                 echo $row['Name'] . " updated.<br />";
@@ -39,15 +39,15 @@ if ( $_POST['changed'] == 'yes' )
 }
 
 $querystring = "SELECT * FROM Settings WHERE Type = 'Community'";
-$result = mysql_query($querystring, $con);
+$result = mysqli_query($con, $querystring);
 
 echo "<form name='recordinput' method='post' action='" . pageLink("comminfo") . "'>";
 echo "<input type='hidden' name='changed' />";
 echo "<p class='center'><table><tbody>";
-while ( $row = mysql_fetch_array($result) )
+while ( $row = mysqli_fetch_array($result) )
 {
     if ( $row['Name'] == 'Logo' ) {
-	continue;
+    	continue;
     }
     echo "<tr><td>{$row['Description']}&nbsp;</td><td>";
 

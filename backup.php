@@ -9,12 +9,6 @@ require 'gazebo-header.php';
 
 <?php
 require 'authcheck.php';
-/*set_error_handler("customError"); 
-function customError($errno, $errstr, $errfile, $errline) {
-  echo "<b>Error - </b> <i>{$errfile}, {$errline}:</i> [{$errno}] {$errstr}<br>";
-  echo "Ending Script";
-  die();
-} */
 
 if ( !isset($_POST['format'])) {
     $_POST['format'] = '';

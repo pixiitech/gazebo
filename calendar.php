@@ -1,7 +1,7 @@
 <?php 
 $pagename = "calendar";
 require 'gazebo-header.php'; 
-include 'style-calendar.php';
+// include 'style-calendar.php';
 ?>
 
 <?php
@@ -18,10 +18,12 @@ else
 require 'authcheck.php';
 
 /* Declarations */
+
 if (!isset($_POST["SelectMonth"]))
 {
    $_POST["SelectMonth"] = date("m");
    $_POST["SelectYear"] = date("y");
+   $_POST["SelectDay"] = date("d");
 }
 $dayonestring = strtotime($_POST["SelectMonth"] . '/01/' . $_POST["SelectYear"]);
 $datestring = strtotime($_POST["SelectMonth"] . '/'. $_POST["SelectDay"] .'/' . $_POST["SelectYear"]);
@@ -34,8 +36,8 @@ $monthname = date("F", $dayonestring);
 /* Create, update and delete calendar events */
 if (isset($_POST["function"]))
 {
-    $_POST['Text'] = replaceDoubleQuotes(mysql_real_escape_string($_POST['Text']));
-    $_POST['Description'] = replaceDoubleQuotes(mysql_real_escape_string($_POST['Description']));
+    $_POST['Text'] = replaceDoubleQuotes(mysqli_real_escape_string($con, $_POST['Text']));
+    $_POST['Description'] = replaceDoubleQuotes(mysqli_real_escape_string($con, $_POST['Description']));
     $curtime = getdate();
     $sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " . 
 		$curtime['hours'] . ":" . $curtime['minutes'] . ":" . $curtime['seconds'];
@@ -53,7 +55,7 @@ if (isset($_POST["function"]))
 	    $querystring = "INSERT INTO Events (TimeCreated, CreatedBy, Text, Icon, StartTime, EndTime, Description, Amenity) VALUES ";
 	    $querystring .= "('{$sqltime}', '{$_SESSION['Username']}', '{$_POST['Text']}', '{$_POST['Icon']}', ";
 	    $querystring .= "'{$sqlstarttime}', '{$sqlendtime}', '{$_POST['Description']}', '{$_POST['Amenity']}')";
-	    $result = mysql_query($querystring, $con);
+	    $result = mysqli_query($con, $querystring);
 	    debugText($querystring);
 	    if ($result)
 	        echo "Event created.";
@@ -64,7 +66,7 @@ if (isset($_POST["function"]))
 	    $querystring = "UPDATE Events SET Text='{$_POST['Text']}', Description='{$_POST['Description']}', ";
 	    $querystring .= "Icon='{$_POST['Icon']}', Amenity='{$_POST['Amenity']}', StartTime='{$sqlstarttime}', ";
 	    $querystring .= "EndTime='{$sqlendtime}' WHERE Idx={$_POST['Idx']}";
-	    $result = mysql_query($querystring, $con);
+	    $result = mysqli_query($con, $querystring);
 	    debugText($querystring);
 	    if ($result)
 	        echo "Event updated.";
@@ -73,7 +75,7 @@ if (isset($_POST["function"]))
 	    break;
 	case 'delete':
 	    $querystring = "DELETE FROM Events WHERE Idx={$_POST['Idx']}";
-	    $result = mysql_query($querystring, $con);
+	    $result = mysqli_query($con, $querystring);
 	    debugText($querystring);
 	    if ($result)
 	        echo "Event deleted.";
@@ -85,9 +87,9 @@ if (isset($_POST["function"]))
 
 /* Retrieve Amenities List */
 $querystring = "SELECT * FROM Amenities ORDER BY Idx";
-$result = mysql_query($querystring, $con);
+$result = mysqli_query($con, $querystring);
 $amenities = array();
-while ( $row = mysql_fetch_array($result) )
+while ( $row = mysqli_fetch_array($result) )
     $amenities[$row['Idx']] = $row['Name'];
 
 /* Retrieve events for selected month */ 
@@ -204,7 +206,7 @@ else
     echo "</div>";
 }
 echo "<div style='text-align:center'>";
-echo "<br />Reserved Amenity:<br /><select name='Amenity' disabled=true style='font-size:100%'><option value='None'>None</option>";
+echo "<br />Reserved Amenity:<br /><select name='Amenity' disabled=true style='font-size:100%'><option value='0'>None</option>";
 for ( $i = 1; $i <= count($amenities); $i++ )
     echo "<option value='{$i}'>{$amenities[$i]}</option>";
 echo "</select>";
@@ -279,9 +281,9 @@ for ( $week = 1; $week < 7; $week++ )
 	    echo "<span class='calendarday'>{$day}</span>";
 	    if ( $_SESSION['Level'] >= $editlevel )
 		echo "</a>";
-	    $result = mysql_query($querystring, $con);
+	    $result = mysqli_query($con, $querystring);
 	    echo "<table border='0' style='text-align:center'><tr>";
-	    while ( $row = mysql_fetch_array($result) )
+	    while ( $row = mysqli_fetch_array($result) )
 	    {
 		$eventday = intval( substr( $row['StartTime'], 8, 2 ));
 	        if ( $eventday == $day )
@@ -347,8 +349,8 @@ for ( $week = 1; $week < 7; $week++ )
 			echo "document.getElementById('Time').hidden = false;
 				document.getElementById('Time').innerHTML = '{$timestring}';";
 		    }
-		    $description = mysql_real_escape_string($row['Description']);
-		    $text = mysql_real_escape_string($row['Text']);
+		    $description = mysqli_real_escape_string($con, $row['Description']);
+		    $text = mysqli_real_escape_string($con, $row['Text']);
 		    echo "document.forms['calendar'].elements['Text'].value = '{$text}';
 				document.forms['calendar'].elements['Description'].value = '{$description}';
 		    		document.forms['calendar'].elements['SelectDay'].value = '{$eventday}';
