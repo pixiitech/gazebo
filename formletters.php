@@ -94,7 +94,7 @@ if ( isset( $_POST['elm1'] ) )
 	debugText($querystring);
         $_POST['formlist'] = $_POST['Title'];
         $buffer = $_POST['elm1'];
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result ) {
 	    echo "Form <i>{$_POST['Title']}</i> created.<br />";
 	}
@@ -107,7 +107,7 @@ if ( isset( $_POST['elm1'] ) )
 	$querystring .= $_POST['elm1'];
 	$querystring .= "\", Type = {$_POST['Type']}, Email = \"{$_POST['Email']}\" WHERE Idx = {$_POST['Idx']}";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result ) {
 	    echo "Form <i>{$_POST['Title']}</i> updated..<br />";
 	}
@@ -118,8 +118,8 @@ if ( isset( $_POST['elm1'] ) )
     }
     $querystring = "SELECT Idx From Forms WHERE Title = '{$_POST['Title']}'";
     debugText($querystring);
-    $result = mysql_query($querystring, $con);
-    $row = mysql_fetch_array($result);
+    $result = mysqli_query($con, $querystring);
+    $row = mysqli_fetch_array($result);
     $_POST['fn'] = "load";
     $_POST['formlist'] = $row['Idx'];
 }
@@ -136,7 +136,7 @@ switch ( $_POST['fn'] )
     {
 	$querystring = "DELETE FROM Forms WHERE Idx = {$_POST['formlist']}";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result ) {
 	    echo "Form <i>" . $_POST['formlist'] . "</i> deleted successfully.<br />";
 	}
@@ -149,8 +149,8 @@ switch ( $_POST['fn'] )
     {
 	$querystring = "SELECT * FROM Forms WHERE Idx = {$_POST['formlist']}";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
-	if ( $row = mysql_fetch_array($result) ) {
+	$result = mysqli_query($con, $querystring);
+	if ( $row = mysqli_fetch_array($result) ) {
 		$type = $row['Type'];
 		$title = $row['Title'];
 		$buffer = $row['Text'];
@@ -181,8 +181,8 @@ echo "<select name='formlist' size='12' required='required'>
 /* Load list of forms */
 
 $querystring = "SELECT Idx, Title FROM Forms";
-$result = mysql_query($querystring);
-while ( $row = mysql_fetch_array($result) ) {
+$result = mysqli_query($con, $querystring);
+while ( $row = mysqli_fetch_array($result) ) {
     echo "<option value='{$row['Idx']}' onclick='document.forms[\"formletter\"].elements[\"fn_load\"].checked=true;'
 				   ondblclick='document.forms[\"formletter\"].submit();'";
     if ( $row['Idx'] == $_POST['formlist'] ) {
@@ -226,19 +226,19 @@ echo "<b>Insert Static Fields:</b><br />
 
 $querystring = "SHOW COLUMNS FROM Properties";
 debugText($querystring);
-$result = mysql_query($querystring, $con);
-while ( $row = mysql_fetch_array($result) )
+$result = mysqli_query($con, $querystring);
+while ( $row = mysqli_fetch_array($result) )
     echo "<option value=\"Properties:{$row['Field']}\" ondblclick=\"document.forms['tagger'].elements['add'].click();\">Properties:{$row['Field']}</option>";
 $querystring = "SHOW COLUMNS FROM Residents";
 debugText($querystring);
-$result = mysql_query($querystring, $con);
-while ( $row = mysql_fetch_array($result) )
+$result = mysqli_query($con, $querystring);
+while ( $row = mysqli_fetch_array($result) )
     echo "<option value=\"Residents:{$row['Field']}\" ondblclick=\"document.forms['tagger'].elements['add'].click();\">Residents:{$row['Field']}</option>";
 
 /*$querystring = "SHOW COLUMNS FROM Violations";
 debugText($querystring);
-$result = mysql_query($querystring, $con);
-while ( $row = mysql_fetch_array($result) )
+$result = mysqli_query($con, $querystring);
+while ( $row = mysqli_fetch_array($result) )
     echo "<option value=\"Violations:{$row['Field']}\">Violations:{$row['Field']}</option>";
 */
 echo "</select><br /><button name='add' value='Add' id='add' onclick=\"tinyMCE.execCommand('mceInsertContent',false, '{' + document.forms['tagger'].elements['columnlist'].options.item(document.forms['tagger'].elements['columnlist'].selectedIndex).value + '}'); return false;\">Add Code</button>";

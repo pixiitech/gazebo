@@ -12,8 +12,8 @@ function do_processform($formname, $dbconnector) {
     // Load form from database
     include_once "style-gazebo.php";
     $querystring = "SELECT * FROM Forms WHERE Title = '{$formname}'";
-    $result = mysql_query($querystring, $dbconnector);
-    $row = mysql_fetch_array($result);
+    $result = mysqli_query($dbconnector, $querystring);
+    $row = mysqli_fetch_array($result);
     $formtext = $row['Text'];
     $formheader = "<form name='gazeboform' method='post' action='" . htmlspecialchars($_SERVER[REQUEST_URI]) . "'>";
     $formheader .= "<input type='hidden' name='submitted' value='yes' />";
@@ -51,8 +51,8 @@ function do_processform($formname, $dbconnector) {
 	    }
 	}
 	if ( isset($querystring2) ) {
-	    $result2 = mysql_query($querystring2, $dbconnector);
-	    $row2 = mysql_fetch_array($result2);
+	    $result2 = mysqli_query($dbconnector, $querystring2);
+	    $row2 = mysqli_fetch_array($result2);
 	    $buffer .= "<span class='formentry'>" . $row2[$fieldname] . "</span>";
 	}
 	$start2 = $loc5 + 1;

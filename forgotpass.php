@@ -25,8 +25,8 @@ if ( isset( $_POST['Username'] ))
 		if ( strstr($entry, '@') )    //Entry is an email
 		{	
 		    $querystring = "SELECT Residents.Email, Login.Username FROM Login, Residents WHERE LOWER(Residents.Email) = '{$entry}' AND Login.Residx = Residents.Idx";
-		    $result = mysql_query($querystring, $con);
-		    $row = mysql_fetch_array($result);
+		    $result = mysqli_query($con, $querystring);
+		    $row = mysqli_fetch_array($result);
 		    if ( !$row )
 		        echo "<div style='color:#FF0000'>Email is not registered in the system.</div>";
 		    else
@@ -42,8 +42,8 @@ if ( isset( $_POST['Username'] ))
 		    else
 		    {
 		        $querystring = "SELECT Residents.Email, Login.Username FROM Login, Residents WHERE LOWER(Login.Username) = '{$entry}' AND Login.Residx = Residents.Idx";
-		        $result = mysql_query($querystring, $con);
-		        $row = mysql_fetch_array($result);
+		        $result = mysqli_query($con, $querystring);
+		        $row = mysqli_fetch_array($result);
 			if ( !$row )
 		            echo "<div style='color:#FF0000'>Username does not have an email registered - please contact management.</div>";
 		        else
@@ -57,13 +57,13 @@ if ( isset( $_POST['Username'] ))
 	if ( isset( $email ))
 	{
 	    //Create a hashed token against current date, a random number and salt
-	    $token = mysql_real_escape_string(crypt(date() . mt_rand(10,100), $encryption_salt));
+	    $token = mysqli_real_escape_string($con, crypt(date() . mt_rand(10,100), $encryption_salt));
 
 	    //Set user's token and expiration date in Login
 	
 	    $querystring = "UPDATE Login SET ResetToken = '{$token}', ResetTokenExpires = DATE_ADD(NOW(), INTERVAL 1 DAY) WHERE Username = '{$username}'";
 
-	    $result = mysql_query($querystring, $con);
+	    $result = mysqli_query($con, $querystring);
 	    if ( $result )
 		echo "Reset token saved.<br />";
 	    else

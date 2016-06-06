@@ -89,15 +89,15 @@ if ( isset($_GET['updateStatus']) && ($_GET['updateStatus'] == 'Yes'))
 {
     $querystring = "SELECT ActionLog, ActionStatus FROM Violations WHERE Idx = {$_GET['violationidx']}";
     debugText($querystring);
-    $result = mysql_query($querystring, $con);
-    $row = mysql_fetch_array($result);
+    $result = mysqli_query($con, $querystring);
+    $row = mysqli_fetch_array($result);
     $newstatus = $row['ActionStatus'] + 1;
     $datetime = date('m/d/y G:i');
     $newlog = $row['ActionLog'] . "User " . $_SESSION['Username'] . " printed letter: " . $_GET['letter'] . " on " . $datetime . "\n\r";
-    $newlog = mysql_real_escape_string($newlog);
+    $newlog = mysqli_real_escape_string($con, $newlog);
     $querystring = "UPDATE Violations SET ActionStatus = {$newstatus}, ActionLog = '{$newlog}' WHERE Idx={$_GET['violationidx']}";
     debugText($querystring);
-    $result = mysql_query($querystring, $con);
+    $result = mysqli_query($con, $querystring);
     if ($result)
 	echo "Violation #" . $_GET['violationidx'] . " action status updated.<br />";
     else
@@ -129,8 +129,8 @@ if ( isset($_GET['letter']) )
 	//Retrieve Unit number and Resident index
 	$querystring = "SELECT Residx FROM Properties WHERE PIUnit={$_GET['unitidx']}";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($con, $querystring);
+	$row = mysqli_fetch_array($result);
 	$residx = $row['Residx'];
 
 	$file=fopen($formdir . $_GET['letter'] . ".html", "r") or die("Unable to open file " . $_GET['letter'] . "html");
@@ -165,10 +165,10 @@ if ( isset($_GET['letter']) )
 		}
 		if ( strpos($text, 'Properties') == $pos + 1 )
 		{
-		    $querystring = "SELECT * FROM Properties WHERE PIUnit='{$_GET['unitidx']}'";
+		    $querystring = "SELECT * FROM Properties WHERE Unit='{$_GET['unitidx']}'";
 		    debugText($querystring);
-		    $result = mysql_query($querystring, $con);
-		    $row = mysql_fetch_array($result);
+		    $result = mysqli_query($con, $querystring);
+		    $row = mysqli_fetch_array($result);
 		    $endpos = strpos($text, '}');
 		    $field = substr($text, $pos + 12, $endpos - $pos - 12);
 		    if ( $field == 'Subdivision' )
@@ -183,8 +183,8 @@ if ( isset($_GET['letter']) )
 		{
 		    $querystring = "SELECT * FROM Residents WHERE Idx='{$residx}'";
 		    debugText($querystring);
-		    $result = mysql_query($querystring, $con);
-		    $row = mysql_fetch_array($result);
+		    $result = mysqli_query($con, $querystring);
+		    $row = mysqli_fetch_array($result);
 		    $endpos = strpos($text, '}');
 		    $field = substr($text, $pos + 11, $endpos - $pos - 11);
 		    $val = $row[$field];
@@ -196,8 +196,8 @@ if ( isset($_GET['letter']) )
 		{
 		    $querystring = "SELECT * FROM Violations WHERE Idx='{$_GET['violationidx']}'";
 		    debugText($querystring);
-		    $result = mysql_query($querystring, $con);
-		    $row = mysql_fetch_array($result);
+		    $result = mysqli_query($con, $querystring);
+		    $row = mysqli_fetch_array($result);
 		    $endpos = strpos($text, '}');
 		    $field = substr($text, $pos + 12, $endpos - $pos - 12);
 		    $val = $row[$field];
@@ -209,8 +209,8 @@ if ( isset($_GET['letter']) )
 		{
 		    $querystring = "SELECT * FROM CommunityInfo WHERE Idx=0";
 		    debugText($querystring);
-		    $result = mysql_query($querystring, $con);
-		    $row = mysql_fetch_array($result);
+		    $result = mysqli_query($con, $querystring);
+		    $row = mysqli_fetch_array($result);
 		    $endpos = strpos($text, '}');
 		    $field = substr($text, $pos + 15, $endpos - $pos - 15);
 		    $val = $row[$field];
