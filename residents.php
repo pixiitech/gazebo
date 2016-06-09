@@ -242,13 +242,16 @@ else {
 function errorMessage($msg, $fn)
 {
 	  global $fields;
-    echo "<script>fillInForm({$fn}, [";
+    echo "<script>";
+    echo "document.getElementById('flasherror').innerHTML = '{$msg}';"
+    echo "fillInForm({$fn}, [";
     foreach($fields as $key => $value) {
     	echo "['{$key}', '{$_POST[$key]}'],";
     }
 		echo "]);</script>";
     echo "<br />";
 }
+echo "<span name='flasherror' id='flasherror' class='flasherror'></span>";
 echo "<form name='recordinput' method='post' action='" . pageLink("residents") . "' enctype='multipart/form-data' ><p class='center'>
 <input type='hidden' name='MAX_FILE_SIZE' value='{$max_upload_size}' />
 <input type='hidden' id='Idx' size='2' name='Idx' hidden='hidden' />
