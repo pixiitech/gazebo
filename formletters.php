@@ -9,6 +9,9 @@ foreach(['fn', 'formlist'] as $key) {
 }
 $Idx = "";
 $type = "";
+$title = "";
+$buffer = "";
+$email = "";
 ?>
 <title>
 Form Letters
