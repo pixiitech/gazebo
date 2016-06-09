@@ -598,7 +598,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	    $querystring .= ", Properties";
 	}
 	$querystring .= " WHERE 1=1";
-	if ( $_POST['Idx'] != "" ) {
+	if (( $_POST['Idx'] != "" ) && ( $_POST['Idx'] != 0 )) {
 		$querystring .= " AND Residents.Idx = " . intval($_POST['Idx']);
 	}
 	if ( $_POST['Type'] == "Owner" ) {
