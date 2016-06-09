@@ -438,6 +438,7 @@ if ( !isset($_POST["function"]) ) {
 }
 
 //Prepare data
+debugText("Preparing Data...");
 foreach($fields as $key => $value) {
 	if ($value[2]) { //Publish fields
 		if ( !isset($_POST[$key]) ) {
@@ -474,6 +475,7 @@ switch ( $_POST['function']) {
 	}
 
 	//Save SQL Record
+	debugText("Assembling querystring");
 	$querystring = "UPDATE Residents SET ";
 	foreach($fields as $key => $value) {
 		if ($key == 'Type') {
