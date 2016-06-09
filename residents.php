@@ -241,6 +241,7 @@ else {
 
 function errorMessage($msg, $fn)
 {
+	  global $fields;
     echo "<script>fillInForm({$fn}, [";
     foreach($fields as $key => $value) {
     	echo "['{$key}', '{$_POST[$key]}'],";
@@ -463,6 +464,7 @@ debugText("Begin switch...");
 //Update, Insert or Delete
 switch ( $_POST['function']) {
   case 'update':
+    debugText("POST IDX={$_POST["Idx"]}");
 		if (( $_POST["Idx"] == "" ) || !(is_numeric( $_POST["Idx"] )) )
 		{
 		  errorMessage( "Please specify a valid numeric index.", 4);
