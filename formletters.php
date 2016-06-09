@@ -7,6 +7,8 @@ foreach(['fn', 'formlist'] as $key) {
         $_POST[$key] = "";
     }
 }
+$Idx = "";
+$type = "";
 ?>
 <title>
 Form Letters
