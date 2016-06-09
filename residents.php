@@ -47,6 +47,9 @@ foreach($fields as $key => $value) {
 	if (!isset($_POST[$key])) {
 		$_POST[$key] = "";
 	}
+	if (($key == "Idx") && ($_POST[$key] == 0)) {
+		$_POST[$key] = "";
+	} 
 }
 ?>
 
@@ -455,6 +458,9 @@ foreach($fields as $key => $value) {
     		$_POST[$key] = contradict($_POST[$key]);
 		}
 	}
+	if ($key == "Idx") {
+		$_POST[$key] = intval($_POST[$key]);
+	}
 	// Mysql escape all fields
 	$_POST[$key] = mysqli_real_escape_string($con, $_POST[$key]);
 }
@@ -468,7 +474,7 @@ debugText("Begin switch...");
 switch ( $_POST['function']) {
   case 'update':
     debugText("POST IDX={$_POST["Idx"]}");
-		if (( $_POST["Idx"] == "" ) || !(is_numeric( intval($_POST["Idx"]) )) )
+		if (( $_POST["Idx"] == "" ) || !(is_numeric( $_POST["Idx"] )) )
 		{
 		  errorMessage( "Please specify a valid numeric index.", 4);
 		  break;
@@ -483,10 +489,6 @@ switch ( $_POST['function']) {
 		debugText("Assembling querystring");
 		$querystring = "UPDATE Residents SET ";
 		foreach($fields as $key => $value) {
-			if ($key == 'Idx') {
-				$idx = intval($_POST['Idx']);
-				$querystring .= "Idx={$idx}, ";
-			}
 			if ($key == 'Type') {
 				$querystring .= "Type={$type}, ";
 			}
