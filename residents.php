@@ -440,7 +440,7 @@ if ( !isset($_POST["function"]) ) {
 //Prepare data
 debugText("Preparing Data...");
 foreach($fields as $key => $value) {
-	if ($value[2]) { //Publish fields
+	if (isset($value[2]) && $value[2]) { //Publish fields
 		if ( !isset($_POST[$key]) ) {
 			$_POST[$key] = '0';
 		}
@@ -454,12 +454,12 @@ foreach($fields as $key => $value) {
 	// Mysql escape all fields
 	$_POST[$key] = mysqli_real_escape_string($con, $_POST[$key]);
 }
-
+debugText("Finished preparing data");
 if ( $_POST['Type'] == "Owner" )
     $type = 0;
 else if ( $_POST['Type'] == "Tenant" )
     $type = 1;
-
+debugText("Begin switch...");
 //Update, Insert or Delete
 switch ( $_POST['function']) {
     case 'update':
