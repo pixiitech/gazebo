@@ -455,9 +455,6 @@ foreach($fields as $key => $value) {
     		$_POST[$key] = contradict($_POST[$key]);
 		}
 	}
-	if ($key == "Idx") {
-		$_POST[$key] = intval($_POST[$key]);
-	}
 	// Mysql escape all fields
 	$_POST[$key] = mysqli_real_escape_string($con, $_POST[$key]);
 }
@@ -486,6 +483,9 @@ switch ( $_POST['function']) {
 		debugText("Assembling querystring");
 		$querystring = "UPDATE Residents SET ";
 		foreach($fields as $key => $value) {
+			if ($key == 'Idx') {
+				$querystring .= "Idx={intval($_POST['Idx'])}, ";
+			}
 			if ($key == 'Type') {
 				$querystring .= "Type={$type}, ";
 			}
