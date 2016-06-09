@@ -2,7 +2,7 @@
 $pagename = "formletters";
 require 'gazebo-header.php';
 
-foreach(['fn'] as $key) {
+foreach(['fn', 'formlist'] as $key) {
     if (!isset($_POST[$key])) {
         $_POST[$key] = "";
     }
