@@ -1,8 +1,13 @@
 <?php 
 $pagename = "formletters";
 require 'gazebo-header.php';
-?>
 
+foreach(['fn'] as $key) {
+    if (!isset($_POST[$key])) {
+        $_POST[$key] = "";
+    }
+}
+?>
 <title>
 Form Letters
 </title>
