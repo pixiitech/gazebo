@@ -13,7 +13,7 @@ $type = 0;
 //					1 - searchability (null or an array of field names that are searched when processed),
 //					2 - publish (true=field is a publish boolean field)]
 $fields = [
-	// "Idx" => ["PublishName", null, false],
+	"Idx" => ["PublishName", null, false],
 	"FirstName" => ["PublishName", ["FirstName", "FirstName2"], false],
 	"LastName" => ["PublishName", ["LastName", "LastName2"], false],
 	"FirstName2" => ["PublishName", null, false],
@@ -462,111 +462,117 @@ else if ( $_POST['Type'] == "Tenant" )
 debugText("Begin switch...");
 //Update, Insert or Delete
 switch ( $_POST['function']) {
-    case 'update':
-	if (( $_POST["Idx"] == "" ) || !(is_numeric( $_POST["Idx"] )) )
-	{
-	  errorMessage( "Please specify a valid numeric index.", 4);
-	  break;
-	}
-	if (( trim($_POST["FirstName"]) == "" ) && ( trim($_POST["LastName"]) == "" ))
-	{
-	  errorMessage("Please specify a resident name.", 4);
-	  break;
-	}
-
-	//Save SQL Record
-	debugText("Assembling querystring");
-	$querystring = "UPDATE Residents SET ";
-	foreach($fields as $key => $value) {
-		if ($key == 'Type') {
-			$querystring .= "Type={$type}, ";
+  case 'update':
+		if (( $_POST["Idx"] == "" ) || !(is_numeric( $_POST["Idx"] )) )
+		{
+		  errorMessage( "Please specify a valid numeric index.", 4);
+		  break;
 		}
-		else
-		  $querystring .= "{$key}='{$_POST[$key]}', ";
-	}
-	$querystring = substr($querystring, 0, strlen($querystring) - 2); //Chop off last comma space
-	$querystring .= "	WHERE Idx={$_POST['Idx']}";
-	debugText($querystring);
-	$result = mysqli_query($con, $querystring);
-	if ( $result )
-		echo "Resident {$_POST['FirstName']} {$_POST['LastName']} updated.<br />";
-	else
-	{
-		errorMessage("Resident {$_POST['FirstName']} {$_POST['LastName']} failed to update.<br />", 4);
-	  	break;
-	}
-	$_GET['Idx'] = $_POST['Idx'];
-	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
-	break;
-
-    case "insert":
-	if (( trim($_POST["FirstName"]) == "" ) && ( trim($_POST["LastName"]) == "" ))
-	{
-	  errorMessage("Please specify a resident name.", 3);
-	  break;
-	}
-
-	//Save SQL Record
-	$querystring = "INSERT INTO Residents (";
-	foreach($fields as $key => $value) {
-		$querystring .= $key . ", ";
-	}
-	$querystring = substr($querystring, 0, strlen($querystring) - 2); //Chop off last comma space
-	$querystring .= ") VALUES (";
-	foreach($fields as $key => $value) {
-		if ($key == "Type") {
-		  $querystring .= "'{$type}', ";
+		if (( trim($_POST["FirstName"]) == "" ) && ( trim($_POST["LastName"]) == "" ))
+		{
+		  errorMessage("Please specify a resident name.", 4);
+		  break;
 		}
+
+		//Save SQL Record
+		debugText("Assembling querystring");
+		$querystring = "UPDATE Residents SET ";
+		foreach($fields as $key => $value) {
+			if ($key == 'Type') {
+				$querystring .= "Type={$type}, ";
+			}
+			else
+			  $querystring .= "{$key}='{$_POST[$key]}', ";
+		}
+		$querystring = substr($querystring, 0, strlen($querystring) - 2); //Chop off last comma space
+		$querystring .= "	WHERE Idx={$_POST['Idx']}";
+		debugText($querystring);
+		$result = mysqli_query($con, $querystring);
+		if ( $result )
+			echo "Resident {$_POST['FirstName']} {$_POST['LastName']} updated.<br />";
 		else
-		  $querystring .= "'{$_POST[$key]}', ";
-	}	
-	$querystring = substr($querystring, 0, strlen($querystring) - 2); //Chop off last comma space
-	$querystring .= ")";
-	debugText($querystring);
-	$result = mysqli_query($con, $querystring);
-	if ( !$result )
-	{
-		errorMessage("Resident {$_POST['FirstName']} {$_POST['LastName']} failed to save.<br />", 3);
-	 	break;
-        }
-	else
-	{
-	    $querystring = "SELECT Idx FROM Residents WHERE FirstName='{$_POST['FirstName']}' AND LastName='{$_POST['LastName']}'";
-	    debugText($querystring);
-	    $result = mysqli_query($con, $querystring);
-	    $row = mysqli_fetch_array($result);
-	    echo "Resident {$_POST['FirstName']} {$_POST['LastName']} saved. Idx={$row['Idx']}<br />";
-	}
-	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
-	break;
+		{
+			errorMessage("Resident {$_POST['FirstName']} {$_POST['LastName']} failed to update.<br />", 4);
+		  	break;
+		}
+		$_GET['Idx'] = $_POST['Idx'];
+		$_POST['function'] = 'search';
+		$useSavedQuery = 'yes';
+		break;
 
-    case "delete":
-	if (( $_POST["Idx"] == "" ) || !(is_numeric( $_POST["Idx"] )))
-	{
-	  errorMessage("Please specify a valid resident index.", 5);
+  case "insert":
+		if (( trim($_POST["FirstName"]) == "" ) && ( trim($_POST["LastName"]) == "" ))
+		{
+		  errorMessage("Please specify a resident name.", 3);
+		  break;
+		}
+
+		//Save SQL Record
+		$querystring = "INSERT INTO Residents (";
+		foreach($fields as $key => $value) {
+			if ($key == "Idx") {
+				continue;
+			}
+			$querystring .= $key . ", ";
+		}
+		$querystring = substr($querystring, 0, strlen($querystring) - 2); //Chop off last comma space
+		$querystring .= ") VALUES (";
+		foreach($fields as $key => $value) {
+			if ($key == "Idx") {
+				continue;
+			}
+			else if ($key == "Type") {
+			  $querystring .= "'{$type}', ";
+			}
+			else
+			  $querystring .= "'{$_POST[$key]}', ";
+		}	
+		$querystring = substr($querystring, 0, strlen($querystring) - 2); //Chop off last comma space
+		$querystring .= ")";
+		debugText($querystring);
+		$result = mysqli_query($con, $querystring);
+		if ( !$result )
+		{
+			errorMessage("Resident {$_POST['FirstName']} {$_POST['LastName']} failed to save.<br />", 3);
+		 	break;
+	        }
+		else
+		{
+		    $querystring = "SELECT Idx FROM Residents WHERE FirstName='{$_POST['FirstName']}' AND LastName='{$_POST['LastName']}'";
+		    debugText($querystring);
+		    $result = mysqli_query($con, $querystring);
+		    $row = mysqli_fetch_array($result);
+		    echo "Resident {$_POST['FirstName']} {$_POST['LastName']} saved. Idx={$row['Idx']}<br />";
+		}
+		$_POST['function'] = 'search';
+		$useSavedQuery = 'yes';
+		break;
+
+  case "delete":
+		if (( $_POST["Idx"] == "" ) || !(is_numeric( $_POST["Idx"] )))
+		{
+		  errorMessage("Please specify a valid resident index.", 5);
+		  break;
+		}
+		if ( !(fetchResname($_POST["Idx"],$con)))
+		{
+		  errorMessage("Specified resident number does not exist.<br />", 5);
+		  break;
+		}
+		$querystring = "DELETE FROM Residents WHERE Idx={$_POST['Idx']}";
+		debugText($querystring);
+		$result = mysqli_query($con, $querystring);
+		if ( $result )
+			echo "Resident #{$_POST["Idx"]} deleted.<br />";
+		else
+			echo "Resident #{$_POST["Idx"]} failed to save.<br />";
+
+		$_POST['function'] = 'search';
+		$useSavedQuery = 'yes';
+		break;
+
+  default:
 	  break;
-	}
-	if ( !(fetchResname($_POST["Idx"],$con)))
-	{
-	  errorMessage("Specified resident number does not exist.<br />", 5);
-	  break;
-	}
-	$querystring = "DELETE FROM Residents WHERE Idx={$_POST['Idx']}";
-	debugText($querystring);
-	$result = mysqli_query($con, $querystring);
-	if ( $result )
-		echo "Resident #{$_POST["Idx"]} deleted.<br />";
-	else
-		echo "Resident #{$_POST["Idx"]} failed to save.<br />";
-
-	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
-	break;
-
-    default:
-	break;
 }
 
 //Search or List
@@ -808,7 +814,7 @@ if ( isset( $_GET['Idx'] ) && ( $_SESSION['Level'] >= $level_security ))
 		echo "Resident not found.<br />";
 	}
 	else {
-    	$autoscript = "<script>fillInForm(4, [['Idx', '{$row['Idx']}'], ";
+    	$autoscript = "<script>fillInForm(4, [";
     	foreach($fields as $key => $value) {
     		$autoscript .= "['{$key}', '{$row[$key]}'], ";
     	}
