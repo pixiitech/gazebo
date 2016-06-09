@@ -243,7 +243,7 @@ function errorMessage($msg, $fn)
 {
 	  global $fields;
     echo "<script>";
-    echo "document.getElementById('flasherror').innerHTML = '{$msg}';"
+    echo "document.getElementById('flasherror').innerHTML = '{$msg}';";
     echo "fillInForm({$fn}, [";
     foreach($fields as $key => $value) {
     	echo "['{$key}', '{$_POST[$key]}'],";
