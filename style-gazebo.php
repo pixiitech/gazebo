@@ -313,6 +313,12 @@ body, div.module
     background-color: {$colors["general-background-color"]};
     color: {$colors["text-color"]};
     font-family: {$font};
+}
+.flasherror
+{
+    background-color: #aa7777;
+    color: white;
+    border-radius: 3px;
 }";
 }
 else {
