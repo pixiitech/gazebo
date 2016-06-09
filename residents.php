@@ -4,7 +4,9 @@ $printable = true;
 require 'gazebo-header.php'; 
 
 foreach(['Idx', 'SavedQuery', 'Unit'] as $key) {
-	$_POST[$key] = "";
+	if (!isset($_POST[$key])) {
+	  $_POST[$key] = "";
+	}
 }
 $useSavedQuery = false;
 $type = 0;
@@ -47,9 +49,6 @@ foreach($fields as $key => $value) {
 	if (!isset($_POST[$key])) {
 		$_POST[$key] = "";
 	}
-	if (($key == "Idx") && ($_POST[$key] == "0")) {
-		$_POST[$key] = "";
-	} 
 }
 ?>
 
@@ -459,7 +458,7 @@ foreach($fields as $key => $value) {
 		}
 	}
 	if ($key == "Idx") {
-		$_POST[$key] = intval($_POST[$key]);
+		$_POST[$key] = intval($_POST[$]);
 	}
 	// Mysql escape all fields
 	$_POST[$key] = mysqli_real_escape_string($con, $_POST[$key]);
@@ -598,7 +597,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	    $querystring .= ", Properties";
 	}
 	$querystring .= " WHERE 1=1";
-	if (( $_POST['Idx'] != "" ) && ( $_POST['Idx'] != 0 )) {
+	if ( $_POST['Idx'] != "" ) {
 		$querystring .= " AND Residents.Idx = " . intval($_POST['Idx']);
 	}
 	if ( $_POST['Type'] == "Owner" ) {
