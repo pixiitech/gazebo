@@ -47,7 +47,7 @@ foreach($fields as $key => $value) {
 	if (!isset($_POST[$key])) {
 		$_POST[$key] = "";
 	}
-	if (($key == "Idx") && ($_POST[$key] == 0)) {
+	if (($key == "Idx") && ($_POST[$key] == "0")) {
 		$_POST[$key] = "";
 	} 
 }
