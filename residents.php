@@ -455,6 +455,9 @@ foreach($fields as $key => $value) {
     		$_POST[$key] = contradict($_POST[$key]);
 		}
 	}
+	if ($key == "Idx") {
+		$_POST[$key] = intval($_POST[$key]);
+	}
 	// Mysql escape all fields
 	$_POST[$key] = mysqli_real_escape_string($con, $_POST[$key]);
 }
