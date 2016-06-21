@@ -51,7 +51,7 @@ $result = mysqli_query($con, $querystring);
 $SubdivTypes = array();
 while ( $row = mysqli_fetch_array($result) )
     array_push($SubdivTypes, array($row['Id'], $row['Name']));
-foreach(["SavedQuery", "Resname", "Tenantname", "Unit"] as $key) {
+foreach(["SavedQuery", "Resname", "Tenantname", "Unit", "Address", "Subdivision"] as $key) {
 	if (!isset($_POST[$key])) {
 		$_POST[$key] = "";
 	}
