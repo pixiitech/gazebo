@@ -14,6 +14,7 @@ if ( isset($cms) )
     echo "<style>
 table.lbox
 {
+    width: 75%;
     text-align:center;
     height: 30px;
     margin-left:auto; 
@@ -26,7 +27,7 @@ table.lbox
 td.lbox
 {
     text-align:center;
-    padding:0px 0px 0px 0px;
+    padding:0px 5px 0px 5px;
     border-style: none;
 }
 
