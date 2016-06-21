@@ -406,7 +406,6 @@ echo "<tr><td colspan='3'><input type='submit' value='Save Changes' onclick='
  $(\"#confPassBox\").attr(\"type\", \"text\");' /></td></tr>";
 echo "</tbody></table></form>";
 debugText("<br />Current Time: " . time() .
-	  "<br />Gazebo Session Expiration: " . $_SESSION['Expiration'] .
 	  "<br />Gazebo Session Length: " . $session_expiration);
 if ( isset( $cms ) && ( $cms == "wp" )) {
 debugText("<br />Current WP User ID: " . get_current_user_id() . 
