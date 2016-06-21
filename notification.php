@@ -15,6 +15,9 @@ function SetChangedFlag()
 <?php
 require 'authcheck.php';
 
+if ( !isset($_POST['changed']) ) {
+	$_POST['changed'] = 'no';
+}
 $querystring = "SELECT * FROM Settings WHERE Type = 'Email'";
 $result = mysqli_query($con, $querystring);
 

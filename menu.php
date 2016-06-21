@@ -15,7 +15,6 @@ if ( isset($cms) )
 table.lbox
 {
 text-align:center;
-width:50%;
 height: 30px;
     margin-left:auto; 
     margin-right:auto;
