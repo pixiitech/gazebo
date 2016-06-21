@@ -47,9 +47,9 @@ function fillInForm(fn, Unit, Subdivision, Address, Resname, Residx, Tenantname,
 <?php include 'menu.php'; ?>
 <?php
 $querystring = "SELECT * FROM Subdivisions ORDER BY Id";
-$result = mysql_query($querystring, $con);
+$result = mysqli_query($con, $querystring);
 $SubdivTypes = array();
-while ( $row = mysql_fetch_array($result) )
+while ( $row = mysqli_fetch_array($result) )
     array_push($SubdivTypes, array($row['Id'], $row['Name']));
 ?>
 <h2 style="text-align:center">Properties Management</h2>
@@ -64,8 +64,8 @@ function outputSearchResult($row,$con)
     {
         $violations = 0;
 	$querystring = "SELECT Type, Time FROM Violations WHERE Unit = '{$unit}'";
-	$result = mysql_query($querystring, $con);
-	while ( $vrow = mysql_fetch_array($result) )
+	$result = mysqli_query($con, $querystring);
+	while ( $vrow = mysqli_fetch_array($result) )
 	{
 	    if ( expired( $vrow['Time'], $con ) )
 	        continue;
@@ -221,7 +221,7 @@ switch ($_POST["function"])
 	$querystring = "INSERT INTO Properties (Unit, Subdivision, Address, Residx, Tenantidx) VALUES
 			('{$_POST['Unit']}', {$_POST['Subdivision']}, '{$_POST['Address']}', {$_POST['Residx']}, {$_POST['Tenantidx']})";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 		echo "Property #{$_POST["Unit"]} saved.<br />";
 	else
@@ -262,7 +262,7 @@ switch ($_POST["function"])
 	$querystring = "UPDATE Properties SET Subdivision={$_POST['Subdivision']}, Address='{$_POST['Address']}', ";
         $querystring .= "Residx={$_POST['Residx']}, Tenantidx={$_POST['Tenantidx']} WHERE Unit='{$_POST['Unit']}'";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 		echo "Property #{$_POST["Unit"]} updated.<br />";
 	else
@@ -284,7 +284,7 @@ switch ($_POST["function"])
 	}
 	$querystring = "DELETE FROM Properties WHERE Unit='{$_POST['Unit']}'";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 		echo "Property #{$_POST["Unit"]} deleted.<br />";
 	else
@@ -335,7 +335,7 @@ if (( $_POST['function'] == 'search' ) || ( $_POST['function'] == 'list' )) {
 	    debugText("Using Saved Query:" . $querystring);
 	}
 	echo "<script>document.forms['recordinput'].elements['SavedQuery'].value = \"{$querystring}\";</script>";
-	$result = mysql_query($querystring, $con); 
+	$result = mysqli_query($con, $querystring); 
 	$k=0;
 	$results=0;
 	$violations=0;
@@ -350,7 +350,7 @@ if (( $_POST['function'] == 'search' ) || ( $_POST['function'] == 'list' )) {
 	if ( $_SESSION['Level'] >= $editlevel )
 	    echo "<th>Delete</th>";
 	echo "</tr></thead><tbody>";
-	while ( $row = mysql_fetch_array($result) )
+	while ( $row = mysqli_fetch_array($result) )
 	{
 	  	echo "<tr>";
 		$violationResult = outputSearchResult( $row, $con );

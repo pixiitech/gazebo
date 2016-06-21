@@ -22,16 +22,16 @@ else
 {
     $querystring = "SELECT * FROM Login WHERE LOWER(Username) = '{$lUsername}'";
     debugText($querystring);
-    $result1 = mysql_query($querystring, $con);
-    $row_login = mysql_fetch_array($result1);
+    $result1 = mysqli_query($con, $querystring);
+    $row_login = mysqli_fetch_array($result1);
     $residx = $row_login['Residx'];
 }
 
 /* Pull resident info */
 $querystring = "SELECT * FROM Residents WHERE Idx = '{$residx}'";
 debugText($querystring);
-$result2 = mysql_query($querystring, $con);
-$row_res = mysql_fetch_array($result2);
+$result2 = mysqli_query($con, $querystring);
+$row_res = mysqli_fetch_array($result2);
 $unitlist = fetchUnit($residx, $con);
 
 /* Update general user info, publish settings */
@@ -56,7 +56,7 @@ if ( isset($_POST['submitted']) )
         {
             $querystring = "UPDATE Residents SET Publish{$PersInfo[$i]} = 1 WHERE Idx = {$row_res['Idx']}";
             debugText($querystring);
-            $result = mysql_query($querystring, $con);
+            $result = mysqli_query($con, $querystring);
             if ( $result ) {
                 echo $PersInfo[$i] . " is now published.<br />";
 		$notifytext .= $PersInfo[$i] . " is now published in the roster.\n\r";
@@ -74,7 +74,7 @@ if ( isset($_POST['submitted']) )
         {
             $querystring = "UPDATE Residents SET Publish{$PersInfo[$i]} = 0 WHERE Idx = {$row_res['Idx']}";
             debugText($querystring);
-            $result = mysql_query($querystring, $con);
+            $result = mysqli_query($con, $querystring);
             if ( $result ) {
                 echo $PersInfo[$i] . " is now unpublished.<br />";
 		$notifytext .= $PersInfo[$i] . " is now unpublished in the roster.\n\r";
@@ -92,7 +92,7 @@ if ( isset($_POST['submitted']) )
 	    $querystring = "UPDATE Residents SET {$PersInfo[$i]} = '{$_POST[$PersInfo[$i]]}'";
 	    $querystring .= " WHERE Idx = {$row_res['Idx']}";
             debugText($querystring);
-            $result = mysql_query($querystring, $con);
+            $result = mysqli_query($con, $querystring);
             if ( $result ) {
                 echo $PersInfo[$i] . " is now changed.<br />";
 		$notifytext .= $PersInfo[$i] . " has changed to {$_POST[$PersInfo[$i]]}.\n\r";
@@ -116,8 +116,8 @@ if ( isset($_POST['submitted']) )
     //Reload user's info as it may have changed.
     $querystring = "SELECT * FROM Residents WHERE Idx = '{$residx}'";
     debugText($querystring);
-    $result2 = mysql_query($querystring, $con);
-    $row_res = mysql_fetch_array($result2);
+    $result2 = mysqli_query($con, $querystring);
+    $row_res = mysqli_fetch_array($result2);
 }
 
 /* Update password */
@@ -137,14 +137,14 @@ if ( isset($_POST['oldPass']) && isset($_POST['newPass']) && isset ($_POST['conf
     {
         $querystring = "SELECT * FROM Login WHERE LOWER(Username) = '{$lUsername}'";
         debugText($querystring);
-        $result = mysql_query($querystring, $con);
-        $row = mysql_fetch_array($result);
-        if ( $row['Password'] == mysql_real_escape_string(crypt($_POST['oldPass'], $encryption_salt ))) {
+        $result = mysqli_query($con, $querystring);
+        $row = mysqli_fetch_array($result);
+        if ( $row['Password'] == mysqli_real_escape_string($con,crypt($_POST['oldPass'], $encryption_salt ))) {
         	debugText($querystring);
-        	$_POST['newPass'] = mysql_real_escape_string(crypt($_POST['newPass'], $encryption_salt)); //encrypt password
+        	$_POST['newPass'] = mysqli_real_escape_string($con,crypt($_POST['newPass'], $encryption_salt)); //encrypt password
         	$querystring = "UPDATE Login SET Password='{$_POST['newPass']}' WHERE Username='{$_SESSION['Username']}'";
         	debugText($querystring);
-        	$result = mysql_query($querystring, $con);
+        	$result = mysqli_query($con, $querystring);
 	}
         else {
 	    echo "<span style='color:red'>Incorrect password.</span><br />";
@@ -181,7 +181,7 @@ if ( isset($_POST['updateColor']) && ($_POST['updateColor'] == 'yes') )
     else {
         $querystring = "UPDATE Login SET ColorScheme={$_POST['colorSelect']} WHERE Username='{$_SESSION['Username']}'";
         debugText($querystring);
-        $result = mysql_query($querystring, $con);
+        $result = mysqli_query($con, $querystring);
         if ( $result )
 	    echo "Color scheme changed successfully!<br />";
         else
@@ -198,7 +198,7 @@ if ( isset($_POST['update24HrTime']) && ($_POST['update24HrTime'] == 'yes') ) {
     else {
 	$querystring = "UPDATE Login SET 24HrTime='{$_POST['24HrTime']}' WHERE Username='{$_SESSION['Username']}'";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 		echo "Time display setting changed successfully!<br />";
 	else
@@ -215,7 +215,7 @@ if ( isset($_POST['updateDebugMode']) && ($_POST['updateDebugMode'] == 'yes') ) 
     else {
 	$querystring = "UPDATE Login SET DebugMode='{$_POST['DebugMode']}' WHERE Username='{$_SESSION['Username']}'";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 		echo "Debug Mode setting changed successfully!<br />";
 	else
