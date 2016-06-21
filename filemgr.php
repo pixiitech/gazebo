@@ -26,9 +26,6 @@ if (!isset($_POST['file'])) {
 function uploadPic()
 {
 	require "config.php";
-	//Save Picture
-	$allowedExts = array("jpg", "jpeg", "gif", "png");
-	$extension = end(explode(".", $_FILES["file"]["name"]));
 	if ($_FILES['Pic']['type'] != "")
 	{
   			if ($_FILES["Pic"]["error"] > 0)
