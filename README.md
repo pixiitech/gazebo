@@ -567,7 +567,18 @@ Commands:
 UPDATE Settings SET Name = 'PublishPhone1Default' WHERE Name = 'PublishHomephoneDefault';
 UPDATE Settings SET Name = 'PublishPhone2Default' WHERE Name = 'PublishCellphoneDefault';
 
+0.8 - The mysqli update
+-----------------------
+COMPLETED:
+- Updated all modules to use mysqli instead of mysql
+- Fixed all Uninitialized Index and Unitialized Variable errors
+- Major refactor of residents.php
+- BUGFIX: Email2 now shows on resident roster in resident mode (if PublishEmail is on)
+
+
 TODO:
+
+Testing
 
 BUG: residents.php: Only first name shows in confirmation box when deleting active record from radio option
 BUG: calendar.php - ' quotes causing escaped \' to fill in every update for title and description
@@ -603,5 +614,4 @@ Coding standards  https://make.wordpress.org/core/handbook/coding-standards/php/
 
 residents.php - Edit unit number directly
 BUG - loginmgr updating ExpirationDate on other users not modified (monitoring)
-
 
