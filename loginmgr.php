@@ -45,16 +45,16 @@ if ( isset( $_POST['NewUser-Username'] ) && ( $_POST['NewUser-Username'] != "New
         $_POST['NewUser-Username'] = strtolower($_POST['NewUser-Username']);
         $querystring = "SELECT Username FROM Login WHERE LOWER(Username) = '{$_POST['NewUser-Username']}'";
 	debugText($querystring);
-        if (mysql_fetch_array(mysql_query($querystring, $con)))
+        if (mysqli_fetch_array(mysqli_query($con, $querystring)))
 	    echo "User {$_POST['NewUser-Username']} already exists, please choose a different username.<br />";
         else if ( hasSpaces($_POST['NewUser-Username']))
 	    echo "Error: Username contains spaces.";
         else
         {
-            $cryptpass = mysql_real_escape_string(crypt($_POST['NewUser-Password'],$encryption_salt));
+            $cryptpass = mysqli_real_escape_string($con, crypt($_POST['NewUser-Password'],$encryption_salt));
 	    $querystring = "INSERT INTO Login (Username, Password, Level, Residx, ColorScheme, ResultsPerRow) VALUES ('{$_POST['NewUser-Username']}', '{$cryptpass}', '{$_POST['NewUser-Level']}', '{$_POST['NewUser-Residx']}', $default_colorscheme, 5)";
 	    debugText($querystring);
-	    $result = mysql_query($querystring, $con);
+	    $result = mysqli_query($con, $querystring);
 	    if ($result)
 	        echo "Add new user {$_POST['NewUser-Username']} succeeded.<br />";
             else
@@ -126,17 +126,17 @@ if ($cms == "wp")
 else    // Standalone
 {
 $querystring = "SELECT * FROM Login";
-$result = mysql_query($querystring, $con);
-while ( $row = mysql_fetch_array($result) )
+$result = mysqli_query($con, $querystring);
+while ( $row = mysqli_fetch_array($result) )
 {
     $lUser = strtolower($row['Username']);
     $userid = $row['Idx'];
     if ( isset( $_POST["User" . $userid . '-clearpass'] ))
     {
-	$defaultpass = mysql_real_escape_string(crypt($default_pw,$encryption_salt));
+	$defaultpass = mysqli_real_escape_string($con, crypt($default_pw,$encryption_salt));
 	$querystring2 = "UPDATE Login SET Password='{$defaultpass}' WHERE Idx = '{$userid}'";
 	debugText($querystring2);
-	$result2 = mysql_query($querystring2, $con);
+	$result2 = mysqli_query($con, $querystring2);
 	if ($result2)
 	    echo "Reset password of user " . $row['Username'] . " to {$defaultpass}<br />";
 	else
@@ -146,7 +146,7 @@ while ( $row = mysql_fetch_array($result) )
     {
 	$querystring2 = "UPDATE Login SET Level='" . $_POST['User' . $userid . '-level'] . "' WHERE Idx = '{$userid}'";
 	debugText($querystring2);
-	$result2 = mysql_query($querystring2, $con);
+	$result2 = mysqli_query($con, $querystring2);
 	if ($result2)
 	    echo "Set level of user " . $row['Username'] . " to " . $_POST['User' . $userid . '-level'] . ".<br />";
 	else
@@ -156,7 +156,7 @@ while ( $row = mysql_fetch_array($result) )
     {
 	$querystring2 = "UPDATE Login SET Residx='" . $_POST['User' . $userid . '-residx'] . "' WHERE Idx = '{$userid}'";
 	debugText($querystring2);
-	$result2 = mysql_query($querystring2, $con);
+	$result2 = mysqli_query($con, $querystring2);
 	if ($result2)
 	    echo "Set resident # of user " . $row['Username'] . " to #" . $_POST['User' . $userid . '-residx'] . ".<br />";
 	else
@@ -166,12 +166,12 @@ while ( $row = mysql_fetch_array($result) )
     {
 	$querystring2 = "DELETE FROM Login WHERE Idx = '{$userid}'";
 	debugText($querystring2);
-	$result2 = mysql_query($querystring2, $con);
+	$result2 = mysqli_query($con, $querystring2);
 	if ($result2)
         {
 	    echo "Deleted user " . $row['Username'] . ".<br />";
 	    $querystring2 = "SELECT * FROM Login";
-	    $result2 = mysql_query($querystring2, $con);
+	    $result2 = mysqli_query($con, $querystring2);
 	}
 	else
 	    echo "Failed to delete user " . $row['Username'] . ".<br />";
@@ -211,9 +211,9 @@ if ( $cms == "wp" )
 							OR Residents.FirstName2 LIKE '%{$_POST['search_resident']}%'
 							OR Residents.LastName2 LIKE '%{$_POST['search_resident']}%')";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	$meta_query = array('relation' => 'OR');
-	while ( $row = mysql_fetch_array($result) )
+	while ( $row = mysqli_fetch_array($result) )
 	{
 	    debugText($row['Idx']);
 	    array_push($meta_query, array('key' => 'gazebo_residx', 'value' => $row['Idx'], 'compare' => '='));
@@ -302,10 +302,10 @@ else	//Standalone
 							OR Residents.LastName2 LIKE '%{$_POST['search_resident']}%')";
     }
     debugText($querystring);
-    $result = mysql_query($querystring, $con);
+    $result = mysqli_query($con, $querystring);
     if (!$result)
-	echo "No users found.";
-    while ( $row = mysql_fetch_array($result) )
+			echo "No users found.";
+    while ( $row = mysqli_fetch_array($result) )
     {
         $resname = fetchResname($row['Residx'], $con);
         $lUser = strtolower($row['Username']);
