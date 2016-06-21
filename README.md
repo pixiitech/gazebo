@@ -571,9 +571,11 @@ UPDATE Settings SET Name = 'PublishPhone2Default' WHERE Name = 'PublishCellphone
 -----------------------
 COMPLETED:
 - Updated all modules to use mysqli instead of mysql
-- Fixed all Uninitialized Index and Unitialized Variable errors
+- Fixed most Uninitialized Index and Unitialized Variable errors
 - Major refactor of residents.php
 - BUGFIX: Email2 now shows on resident roster in resident mode (if PublishEmail is on)
+- Fixed issue with Gazebo buttons showing too small, removed width: 50% CSS line
+- Fixed issue with encrypted password showing when password is reset in loginmgr (standalone only)
 
 
 TODO:

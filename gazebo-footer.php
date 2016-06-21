@@ -6,7 +6,7 @@ mysqli_close($con);
 if ( ! isset( $nologo ) ) {
 echo "
 <br /><br />
-<i>'Gazebo' Property System v0.7.4  </i>
+<i>'Gazebo' Property System v0.8  </i>
 <i>Created by:</i><br />
 <a href='http://www.pixiitech.net/'><img src='{$gazebo_imagedir}pixii.png' alt='PiXii computing' /></a>
 <br />
