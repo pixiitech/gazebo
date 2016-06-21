@@ -7,10 +7,9 @@ foreach(['fn', 'formlist'] as $key) {
         $_POST[$key] = "";
     }
 }
-if (!isset($_POST['Type']))
-    $_POST['Type'] == 0;
 $Idx = "";
-$type = "";
+//Default type = 1
+$type = 1;
 $title = "";
 $buffer = "";
 $email = "";
@@ -142,47 +141,42 @@ switch ( $_POST['fn'] )
 {
     case 'new':
     {
-	break;
+    	break;
     }
     case 'delete':
     {
-	$querystring = "DELETE FROM Forms WHERE Idx = {$_POST['formlist']}";
-	debugText($querystring);
-	$result = mysqli_query($con, $querystring);
-	if ( $result ) {
-	    echo "Form <i>" . $_POST['formlist'] . "</i> deleted successfully.<br />";
-	}
-	else {
-	    echo "Form <i>" . $_POST['formlist'] . "</i> failed to delete.<br />";
-	}
-	break;
+    	$querystring = "DELETE FROM Forms WHERE Idx = {$_POST['formlist']}";
+    	debugText($querystring);
+    	$result = mysqli_query($con, $querystring);
+    	if ( $result ) {
+    	    echo "Form <i>" . $_POST['formlist'] . "</i> deleted successfully.<br />";
+    	}
+    	else {
+    	    echo "Form <i>" . $_POST['formlist'] . "</i> failed to delete.<br />";
+    	}
+    	break;
     }
     case 'load':
     {
-	$querystring = "SELECT * FROM Forms WHERE Idx = {$_POST['formlist']}";
-	debugText($querystring);
-	$result = mysqli_query($con, $querystring);
-	if ( $row = mysqli_fetch_array($result) ) {
-		$type = $row['Type'];
-		$title = $row['Title'];
-		$buffer = $row['Text'];
-		$Idx = $_POST['formlist'];
-		$email = $row['Email'];
+    	$querystring = "SELECT * FROM Forms WHERE Idx = {$_POST['formlist']}";
+    	debugText($querystring);
+    	$result = mysqli_query($con, $querystring);
+    	if ( $row = mysqli_fetch_array($result) ) {
+    		$type = $row['Type'];
+    		$title = $row['Title'];
+    		$buffer = $row['Text'];
+    		$Idx = $_POST['formlist'];
+    		$email = $row['Email'];
 	}
 	else {
-		echo "Unable to open form.<br />";
-		$buffer = "";
-	}
-	break;
+    		echo "Unable to open form.<br />";
+    		$buffer = "";
+    	}
+    	break;
     }
     default:
 }
 
-//Default type - 
-
-if ( !isset( $type ) ) {
-	$type = 1;
-}
 echo "<table class='criteria' style='height:100%; width:100%'><tbody><tr><td>";
 echo "<form name='formletter' method='post' action='". pageLink("formletters") . "' >";
 echo "<br />";
