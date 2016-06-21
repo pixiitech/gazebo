@@ -7,14 +7,14 @@ $nologo = true;
 if ( isset( $_POST["Username"] ) )
 {
 	$lUsername = strtolower($_POST["Username"]);
-	$_POST['Password'] = mysql_real_escape_string(crypt($_POST['Password'], $encryption_salt));
+	$_POST['Password'] = mysqli_real_escape_string($con, crypt($_POST['Password'], $encryption_salt));
 	$query = "SELECT * FROM Login WHERE LOWER(Username) = '{$lUsername}' AND Password = '{$_POST["Password"]}'";
-	$result = mysql_query($query, $con);
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($con, $query);
+	$row = mysqli_fetch_array($result);
 	if ( $row != FALSE )
 	{
 	    $_SESSION['Username'] = $row['Username'];
-   	    $_SESSION['Level'] = $row['Level'];
+   	  $_SESSION['Level'] = $row['Level'];
 	    $_SESSION['ColorScheme'] = $row['ColorScheme'];
 	    $_SESSION['ResultsPerRow'] = $row['ResultsPerRow'];
 	    $_SESSION['Residx'] = $row['Residx'];
