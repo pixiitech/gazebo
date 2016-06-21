@@ -16,7 +16,7 @@ $lUsername = strtolower($_SESSION['Username']);
 if (isset($cms) && ($cms == "wp"))
 {
     $user = wp_get_current_user();
-    $residx = get_user_meta($user->ID, gazebo_residx, true);
+    $residx = get_user_meta($user->ID, "gazebo_residx", true);
 }
 else
 {

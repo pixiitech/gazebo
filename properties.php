@@ -51,6 +51,11 @@ $result = mysqli_query($con, $querystring);
 $SubdivTypes = array();
 while ( $row = mysqli_fetch_array($result) )
     array_push($SubdivTypes, array($row['Id'], $row['Name']));
+foreach(["SavedQuery"] as $key) {
+	if (!isset($_POST[$key])) {
+		$_POST[$key] = "";
+	}
+}
 ?>
 <h2 style="text-align:center">Properties Management</h2>
 
