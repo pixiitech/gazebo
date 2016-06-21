@@ -20,6 +20,9 @@ function delFile(fname)
 <?php
 require 'authcheck.php';
 
+if (!isset($_POST['file'])) {
+    $_POST['file'] = "";
+}
 function uploadPic()
 {
 	require "config.php";
