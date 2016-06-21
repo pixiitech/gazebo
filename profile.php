@@ -12,6 +12,19 @@ else if ( !isset($cms) )
 <?php
 require 'authcheck.php';
 
+$phone11 = "";
+$phone12 = "";
+$phone13 = "";
+$phone21 = "";
+$phone22 = "";
+$phone23 = "";
+$phone31 = "";
+$phone32 = "";
+$phone33 = "";
+$phone41 = "";
+$phone42 = "";
+$phone43 = "";
+
 $lUsername = strtolower($_SESSION['Username']);
 if (isset($cms) && ($cms == "wp"))
 {
