@@ -16,8 +16,8 @@ if ( !isset($index) ) {
 }
 
 $querystring = "SELECT * FROM SecureFileMeta WHERE Idx={$index}";
-$result = mysql_query($querystring, $con);
-$row = mysql_fetch_array($result);
+$result = mysqli_query($con, $querystring);
+$row = mysqli_fetch_array($result);
 
 if ( !$row ) {
     die("Invalid file ID specified.");
@@ -51,8 +51,8 @@ switch ( $behavior ) {
 }
 
 $querystring = "SELECT Data FROM SecureFileData WHERE Idx={$index}";
-$result = mysql_query($querystring, $con);
-$row = mysql_fetch_array($result);
+$result = mysqli_query($con, $querystring);
+$row = mysqli_fetch_array($result);
 header('Content-Length: ' . strlen($row['Data']));
 echo $row['Data'];
 ?>

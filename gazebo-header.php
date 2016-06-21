@@ -66,5 +66,12 @@ else { /* CMS - display div so that entire page responds to color schemes */
 $con = connect_gazebo_DB("mysqli");
 
 /* Supress undefined errors */
-error_reporting( error_reporting() & ~E_NOTICE );
+// error_reporting( error_reporting() & ~E_NOTICE );
+set_error_handler("_global_error_handler");
+function _global_error_handler($level, $message, $filename, $line_no, $context) {
+	debugText("ERRORHANDLER: {$message} {$filename}:{$line_no}");
+	if($level===E_NOTICE) return false;
+    if($level===E_NOTICE && substr($message,0,16)==='Undefined index:') return false;
+    if($level===E_NOTICE && substr($message,0,17)==='Undefined offset:') return false;
+}
 ?>

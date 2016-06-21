@@ -167,11 +167,11 @@ switch ($_POST["function"])
 	$querystring .= " ORDER BY Status";
 
 	debugText($querystring);
-	$result = mysql_query($querystring, $con); 
+	$result = mysqli_query($con, $querystring); 
 	$k=0;
 	$results=0;
 	echo "<thead><tr><th>WO#</th><th>Status</th><th>Unit</th><th>Summary</th><th>Name</th><th>Submitted</th><th>Assigned To</th><th>Delete</th></tr></thead><tbody>";
-	while ( $row = mysql_fetch_array($result) )
+	while ( $row = mysqli_fetch_array($result) )
 	{
             echo "<tr>";
             if ( $_SESSION['Level'] >= $editlevel )
@@ -186,10 +186,10 @@ switch ($_POST["function"])
 	    echo $row['Unit'];
 	    echo "</td><td>";
             echo sprintf("<a href=\"#top\" onclick=\"fillInForm(%u, '%u', '%s', '%s', '%s', '%s', %s, '%s', '%s', '%s', '%s')\" >%s</a>", 
-	        $selectOpt, $row['Idx'], $row['Unit'], mysql_real_escape_string($row['Summary']),
-	        mysql_real_escape_string($row['Description']), mysql_real_escape_string($row['AssignedTo']),
-	        $row['Status'], mysql_real_escape_string($row['Submitted']), mysql_real_escape_string($row['Completed']),
-	        mysql_real_escape_string($row['Name']), mysql_real_escape_string($row['Username']), mysql_real_escape_string($row['Summary']) );
+	        $selectOpt, $row['Idx'], $row['Unit'], mysqli_real_escape_string($con,$row['Summary']),
+	        mysqli_real_escape_string($con,$row['Description']), mysqli_real_escape_string($con,$row['AssignedTo']),
+	        $row['Status'], mysqli_real_escape_string($con,$row['Submitted']), mysqli_real_escape_string($con,$row['Completed']),
+	        mysqli_real_escape_string($con,$row['Name']), mysqli_real_escape_string($con,$row['Username']), mysqli_real_escape_string($con,$row['Summary']) );
 	    echo "</td><td>";
 	    echo $row['Name'];
 	    echo "</td><td>";
@@ -248,13 +248,13 @@ switch ($_POST["function"])
 	$curtime = getdate();
 	$sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " . 
 		$curtime['hours'] . ":" . $curtime['minutes'] . ":" . $curtime['seconds'];
-	$_POST['Description'] = mysql_real_escape_string($_POST['Description']);
-	$_POST['Summary'] = mysql_real_escape_string($_POST['Summary']);
+	$_POST['Description'] = mysqli_real_escape_string($con,$_POST['Description']);
+	$_POST['Summary'] = mysqli_real_escape_string($con,$_POST['Summary']);
 	$querystring = "INSERT INTO WorkOrders (Unit, Summary, Description, AssignedTo, Status, Submitted, Name, Username) VALUES
 			('{$_POST['Unit']}', '{$_POST['Summary']}', '{$_POST['Description']}', '{$_POST['AssignedTo']}', 
 			 '{$_POST['Status']}', '{$sqltime}', '{$_POST['Name']}', '{$_SESSION["Username"]}')";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result ) {
 		echo "Work Order Entered.<br />";
 	}
@@ -278,7 +278,7 @@ switch ($_POST["function"])
 	$sqltime = assembleDateTime($curtime['mon'],$curtime['mday'],substr($curtime['year'],2),$curtime['hours'],$curtime['minutes']);
 
 	$querystring = "SELECT Completed FROM WorkOrders WHERE Idx={$_POST['Idx']} AND Completed = 0";
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result && ( $_POST['Status'] == $status_completed ) )
 	    $_POST['Completed'] = $sqltime;
 
@@ -286,7 +286,7 @@ switch ($_POST["function"])
 Name='{$_POST['Name']}', Username='{$_POST['Username']}' WHERE Idx= {$_POST['Idx']}";
 
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 		echo "Work Order Updated.<br />";
 	else
@@ -311,7 +311,7 @@ Name='{$_POST['Name']}', Username='{$_POST['Username']}' WHERE Idx= {$_POST['Idx
 	}
 	$querystring = "DELETE FROM WorkOrders WHERE Idx={$_POST['Idx']}";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 		echo "Work Order #{$_POST["Idx"]} deleted.<br />";
 	else

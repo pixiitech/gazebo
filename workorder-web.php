@@ -19,21 +19,21 @@ if ( isset($_POST['Summary']) && ( $_POST['Summary'] != '' ) )
 	//Save SQL Record
 	$curtime = getdate();
 	$sqltime = assembleDateTime($curtime['mon'],$curtime['mday'],substr($curtime['year'],2),$curtime['hours'],$curtime['minutes']);
-	$_POST['Unit'] = mysql_real_escape_string($_POST['Unit']);
-	$_POST['Description'] = mysql_real_escape_string($_POST['Description']);
-	$_POST['Summary'] = mysql_real_escape_string($_POST['Summary']);
-	$_POST['Name'] = mysql_real_escape_string($_POST['Name']);
+	$_POST['Unit'] = mysqli_real_escape_string($con, $_POST['Unit']);
+	$_POST['Description'] = mysqli_real_escape_string($con, $_POST['Description']);
+	$_POST['Summary'] = mysqli_real_escape_string($con, $_POST['Summary']);
+	$_POST['Name'] = mysqli_real_escape_string($con, $_POST['Name']);
 	$querystring = "INSERT INTO WorkOrders (Unit, Summary, Description, Status, Submitted, Name, Username) VALUES
 			('{$_POST['Unit']}', '{$_POST['Summary']}', '{$_POST['Description']}',
 			 {$status_submitted}, '{$sqltime}', '{$_POST['Name']}', '{$_SESSION['Username']}')";
 	debugText($querystring);
-	$result = mysql_query($querystring, $con);
+	$result = mysqli_query($con, $querystring);
 	if ( $result )
 		echo "Work Order Entered.<br />";
 	else
 	{
 		echo "Work Order failed to save.<br />";
-		echo mysql_error($con) . "<br />";
+		echo mysqli_error($con) . "<br />";
 
 		$to = fetchSetting("WebmasterEmail", $con);
 		$mailresult = mail($to, "Work Order Submittal Failure",

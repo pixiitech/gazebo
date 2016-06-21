@@ -20,8 +20,13 @@ require 'authcheck.php';
 $default_pw = fetchSetting("DefaultPW", $con);
 $lastfirst = fetchSetting("DisplayLastFirst", $con);
 $ucase = fetchSetting("DisplayUppercaseNames", $con);
-
+foreach( ["search_username", "search_resident"] as $key ) {
+	if (!isset($_POST[$key])) {
+		$_POST[$key] = "";
+	}
+}
 /* Create newly submitted user */
+
 if ( isset( $_POST['NewUser-Username'] ) && ( $_POST['NewUser-Username'] != "New User" ) && ( $_POST['NewUser-Username'] != "" ))
 {
     if ($cms == "wp")
@@ -179,6 +184,7 @@ while ( $row = mysqli_fetch_array($result) )
 
 }
 }
+
 /* Display search form */
 echo "<div style='text-align:center'>";
 echo "<h4>Search:</h4>";
@@ -202,27 +208,29 @@ echo "<tbody>";
 if ( $cms == "wp" )
 {
     if ( isset( $_POST['search_username'] ) && ( $_POST['search_username'] != "" ))
-	$query = array( 'search' => $_POST['search_username'], 'search_columns' => array( 'user_login' ) );
+		$query = array( 'search' => $_POST['search_username'], 'search_columns' => array( 'user_login' ) );
     else if ( isset( $_POST['search_resident'] ) && ( $_POST['search_resident'] != "" ))
     {
-	$querystring = "SELECT Residents.Idx FROM Residents, Properties
-						 WHERE (Residents.FirstName LIKE '%{$_POST['search_resident']}%'
-							OR Residents.LastName LIKE '%{$_POST['search_resident']}%'
-							OR Residents.FirstName2 LIKE '%{$_POST['search_resident']}%'
-							OR Residents.LastName2 LIKE '%{$_POST['search_resident']}%')";
-	debugText($querystring);
-	$result = mysqli_query($con, $querystring);
-	$meta_query = array('relation' => 'OR');
-	while ( $row = mysqli_fetch_array($result) )
-	{
-	    debugText($row['Idx']);
-	    array_push($meta_query, array('key' => 'gazebo_residx', 'value' => $row['Idx'], 'compare' => '='));
-	}
-	$query = array( 'meta_query' => $meta_query);
+		$querystring = "SELECT Residents.Idx FROM Residents, Properties
+							 WHERE (Residents.FirstName LIKE '%{$_POST['search_resident']}%'
+								OR Residents.LastName LIKE '%{$_POST['search_resident']}%'
+								OR Residents.FirstName2 LIKE '%{$_POST['search_resident']}%'
+								OR Residents.LastName2 LIKE '%{$_POST['search_resident']}%')";
+		debugText($querystring);
+		$result = mysqli_query($con, $querystring);
+		$meta_query = array('relation' => 'OR');
+		while ( $row = mysqli_fetch_array($result) )
+		{
+		    debugText($row['Idx']);
+		    array_push($meta_query, array('key' => 'gazebo_residx', 'value' => $row['Idx'], 'compare' => '='));
+		}
+		$query = array( 'meta_query' => $meta_query);
     }
     else
-	$query = array( 'search' => '*' );
+		$query = array( 'search' => '*' );
+
     $user_query = new WP_User_Query( $query );
+
     // User Loop
     if ( ! empty( $user_query->results ) ) {
 	foreach ( $user_query->results as $user ) 

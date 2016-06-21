@@ -52,7 +52,7 @@ if ( isset( $_GET['fn'] )) {
 }
 //Perform query and display list
 debugText( $querystring );
-$result = mysql_query($querystring, $con);
+$result = mysqli_query($con, $querystring);
 
 echo "<form name='resnameselect' method='get' action='" . pageLink($pagename) . "'>";
 if ( $cms == "wp" ) {
@@ -66,7 +66,7 @@ echo "<input type='hidden' name='target1' value='{$_GET['target1']}' />
 <input type='text' name='search' size='15' /><input type='submit' value='Search' /><br />
 <select name='reslist' size='15' style='width:250px' >";
 
-for ( $listnum = 0; $row = mysql_fetch_array($result); $listnum++ )
+for ( $listnum = 0; $row = mysqli_fetch_array($result); $listnum++ )
 {
     $name = displayName($row['FirstName'], $row['LastName'], $ucase, $lastfirst);
     echo "<option value=\"{$row['Idx']}@{$name}\" ondblclick='document.forms[\"resnameselect\"].elements[\"send\"].click();'>{$name}</option>";

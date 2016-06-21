@@ -35,24 +35,24 @@ if ($_FILES['Pic']['type'] != "")
 		//Create metadata entry
 		$thefile = $_FILES['Pic'];
 		$insertstring = sprintf("INSERT INTO SecureFileMeta (Filename, Minlevel, Size, MIME, Behavior, Description) VALUES ('%s', '%s', %d, '%s', '%s', '%s')",
-				mysql_real_escape_string($thefile['name']),
-				mysql_real_escape_string(fetchSetting('WPPostDefaultMinLevel', $con)),
-				mysql_real_escape_string($thefile['size']),
-				mysql_real_escape_string($thefile['type']),
-				mysql_real_escape_string(fetchSetting('SecureFileDefaultBehavior', $con)),
-				mysql_real_escape_string($_POST['newfile-description']));
-		$result = mysql_query($insertstring, $con);
+				mysqli_real_escape_string($con, $thefile['name']),
+				mysqli_real_escape_string($con, fetchSetting('WPPostDefaultMinLevel', $con)),
+				mysqli_real_escape_string($con, $thefile['size']),
+				mysqli_real_escape_string($con, $thefile['type']),
+				mysqli_real_escape_string($con, fetchSetting('SecureFileDefaultBehavior', $con)),
+				mysqli_real_escape_string($con, $_POST['newfile-description']));
+		$result = mysqli_query($con, $insertstring);
 
 		//Recover index
-		$querystring = "SELECT Idx FROM SecureFileMeta WHERE Filename = '" . mysql_real_escape_string($thefile['name']) . "'";
-		$result = mysql_query($querystring, $con);
-		$newrec = mysql_fetch_array($result);
+		$querystring = "SELECT Idx FROM SecureFileMeta WHERE Filename = '" . mysqli_real_escape_string($con, $thefile['name']) . "'";
+		$result = mysqli_query($con, $querystring);
+		$newrec = mysqli_fetch_array($result);
 		$newidx = $newrec['Idx'];
 
 		//Upload file contents
 		$insertstring = sprintf("INSERT INTO SecureFileData (Idx, Data) VALUES (%d, '%s')",
-					$newidx, mysql_real_escape_string(file_get_contents($thefile['tmp_name'])));
-		$result = mysql_query($insertstring, $con);
+					$newidx, mysqli_real_escape_string($con, file_get_contents($thefile['tmp_name'])));
+		$result = mysqli_query($con, $insertstring);
 		if ( $result ) {
 		    echo "File Uploaded Successfully.<br />";
 		}
@@ -62,12 +62,12 @@ if ($_FILES['Pic']['type'] != "")
 
 //Update info and delete
 $querystring = "SELECT * FROM SecureFileMeta";
-$result = mysql_query($querystring, $con);
-while ( $row = mysql_fetch_array($result) ) {
+$result = mysqli_query($con, $querystring);
+while ( $row = mysqli_fetch_array($result) ) {
     //Update Minlevel
     if ( isset($_POST['minlevel-' . $row['Idx']] ) && ($row['Minlevel'] != $_POST['minlevel-' . $row['Idx']] )) {
 	$querystring2 = "UPDATE SecureFileMeta SET Minlevel = {$_POST['minlevel-' . $row['Idx']]} WHERE Idx = {$row['Idx']}";
-	$result2 = mysql_query($querystring2, $con);
+	$result2 = mysqli_query($con, $querystring2);
 	if ( $result2 ) {
 	    echo "Updated security level of file {$row['Filename']} to {$_POST['minlevel-' . $row['Idx']]}.<br />";
 	}
@@ -76,7 +76,7 @@ while ( $row = mysql_fetch_array($result) ) {
     //Update behavior
     if ( isset($_POST['behavior-' . $row['Idx']] ) && ($row['Behavior'] != $_POST['behavior-' . $row['Idx']] )) {
 	$querystring2 = "UPDATE SecureFileMeta SET Behavior = '{$_POST['behavior-' . $row['Idx']]}' WHERE Idx = {$row['Idx']}";
-	$result2 = mysql_query($querystring2, $con);
+	$result2 = mysqli_query($con, $querystring2);
 	if ( $result2 ) {
 	    echo "Updated behavior of file {$row['Filename']} to {$_POST['behavior-' . $row['Idx']]}.<br />";
 	}
@@ -85,7 +85,7 @@ while ( $row = mysql_fetch_array($result) ) {
     //Update description
     if ( isset($_POST['description-' . $row['Idx']] ) && ($row['Description'] != $_POST['description-' . $row['Idx']] )) {
 	$querystring2 = "UPDATE SecureFileMeta SET Description = '{$_POST['description-' . $row['Idx']]}' WHERE Idx = {$row['Idx']}";
-	$result2 = mysql_query($querystring2, $con);
+	$result2 = mysqli_query($con, $querystring2);
 	if ( $result2 ) {
 	    echo "Updated description of file {$row['Filename']} to {$_POST['description-' . $row['Idx']]}.<br />";
 	}
@@ -96,9 +96,9 @@ while ( $row = mysql_fetch_array($result) ) {
 	$idx = $row['Idx'];
 	$filename = $row['Filename'];
 	$querystring2 = "DELETE FROM SecureFileMeta WHERE Idx = {$idx}";
-	$result2 = mysql_query($querystring2, $con);
+	$result2 = mysqli_query($con, $querystring2);
 	$querystring2 = "DELETE FROM SecureFileData WHERE Idx = {$idx}";
-	$result2 = mysql_query($querystring2, $con);
+	$result2 = mysqli_query($con, $querystring2);
 	if ( $result2 ) {
 	    echo "Deleted file {$filename}.<br />";
 	}
@@ -125,8 +125,8 @@ echo "<tr><th>File</th><th>Size</th><th>Options</th><th>Link Code</th><th>Delete
 
 /* Display Files */
 $querystring = "SELECT * FROM SecureFileMeta";
-$result = mysql_query($querystring, $con);
-while ( $row = mysql_fetch_array($result) )
+$result = mysqli_query($con, $querystring);
+while ( $row = mysqli_fetch_array($result) )
 {
     $link = pageLink("securefile", "Idx={$row['Idx']}");
     echo "<tr><td>{$row['Filename']}<br />";
@@ -183,8 +183,8 @@ echo "<h3>Preview:</h3>";
 if ( isset($_POST['preview']) ) {
     $querystring = "SELECT * FROM SecureFileMeta WHERE Idx = {$_POST['preview']}";
     debugText($querystring);
-    $result = mysql_query($querystring, $con);
-    $row = mysql_fetch_array($result);
+    $result = mysqli_query($con, $querystring);
+    $row = mysqli_fetch_array($result);
     $mime = $row['MIME'];
     debugText("MIME:{$row['MIME']} Size:{$row['Size']}");
     if ( isset( $cms )) {
@@ -192,8 +192,8 @@ if ( isset($_POST['preview']) ) {
     }
     try {
         $querystring = "SELECT * FROM SecureFileData WHERE Idx = {$_POST['preview']}";
-        $result = mysql_query($querystring, $con);
-        $row = mysql_fetch_array($result);
+        $result = mysqli_query($con, $querystring);
+        $row = mysqli_fetch_array($result);
         if ( strtolower(substr( $mime, 0, 5 )) == 'image' ) {
             echo "<img src='data:{$mime};base64," . base64_encode($row['Data']) . "' style='height:200px; width:200px' />";
         }

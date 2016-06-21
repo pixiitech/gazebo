@@ -56,6 +56,7 @@ foreach(["SavedQuery", "Resname", "Tenantname", "Unit", "Address", "Subdivision"
 		$_POST[$key] = "";
 	}
 }
+$useSavedQuery = false;
 ?>
 <h2 style="text-align:center">Properties Management</h2>
 
@@ -64,6 +65,7 @@ foreach(["SavedQuery", "Resname", "Tenantname", "Unit", "Address", "Subdivision"
 function outputSearchResult($row,$con)
 {
     include 'config.php';
+    global $editlevel, $violations;
     $unit = $row['Unit'];
     if ( isset( $_POST['ViolationReport'] ) )
     {
@@ -314,7 +316,7 @@ if (( $_POST['function'] == 'search' ) || ( $_POST['function'] == 'list' )) {
 	if ( $_POST['Unit'] != "" ) {
 		$querystring .= " AND Properties.Unit = '{$_POST['Unit']}'";
 	}
-	if ( isset( $_POST['Subdivision']) && ( $_POST['Subdivision'] != "-1" )) {
+	if ( isset( $_POST['Subdivision']) && ( $_POST['Subdivision'] != "-1" ) && ( $_POST['Subdivision'] != "" )) {
 		$querystring .= " AND Properties.Subdivision = ";
 		$querystring .= $_POST['Subdivision'];
 	}

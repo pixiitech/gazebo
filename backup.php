@@ -70,45 +70,45 @@ if (isset($_POST['bak']) && ($_POST['bak'] == 'backup'))
     //Generic Backup
     for ( $n = 0; $tables[$n] != null; $n++ )
     {
-	if ( isset($cms) && ($cms == "wp") && ($n == $wp_index))
-	    $con = $con_wp;
-	if ( isset( $_POST['db_' . $tables[$n]] ))
-	{
-	    /* Backup Table Format */
-	    $querystring = "SHOW COLUMNS FROM ". $tables[$n];
-	    debugText($querystring);
-	    $result = mysqli_query($con, $querystring);
-  	    $file = fopen($backupdir . $tables[$n] . "-" . date("m-d-y") . ".frm","w+");
-	    while ( $row = mysqli_fetch_array( $result ) )
-	    {
-		fwrite($file, $row['Field'] . "	");
-		fwrite($file, $row['Type'] . "	");
-		fwrite($file, $row['Null'] . "	");
-		fwrite($file, $row['Key'] . "	");
-		fwrite($file, $row['Default'] . "	");
-		fwrite($file, $row['Extra'] . "	");
-		fwrite($file, "\n");
-	    }	
-	    fclose($file);
-	    $outputbuffer .= $tables[$n] . " format structure saved as " . $tables[$n] . "-" . date("m-d-y") . ".frm\n";	
+		if ( isset($cms) && ($cms == "wp") && ($n == $wp_index))
+		    $con = $con_wp;
+		if ( isset( $_POST['db_' . $tables[$n]] ))
+		{
+		    /* Backup Table Format */
+		    $querystring = "SHOW COLUMNS FROM ". $tables[$n];
+		    debugText($querystring);
+		    $result = mysqli_query($con, $querystring);
+	  	    $file = fopen($backupdir . $tables[$n] . "-" . date("m-d-y") . ".frm","w+");
+		    while ( $row = mysqli_fetch_array( $result ) )
+		    {
+				fwrite($file, $row['Field'] . "	");
+				fwrite($file, $row['Type'] . "	");
+				fwrite($file, $row['Null'] . "	");
+				fwrite($file, $row['Key'] . "	");
+				fwrite($file, $row['Default'] . "	");
+				fwrite($file, $row['Extra'] . "	");
+				fwrite($file, "\n");
+		    }	
+		    fclose($file);
+		    $outputbuffer .= $tables[$n] . " format structure saved as " . $tables[$n] . "-" . date("m-d-y") . ".frm\n";	
 
-	    /* Backup Data */
-	    $querystring = "SELECT * FROM " . $tables[$n];
-	    debugText($querystring);
-	    $result = mysqli_query($con, $querystring);
-  	    $file = fopen($backupdir . $tables[$n] . "-" . date("m-d-y") . ".bak","w+");
-	    $rows = 0;
-	    while ( $row = mysqli_fetch_array($result) )
-	    {
-		$rows++;
-		for ( $i=0; $i<count($row); $i++ )
-		    fwrite($file, mysqli_real_escape_string($con, str_replace("	", "", $row[$i])) . "	");
-		fwrite($file, "\n");
-	    }
-	    fclose($file);
-	    $outputbuffer .= $tables[$n] . " backup saved as " . $tables[$n] . "-" . date("m-d-y") . ".bak\n{$rows} records processed.\n";
+		    /* Backup Data */
+		    $querystring = "SELECT * FROM " . $tables[$n];
+		    debugText($querystring);
+		    $result = mysqli_query($con, $querystring);
+	  	    $file = fopen($backupdir . $tables[$n] . "-" . date("m-d-y") . ".bak","w+");
+		    $rows = 0;
+		    while ( $row = mysqli_fetch_array($result) )
+		    {
+				$rows++;
+				for ( $i=0; $i<count($row); $i++ )
+				    fwrite($file, mysqli_real_escape_string($con, str_replace("	", "", $row[$i])) . "	");
+				fwrite($file, "\n");
+		    }
+		    fclose($file);
+		    $outputbuffer .= $tables[$n] . " backup saved as " . $tables[$n] . "-" . date("m-d-y") . ".bak\n{$rows} records processed.\n";
+		}
 	}
-    }
 }
 else if (isset($_POST['res']) && ($_POST['res'] == 'restore')) 
 {
@@ -147,7 +147,7 @@ else if (isset($_POST['res']) && ($_POST['res'] == 'restore'))
     $_POST['upload_db'] = substr($_POST['restore_db'], 0, strpos( $_POST['restore_db'], "-" ));
 }
 
-if (isset($_POST['data']))
+if (isset($_POST['data']) && ($_POST['data'] != ""))
 {
 	$dataparse = $_POST['data'];
 	$format = $_POST['format'];

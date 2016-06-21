@@ -9,8 +9,8 @@ require 'gazebo-header.php';
 
 <?php
 $querystring = "SELECT Username, ResetToken, ResetTokenExpires FROM Login WHERE ResetToken = '{$_GET['token']}' AND ResetTokenExpires >= CURDATE()";
-$result = mysql_query($querystring, $con);
-$row = mysql_fetch_array($result);
+$result = mysqli_query($con, $querystring);
+$row = mysqli_fetch_array($result);
 if ( !$row )
     echo "Invalid Password Token. Please <a href='" . pageLink("forgotpass") . "'>try again.</a><br />";
 else if ( isset($_POST['newPass']) && isset($_POST['confPass']))
@@ -20,9 +20,9 @@ else if ( isset($_POST['newPass']) && isset($_POST['confPass']))
     if ( $_POST['newPass'] != $_POST['confPass'] )
 	 echo "Please confirm password again.<br />";
     debugText($querystring);
-    $_POST['newPass'] = mysql_real_escape_string(crypt($_POST['newPass'], $encryption_salt)); //encrypt password
+    $_POST['newPass'] = mysqli_real_escape_string($con, crypt($_POST['newPass'], $encryption_salt)); //encrypt password
     $querystring = "UPDATE Login SET Password='{$_POST['newPass']}', ResetToken=NULL, ResetTokenExpires=NULL WHERE LOWER(Username)='{$lUsername}'";
-    $result = mysql_query($querystring, $con);
+    $result = mysqli_query($con, $querystring);
     if ( $result )
 	echo "Password changed successfully! Please <a href='" . pageLink("login") . "'>login</a> again.<br />";
     else

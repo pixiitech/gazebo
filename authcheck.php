@@ -11,19 +11,19 @@ if ( !isset($cms) ) // Standalone only
     
     if ($_SESSION['Level'] == $level_disabled)
     {
-        mysql_close($con);
+        mysqli_close($con);
         die ("<p>Your account has been deactivated. Contact your system administrator.</p> <i><a href='login.php'>Return to Login Page</a></i><br />");
     }
 
     if ($_SESSION['Level'] == $level_logout)
     {
-        mysql_close($con);
+        mysqli_close($con);
         die ("<p>Your account has been logged out.</p> <i><a href='login.php'>Return to Login Page</a></i><br />");
     }
 
     if ($_SESSION['Expiration'] < time())
     {
-        mysql_close($con);
+        mysqli_close($con);
         die ("<p>You session has expired.</p> <i><a href='login.php'>Return to Login Page</a></i><br />");
     }
 

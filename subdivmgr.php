@@ -25,19 +25,19 @@ if ( isset( $_POST['SDNew-Name'] ) && ( $_POST['SDNew-Name'] != '' ) && ( $_POST
 {
     $querystring = "SELECT Name FROM Subdivisions WHERE Name = '{$_POST['SDNew-Name']}'";
 	debugText($querystring);
-    $result1 = mysql_query( $querystring, $con );
+    $result1 = mysqli_query( $con, $querystring );
     $querystring = "SELECT Id FROM Subdivisions WHERE Id = {$_POST['SDNew-Id']}";
 	debugText($querystring);
-    $result2 = mysql_query( $querystring, $con );
+    $result2 = mysqli_query( $con, $querystring );
     if ( !is_numeric( $_POST['SDNew-Id'] ))
     {
 	echo "Please enter a numeric index.<br />";
     }
-    else if ( $row = mysql_fetch_array($result1) )
+    else if ( $row = mysqli_fetch_array($result1) )
     {
 	echo "Subdivision '" . $row['Name'] . "' is already taken! Please choose another name.<br />";
     }
-    else if ( $row = mysql_fetch_array($result2) )
+    else if ( $row = mysqli_fetch_array($result2) )
     {
 	echo "Subdivision #" . $row['Id'] . " is already taken! Please choose another number.<br />";
     }
@@ -46,7 +46,7 @@ if ( isset( $_POST['SDNew-Name'] ) && ( $_POST['SDNew-Name'] != '' ) && ( $_POST
 	$querystring = "INSERT INTO Subdivisions (Id, Name) VALUES ";
 	$querystring .= "( {$_POST['SDNew-Id']}, '{$_POST['SDNew-Name']}' )";
 	debugText($querystring);
-	$result = mysql_query( $querystring, $con );
+	$result = mysqli_query( $con, $querystring );
 	if ( $result )
 	    echo $_POST['SDNew-Name'] . " successfully added!<br />";
 	else
@@ -57,19 +57,19 @@ if ( isset( $_POST['SDNew-Name'] ) && ( $_POST['SDNew-Name'] != '' ) && ( $_POST
 
 /* Make changes to Subdivision Types */
 $querystring = "SELECT * FROM Subdivisions";
-$result = mysql_query($querystring, $con);
-while ( $row = mysql_fetch_array($result) )
+$result = mysqli_query($con, $querystring);
+while ( $row = mysqli_fetch_array($result) )
 {
     if ( isset( $_POST['SD' . $row['Id'] . '-delete'] ))
     {
 	$querystring = "DELETE FROM Subdivisions WHERE Id={$row['Id']}";
 	debugText($querystring);
-	$result = mysql_query( $querystring, $con );
+	$result = mysqli_query( $con, $querystring );
 	if ( $result )
 	{
 	    echo "Subdivision #{$row['Id']} '{$row['Name']}' deleted.<br />";
 	    $querystring = "SELECT * FROM Subdivisions";
-	    $result = mysql_query($querystring, $con);
+	    $result = mysqli_query($con, $querystring);
 	}
 	else
 	    echo "Subdivision #{$row['Id']} '{$row['Name']}' failed to delete.<br />";
@@ -83,12 +83,12 @@ while ( $row = mysql_fetch_array($result) )
 	    $oldname = $row['Name'];
 	    $querystring = "UPDATE Subdivisions SET Name='{$_POST['SD' . $row['Id'] . '-name']}' WHERE Id = {$row[Id]}";
 	    debugText($querystring);
-	    $result = mysql_query($querystring, $con);
+	    $result = mysqli_query($con, $querystring);
 	    if ($result)
 	    {
 	        echo "Changed name of subdivision '{$oldname}' to '{$_POST['SD' . $row['Id'] . '-name']}'.<br />";
 	        $querystring = "SELECT * FROM Subdivisions";
-	        $result = mysql_query($querystring, $con);
+	        $result = mysqli_query($con, $querystring);
 	    }
 	    else
 	        echo "Failed to change name of subdivision '{$oldname}' to '{$_POST['SD' . $row['Id'] . '-name']}'.<br />";
@@ -96,11 +96,11 @@ while ( $row = mysql_fetch_array($result) )
 
         $change = 0;
 
-	if ( $change == 1 )
-	{
-	    $querystring = "SELECT * FROM Subdivisions";
-	    $result = mysql_query($querystring, $con);
-	}
+		if ( $change == 1 )
+		{
+		    $querystring = "SELECT * FROM Subdivisions";
+		    $result = mysqli_query($con, $querystring);
+		}
     }
 }
 
@@ -109,9 +109,9 @@ echo "<div style='text-align:center'>";
 echo "<form id='sdmgr' name='sdmgr' method='post' action='" . pageLink("subdivmgr") . "'>";
 echo "<table style='margin:0px auto' border=1 cellpadding=4 ><tbody><tr><td>#</td><td>Name</td><td>Delete</td></tr>";
 $querystring = "SELECT * FROM Subdivisions ORDER BY Id";
-$result = mysql_query($querystring, $con);
+$result = mysqli_query($con, $querystring);
 $lastId = 0;
-while ( $row = mysql_fetch_array($result) )
+while ( $row = mysqli_fetch_array($result) )
 {
     echo "<tr><td>{$row['Id']}</td><td><input type='text' name='SD{$row['Id']}-name' value='{$row['Name']}' /></td>";
     echo "<td><input type='checkbox' name='SD{$row['Id']}-delete' /></td></tr>";
