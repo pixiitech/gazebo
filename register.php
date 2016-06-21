@@ -36,8 +36,8 @@ if ( isset( $_POST['Username'] ))
 	//Find Residx in the system
 	$success = false;
 	$querystring = "SELECT Residx, Tenantidx FROM Properties WHERE Properties.Unit = '{$_POST['Unit']}'";
-	$result = mysql_query($querystring, $con);
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($con, $querystring);
+	$row = mysqli_fetch_array($result);
 	$regcount = 0;
 	if ( $_POST['OwnerTenant'] == "Owner" )
 	{
@@ -62,8 +62,8 @@ if ( isset( $_POST['Username'] ))
 	else
 	{
 	    $querystring = "SELECT Residx FROM Login WHERE Residx = {$residx}";
-	    $result = mysql_query($querystring, $con);
-	    while ( $row = mysql_fetch_array($result) ) {
+	    $result = mysqli_query($con, $querystring);
+	    while ( $row = mysqli_fetch_array($result) ) {
 		$regcount++;
 	    }
 	}
@@ -131,8 +131,8 @@ if ( isset( $_POST['Username'] ))
 		echo "<div style='color:#FF0000'>Email already registered. Please contact management.</div>";
 	    }
 	    else {
-	        $_POST['Username'] = mysql_real_escape_string($_POST['Username']);
-	        $_POST['Password'] = mysql_real_escape_string($_POST['Password']);
+	        $_POST['Username'] = mysqli_real_escape_string($con, $_POST['Username']);
+	        $_POST['Password'] = mysqli_real_escape_string($con, $_POST['Password']);
 	        $userdata = array ('user_login' => $_POST['Username'], 'user_pass' => $_POST['Password'] );
                 $newID = wp_insert_user( $userdata );
                 add_user_meta( $newID, 'gazebo_level', $newlevel);
@@ -157,16 +157,16 @@ if ( isset( $_POST['Username'] ))
 	        $emailreg = 2;
 	    }
 	    $querystring = "SELECT EmailReg FROM Login WHERE EmailReg = '{$emailreg}' AND Residx = {$residx}";
-	    $result = mysql_query($querystring, $con);
+	    $result = mysqli_query($con, $querystring);
 	    if ( $result ) {
 		echo "<div style='color:#FF000'>Email already registered. Please contact management.</div>";
 	    }
-	    $_POST['Username'] = mysql_real_escape_string($_POST['Username']);
-	    $_POST['Password'] = mysql_real_escape_string(crypt($_POST['Password'], $encryption_salt));
+	    $_POST['Username'] = mysqli_real_escape_string($con, $_POST['Username']);
+	    $_POST['Password'] = mysqli_real_escape_string($con, crypt($_POST['Password'], $encryption_salt));
 	    $querystring = "INSERT INTO Login (Username, Password, Level, Residx, ColorScheme, ResultsPerRow, EmailReg) VALUES
 			    ('{$_POST['Username']}', '{$_POST['Password']}', {$newlevel}, {$residx}, {$default_colorscheme}, 
 			    4, {$emailreg})";
-	    $result = mysql_query($querystring, $con);
+	    $result = mysqli_query($con, $querystring);
 	    if ( $result )
 		$success = true;
 	}
