@@ -7,6 +7,8 @@ foreach(['fn', 'formlist'] as $key) {
         $_POST[$key] = "";
     }
 }
+if ((!isset($_POST['Type'])) || (($_POST['Type']) == ""))
+    $_POST['Type'] == 0;
 $Idx = "";
 $type = "";
 $title = "";
