@@ -29,7 +29,7 @@ if ( ! isset($cms) ) {
 			<script src='sorttable.js'></script>";
 }
 
-//Manually update SESSION so that new color schemes are shown immediately
+//Manually update SESSION so that profile changes take place immediately
 if ( isset($_POST['updateColor']) && ($_POST['updateColor'] == 'yes') ) {
     $_SESSION['ColorScheme'] = $_POST['colorSelect'];
 }
@@ -37,6 +37,9 @@ if ( isset($_POST['update24HrTime']) && ($_POST['update24HrTime'] == 'yes') ) {
     $_SESSION['24HrTime'] = $_POST['24HrTime'];
 }
 if ( isset($_POST['updateDebugMode']) && ($_POST['updateDebugMode'] == 'yes') ) {
+	if (!isset($_POST["debugMode"])) {
+      $_POST["debugMode"] = "";
+    }
     $_SESSION['DebugMode'] = $_POST['debugMode'];
 }
 
@@ -66,7 +69,7 @@ else { /* CMS - display div so that entire page responds to color schemes */
 $con = connect_gazebo_DB("mysqli");
 
 /* Supress undefined errors */
-// error_reporting( error_reporting() & ~E_NOTICE );
+error_reporting( error_reporting() & ~E_NOTICE );
 set_error_handler("_global_error_handler");
 function _global_error_handler($level, $message, $filename, $line_no, $context) {
 	debugText("ERRORHANDLER: {$message} {$filename}:{$line_no}");

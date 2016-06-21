@@ -132,7 +132,6 @@ if ( isset($_POST['submitted']) )
     $result2 = mysqli_query($con, $querystring);
     $row_res = mysqli_fetch_array($result2);
 }
-
 /* Update password */
 if ( isset($_POST['oldPass']) && isset($_POST['newPass']) && isset ($_POST['confPass'])
  && ($_POST['oldPass'] != '') && ($_POST['newPass'] != ''))
@@ -226,7 +225,7 @@ if ( isset($_POST['updateDebugMode']) && ($_POST['updateDebugMode'] == 'yes') ) 
 	echo "Debug Mode setting changed successfully!<br />";
     }
     else {
-	$querystring = "UPDATE Login SET DebugMode='{$_POST['DebugMode']}' WHERE Username='{$_SESSION['Username']}'";
+	$querystring = "UPDATE Login SET DebugMode='{$_POST['debugMode']}' WHERE Username='{$_SESSION['Username']}'";
 	debugText($querystring);
 	$result = mysqli_query($con, $querystring);
 	if ( $result )

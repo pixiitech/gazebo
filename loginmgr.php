@@ -143,7 +143,7 @@ while ( $row = mysqli_fetch_array($result) )
 	debugText($querystring2);
 	$result2 = mysqli_query($con, $querystring2);
 	if ($result2)
-	    echo "Reset password of user " . $row['Username'] . " to {$defaultpass}<br />";
+	    echo "Reset password of user " . $row['Username'] . " to {$default_pw}<br />";
 	else
 	    echo "Failed reset password of user " . $row['Username'] . ".<br />";
     }

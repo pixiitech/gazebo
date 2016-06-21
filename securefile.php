@@ -7,7 +7,7 @@ session_start();
 require 'config.php';
 require 'library.php';
 
-$con = connect_gazebo_DB();
+$con = connect_gazebo_DB("mysqli");
 
 $index = $_GET['Idx'];
 
@@ -20,7 +20,7 @@ $result = mysqli_query($con, $querystring);
 $row = mysqli_fetch_array($result);
 
 if ( !$row ) {
-    die("Invalid file ID specified.");
+    die("Invalid file ID {$index} specified.");
 }
 
 $resourcetype = 'download';

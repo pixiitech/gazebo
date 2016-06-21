@@ -37,3 +37,6 @@ vendors.php
 documents.php
 forms.php
 photos.php
+
+# Ignore config.php
+config.php
