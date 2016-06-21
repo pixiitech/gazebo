@@ -46,7 +46,7 @@ $fields = [
 	"PublishEmail" => [null, null, true]
 ];
 foreach($fields as $key => $value) {
-	if (!isset($_POST[$key])) {
+	if (($value[2] == false) && !isset($_POST[$key])) {
 		$_POST[$key] = "";
 	}
 }
