@@ -65,7 +65,7 @@ function uploadPic()
 echo "<p><h3 style='text-align:center'>File Management</h3>";
 
 /* Upload or Delete File */
-if ( isset($_FILES["file"]) )
+if ( isset($_FILES["Pic"]) )
   uploadPic();
 if ( isset($_POST['fn']) && ($_POST['fn'] == 'delete') )
 {
