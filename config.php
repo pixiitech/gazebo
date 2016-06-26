@@ -73,7 +73,6 @@ array( "community", $gazebo_imagedir . "community-button.png", "Community", $lev
 array( "settings", $gazebo_imagedir . "settings-button.png", "Settings", $level_staff, $level_staff, true),
 array( "profile", $gazebo_imagedir . "profile-button.png", "Profile", $level_tenant, $level_tenant, true),
 //Community submenu
-array( "gensettings", "", "General Settings", $level_staff, $level_staff, false),
 array( "comminfo", "", "Community Info", $level_staff, $level_staff, false),
 array( "calendar", "", "Event Calendar", $level_tenant, $level_security, false),
 array( "announce", "", "Manage Announcements", $level_staff, $level_staff, false),
@@ -81,6 +80,8 @@ array( "subdivmgr", "", "Subdivision Management", $level_staff, $level_staff, fa
 array( "amenitymgr", "", "Amenity Management", $level_staff, $level_staff, false),
 array( "webeditor", "", "Website Editor", $level_staff, $level_staff, false),
 //Tools submenu
+array( "gensettings", "", "General Settings", $level_staff, $level_staff, false),
+array( "rosterconfig", "", "Roster Configuration", $level_staff, $level_staff, false),
 array( "filemgr", "", "File Management", $level_staff, $level_staff, false),
 array( "securefilemgr", "", "Secure File Management", $level_staff, $level_staff, false),
 array( "notification", "", "Email Notification Setup", $level_staff, $level_staff, false),

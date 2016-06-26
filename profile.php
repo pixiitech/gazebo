@@ -12,19 +12,6 @@ else if ( !isset($cms) )
 <?php
 require 'authcheck.php';
 
-$phone11 = "";
-$phone12 = "";
-$phone13 = "";
-$phone21 = "";
-$phone22 = "";
-$phone23 = "";
-$phone31 = "";
-$phone32 = "";
-$phone33 = "";
-$phone41 = "";
-$phone42 = "";
-$phone43 = "";
-
 $lUsername = strtolower($_SESSION['Username']);
 if (isset($cms) && ($cms == "wp"))
 {
@@ -58,72 +45,69 @@ if ( isset($_POST['submitted']) )
     $_POST['Phone2'] = $_POST['Phone2-1'] . $_POST['Phone2-2'] . $_POST['Phone2-3'];
     $_POST['Phone3'] = $_POST['Phone3-1'] . $_POST['Phone3-2'] . $_POST['Phone3-3'];
     $_POST['Phone4'] = $_POST['Phone4-1'] . $_POST['Phone4-2'] . $_POST['Phone4-3'];
-    for ( $i = 0; $i < count($PersInfo); $i++ )
+    foreach ( $PersInfo as $key )
     {
-	if (( fetchSetting( 'PublishNameLock', $con ) == 'true' ) && ( $PersInfo[$i] == 'Name' )) {
-	    continue;
-	} 
-	//Publish info
-        if (isset($row_res['Publish' . $PersInfo[$i]]) &&
-	   ((($invertPublishSettings == 'false') && isset($_POST['Publish' . $PersInfo[$i]]) && ($row_res['Publish' . $PersInfo[$i]] == 0)) 	|| (($invertPublishSettings == 'true') && !isset($_POST['Publish' . $PersInfo[$i]]) && ($row_res['Publish' . $PersInfo[$i]] == 0))))
+	   //Publish info
+        if (isset($row_res['Publish' . $key]) &&
+	   ((($invertPublishSettings == 'false') && isset($_POST['Publish' . $key]) && ($row_res['Publish' . $key] == 0)) 	|| (($invertPublishSettings == 'true') && !isset($_POST['Publish' . $key]) && ($row_res['Publish' . $key] == 0))) && ( fetchSetting( "Publish" . $key . "Visibility", $con ) == 'enabled' ))
         {
-            $querystring = "UPDATE Residents SET Publish{$PersInfo[$i]} = 1 WHERE Idx = {$row_res['Idx']}";
+            $querystring = "UPDATE Residents SET Publish{$key} = 1 WHERE Idx = {$row_res['Idx']}";
             debugText($querystring);
             $result = mysqli_query($con, $querystring);
             if ( $result ) {
-                echo $PersInfo[$i] . " is now published.<br />";
-		$notifytext .= $PersInfo[$i] . " is now published in the roster.\n\r";
-		$notify = true;
-	    }
+                echo $key . " is now published.<br />";
+        		$notifytext .= $key . " is now published in the roster.\n\r";
+        		$notify = true;
+    	    }
             else {
-	        echo $PersInfo[$i] . " publish update failed.<br />";
-		$notifytext .= $PersInfo[$i] . " - publish update failed. Database Error.\n\r";
-		$notify = true;
-	    }
+    	        echo $key . " publish update failed.<br />";
+    		    $notifytext .= $key . " - publish update failed. Database Error.\n\r";
+    		    $notify = true;
+    	    }
         }
-	//Unpublish
-        else if (isset($row_res['Publish' . $PersInfo[$i]]) &&
-		((($invertPublishSettings == 'false') && !isset($_POST['Publish' . $PersInfo[$i]]) && ($row_res['Publish' . $PersInfo[$i]] == 1)) || (($invertPublishSettings == 'true') && isset($_POST['Publish' . $PersInfo[$i]]) && ($row_res['Publish' . $PersInfo[$i]] == 1))))
+	   //Unpublish
+        else if (isset($row_res['Publish' . $key]) &&
+		((($invertPublishSettings == 'false') && !isset($_POST['Publish' . $key]) && ($row_res['Publish' . $key] == 1)) || (($invertPublishSettings == 'true') && isset($_POST['Publish' . $key]) && ($row_res['Publish' . $key] == 1))) && ( fetchSetting( "Publish" . $key . "Visibility", $con ) == 'enabled' ))
         {
-            $querystring = "UPDATE Residents SET Publish{$PersInfo[$i]} = 0 WHERE Idx = {$row_res['Idx']}";
+            $querystring = "UPDATE Residents SET Publish{$key} = 0 WHERE Idx = {$row_res['Idx']}";
             debugText($querystring);
             $result = mysqli_query($con, $querystring);
             if ( $result ) {
-                echo $PersInfo[$i] . " is now unpublished.<br />";
-		$notifytext .= $PersInfo[$i] . " is now unpublished in the roster.\n\r";
-		$notify = true;
-	    }
+                echo $key . " is now unpublished.<br />";
+    		$notifytext .= $key . " is now unpublished in the roster.\n\r";
+    		$notify = true;
+    	    }
             else {
-	        echo $PersInfo[$i] . " unpublish update failed.<br />";
-		$notifytext .= $PersInfo[$i] . " - unpublish update failed. Database Error.\n\r";
-		$notify = true;
-	    }
+    	        echo $key . " unpublish update failed.<br />";
+    		    $notifytext .= $key . " - unpublish update failed. Database Error.\n\r";
+    		    $notify = true;
+    	    }
         }
-	//Update user fields
-	if ( isset($_POST[$PersInfo[$i]]) && ($row_res[$PersInfo[$i]] != $_POST[$PersInfo[$i]]))
-	{
-	    $querystring = "UPDATE Residents SET {$PersInfo[$i]} = '{$_POST[$PersInfo[$i]]}'";
-	    $querystring .= " WHERE Idx = {$row_res['Idx']}";
+    	//Update user fields
+    	if ( isset($_POST[$key]) && ($row_res[$key] != $_POST[$key]) && ($key != "Name"))
+    	{
+        	$querystring = "UPDATE Residents SET {$key} = '{$_POST[$key]}'";
+    	    $querystring .= " WHERE Idx = {$row_res['Idx']}";
             debugText($querystring);
             $result = mysqli_query($con, $querystring);
             if ( $result ) {
-                echo $PersInfo[$i] . " is now changed.<br />";
-		$notifytext .= $PersInfo[$i] . " has changed to {$_POST[$PersInfo[$i]]}.\n\r";
-		$notify = true;
-	    }
+                echo $key . " is now changed.<br />";
+        		$notifytext .= $key . " has changed to {$_POST[$key]}.\n\r";
+        		$notify = true;
+    	    }
             else {
-	        echo $PersInfo[$i] . " update failed.<br />";
-		$notifytext .= $PersInfo[$i] . " - personal info update failed. Database Error. Text = {$_POST[$PersInfo[$i]]}\n\r";
-		$notify = true;
-	    }
-	} 
+    	        echo $key . " update failed.<br />";
+        		$notifytext .= $key . " - personal info update failed. Database Error. Text = {$_POST[$key]}\n\r";
+        		$notify = true;
+        	}
+        } 
     }
     if ( $notify ) { 
-	$to = fetchSetting("ResidentInfoChangeEmail", $con);
-	$headers = "From: " . fetchSetting("Name", $con) . " Website System";
-	if ( $to != "" )
-	    mail($to, $title, $notifytext, $headers);
-	debugText("Mail sent to {$to} <br /> Subject: {$title}<br />  Text: {$notifytext}<br /> ");
+    	$to = fetchSetting("ResidentInfoChangeEmail", $con);
+    	$headers = "From: " . fetchSetting("Name", $con) . " Website System";
+    	if ( $to != "" )
+    	    mail($to, $title, $notifytext, $headers);
+    	debugText("Mail sent to {$to} <br /> Subject: {$title}<br />  Text: {$notifytext}<br /> ");
     }
 
     //Reload user's info as it may have changed.
@@ -157,25 +141,25 @@ if ( isset($_POST['oldPass']) && isset($_POST['newPass']) && isset ($_POST['conf
         	$querystring = "UPDATE Login SET Password='{$_POST['newPass']}' WHERE Username='{$_SESSION['Username']}'";
         	debugText($querystring);
         	$result = mysqli_query($con, $querystring);
-	}
+    	}
         else {
-	    echo "<span style='color:red'>Incorrect password.</span><br />";
-	}
+    	    echo "<span style='color:red'>Incorrect password.</span><br />";
+    	}
     }
     else if ( $cms == "wp" ) //Update database (wordpress)
     {
-	$creds = array();
-	$creds['user_login'] = wp_get_current_user()->user_login;
-	$creds['user_password'] = $_POST['oldPass'];
-	$creds['remember'] = false;
-	$user = wp_signon( $creds, false );
-	if ( !is_wp_error($user) ) {
-	    wp_set_password($_POST['newPass'], wp_get_current_user()->ID);
-	    $result = true;
-	}
-	else {
-	    echo "<span style='color:red'>Incorrect password.</span><br />";
-	}
+    	$creds = array();
+    	$creds['user_login'] = wp_get_current_user()->user_login;
+    	$creds['user_password'] = $_POST['oldPass'];
+    	$creds['remember'] = false;
+    	$user = wp_signon( $creds, false );
+    	if ( !is_wp_error($user) ) {
+    	    wp_set_password($_POST['newPass'], wp_get_current_user()->ID);
+    	    $result = true;
+    	}
+    	else {
+    	    echo "<span style='color:red'>Incorrect password.</span><br />";
+    	}
     }
     if ( $result )
 	echo "Password changed successfully! <a onclick=\"window.location.href = '/';\">Please click here to return to login page.</a><br />";
@@ -329,10 +313,15 @@ if (($row_res != false) && ($row_res['Type'] == 0))
     }
 
     echo "</td>";
-    echo "<td><input type='checkbox' name='PublishName' onclick='if (this.checked == false) document.forms['profile'].elements['PublishMailingAddress'].checked = false;'";
-    if ( fetchSetting( "PublishNameLock", $con ) == 'true' )
-	echo " disabled='disabled'";
-    echo " /></td></tr>";
+    echo "<td>";
+    switch ( fetchSetting( "PublishNameVisibility", $con )) {
+        case "enabled":
+          echo "<input type='checkbox' name='PublishName' />";
+          break;
+        case "locked":
+          echo "<input type='checkbox' name='PublishName' disabled='disabled' />";
+    }
+    echo "</td></tr>";
     echo "<tr><td>Mailing Address: </td><td>
 Address 1:&nbsp;<input type='text' name='MailingAddress' size='40' value='{$row_res['MailingAddress']}' /><br />
 Address 2:&nbsp;<input type='text' name='MailingAddress2' size='40' value='{$row_res['MailingAddress2']}' /><br />
@@ -341,7 +330,15 @@ State:&nbsp;<input type='text' name='State' size='3' value='{$row_res['State']}'
 ZIP:&nbsp;<input type='text' name='ZIP' size='5' value='{$row_res['ZIP']}' />&nbsp;&nbsp;
 Country:&nbsp;<input type='text' name='Country' size='10' value='{$row_res['Country']}' />&nbsp;&nbsp;
 </td>
-<td><input type='checkbox' name='PublishMailingAddress' /></td></tr>
+<td>";
+    switch ( fetchSetting( "PublishMailingAddressVisibility", $con )) {
+        case "enabled":
+          echo "<input type='checkbox' name='PublishMailingAddress' />";
+          break;
+        case "locked":
+          echo "<input type='checkbox' name='PublishMailingAddress' disabled='disabled' />";
+    }
+echo "</td></tr>
 <tr><td>Phone #1: </td><td>
 <select name='Phone1Type' id='Phone1Type' class='PhoneType'></select>&nbsp;
 <span class='Phone1StdFormatting'>(</span>
@@ -350,7 +347,15 @@ Country:&nbsp;<input type='text' name='Country' size='10' value='{$row_res['Coun
     <input type='text' name='Phone1-2' id='Phone1-2' size='3' value='{$phone12}' class='telEntrySec3' />
 <span class='Phone1StdFormatting'>-</span>
     <input type='text' name='Phone1-3' id='Phone1-3' size='4' value='{$phone13}' class='telEntrySec4' />
-    </td><td><input type='checkbox' name='PublishPhone1' /></td></tr>
+    </td><td>";
+    switch ( fetchSetting( "PublishPhone1Visibility", $con )) {
+        case "enabled":
+          echo "<input type='checkbox' name='PublishPhone1' />";
+          break;
+        case "locked":
+          echo "<input type='checkbox' name='PublishPhone1' disabled='disabled' />";
+    }
+echo "</td></tr>
 
     <tr><td>Phone #2: </td><td>
     <select name='Phone2Type' id='Phone2Type' class='PhoneType'></select>&nbsp;
@@ -360,7 +365,15 @@ Country:&nbsp;<input type='text' name='Country' size='10' value='{$row_res['Coun
     <input type='text' name='Phone2-2' id='Phone2-2' size='3' value='{$phone22}' class='telEntrySec3' />
 <span class='Phone2StdFormatting'>-</span>
     <input type='text' name='Phone2-3' id='Phone2-3' size='4' value='{$phone23}' class='telEntrySec4' />
-    </td><td><input type='checkbox' name='PublishPhone2' /></td></tr>
+    </td><td>";
+    switch ( fetchSetting( "PublishPhone2Visibility", $con )) {
+        case "enabled":
+          echo "<input type='checkbox' name='PublishPhone2' />";
+          break;
+        case "locked":
+          echo "<input type='checkbox' name='PublishPhone2' disabled='disabled' />";
+    }
+echo "</td></tr>
 
     <tr><td>Phone #3: </td><td>
     <select name='Phone3Type' id='Phone3Type' class='PhoneType'></select>&nbsp;
@@ -383,7 +396,15 @@ Country:&nbsp;<input type='text' name='Country' size='10' value='{$row_res['Coun
     </td><td></td></tr>
 
     <tr><td>Email: </td><td><input type='text' name='Email' size='40' value='{$row_res['Email']}' /></td>
-    <td><input type='checkbox' name='PublishEmail' /></td></tr>
+    <td>";
+    switch ( fetchSetting( "PublishEmailVisibility", $con )) {
+        case "enabled":
+          echo "<input type='checkbox' name='PublishEmail' />";
+          break;
+        case "locked":
+          echo "<input type='checkbox' name='PublishEmail' disabled='disabled' />";
+    }
+echo "</td></tr>
 
     <tr><td>Email 2: </td><td><input type='text' name='Email2' size='40' value='{$row_res['Email2']}' /></td>
     <td></td></tr>
@@ -450,7 +471,6 @@ echo "<script>
 	    }
 
 echo	"}
-
 </script>";
 
 echo "<script>document.forms['profile'].elements['colorSelect'].selectedIndex = {$_SESSION['ColorScheme']};</script>";

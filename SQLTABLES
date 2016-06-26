@@ -45,19 +45,13 @@ INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General",
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "TenantExpiration", "text", "Default Tenant Login Expiration (days)", "180");
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "DefaultPW", "text", "Default Reset Password", "12345");
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "ShowGuestInfo", "yesno", "Show Guest Info", "false");
-INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishNameLock", "yesno", "Lock Publish Name Setting", "true");
-INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishNameDefault", "yesno", "Default Publish Name Setting", "true");
-INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishPhone1Default", "yesno", "Default Publish Home Phone Setting", "false");
-INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishPhone2Default", "yesno", "Default Publish Cell Phone Setting", "false");
-INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishMailingAddressDefault", "yesno", "Default Publish Mailing Address Setting", "false");
-INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishEmailDefault", "yesno", "Default Publish Email Setting", "false");
+
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "WPPostDefaultMinLevel", "levelbox", "Default WP Post Security Level", "2");
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "SecureFileDefaultBehavior", "sfdefaultbehavior", "Secure File Link Default Behavior", "download");
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "DisplayUppercaseNames", "yesno", "Display resident names in uppercase", "false");
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "DisplayLastFirst", "yesno", "Display resident names as Last, First", "true");
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "DualRegistration", "yesno", "Enable Dual Registration for each Resident", "false");
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "RegistrationValidationByEmail", "yesno", "Validate registration by email in database", "false");
-INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("General", "InvertPublishSettings", "yesno", "Invert Publish Settings Display", "false");
 
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Violations", "ViolationExpiration", "text", "Violation Expiration (days)", "180");
 
@@ -75,3 +69,20 @@ INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "FromAddress", "text", "From Email Address", "");
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Email", "FromName", "text", "Display name on email originating from site", "");
 
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishNameLock", "yesno", "Lock Publish Name Setting", "true");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishNameDefault", "yesno", "Default Publish Name Setting", "true");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishPhone1Default", "yesno", "Default Publish Home Phone Setting", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishPhone2Default", "yesno", "Default Publish Cell Phone Setting", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishMailingAddressDefault", "yesno", "Default Publish Mailing Address Setting", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishEmailDefault", "yesno", "Default Publish Email Setting", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", 
+"PublishNameVisibility", "roster_visibility", "Publish Name Checkbox Visibility", "hidden");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", 
+"PublishPhone1Visibility", "roster_visibility", "Publish Phone #1 Checkbox Visibility", "enabled");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", 
+"PublishPhone2Visibility", "roster_visibility", "Publish Phone #2 Checkbox Visibility", "enabled");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", 
+"PublishMailingAddressVisibility", "roster_visibility", "Publish Mailing Address Checkbox Visibility", "enabled");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", 
+"PublishEmailVisibility", "roster_visibility", "Publish Email Checkbox Visibility", "enabled");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "InvertPublishSettings", "yesno", "Invert Publish Settings Display", "false");

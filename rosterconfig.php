@@ -57,23 +57,33 @@ while ( $row = mysqli_fetch_array($result) )
         echo "<input type='password' name='{$row['Name']}' size='35' value='{$row['Value']}' onchange='SetChangedFlag();' />";
     }
     else if ( $row['Format'] == 'roster_visibility' ) {
-	echo "<input type='radio' name='($row['Name']}' value='enabled' ";
-    	if ( $row['Value'] == 'true' ) {
-	    echo "checked='checked' ";
+    	echo "<input type='radio' name='{$row['Name']}' value='enabled' ";
+    	if ( $row['Value'] == 'enabled' ) {
+    	    echo "checked='checked' ";
     	}
-		
+        echo "onchange='SetChangedFlag();' />&nbsp;Enabled&nbsp;&nbsp;&nbsp;";
+        echo "<input type='radio' name='{$row['Name']}' value='locked' ";
+        if ( $row['Value'] == 'locked' ) {
+            echo "checked='checked' ";
+        }
+        echo "onchange='SetChangedFlag();' />&nbsp;Locked&nbsp;&nbsp;&nbsp;";
+        echo "<input type='radio' name='{$row['Name']}' value='hidden' ";
+        if ( $row['Value'] == 'hidden' ) {
+            echo "checked='checked' ";
+        }
+        echo "onchange='SetChangedFlag();' />&nbsp;Hidden&nbsp;&nbsp;&nbsp;";
     }
     else if ( $row['Format'] == 'yesno' ) {
-	echo "<input type='radio' name='{$row['Name']}' value='true' ";
-	if ( $row['Value'] == 'true' ) {
-	    echo "checked='checked' ";
-	}
-	echo "onchange='SetChangedFlag();' />&nbsp;Yes&nbsp;&nbsp;&nbsp;";
-	echo "<input type='radio' name='{$row['Name']}' value='false' ";
-	if ( $row['Value'] == 'false' ) {
-	    echo "checked='checked' ";
-	}
-	echo "onchange='SetChangedFlag();' />&nbsp;No&nbsp;&nbsp;&nbsp;";
+    	echo "<input type='radio' name='{$row['Name']}' value='true' ";
+    	if ( $row['Value'] == 'true' ) {
+    	    echo "checked='checked' ";
+	    }
+    	echo "onchange='SetChangedFlag();' />&nbsp;Yes&nbsp;&nbsp;&nbsp;";
+    	echo "<input type='radio' name='{$row['Name']}' value='false' ";
+    	if ( $row['Value'] == 'false' ) {
+    	    echo "checked='checked' ";
+    	}
+    	echo "onchange='SetChangedFlag();' />&nbsp;No&nbsp;&nbsp;&nbsp;";
     }
     echo "</td></tr>";
 }

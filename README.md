@@ -576,7 +576,35 @@ COMPLETED:
 - BUGFIX: Email2 now shows on resident roster in resident mode (if PublishEmail is on)
 - Fixed issue with Gazebo buttons showing too small, removed width: 50% CSS line
 - Fixed issue with encrypted password showing when password is reset in loginmgr (standalone only)
+- Added roster configuration page, and publish visibility settings
+- Fixed issue with Gazebo toolbar showing up very small (allowed 75% width)
 
+DB CHANGES:
+The following settings have type changed to Type 'Roster':
+
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishNameLock", "yesno", "Lock Publish Name Setting", "true");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishNameDefault", "yesno", "Default Publish Name Setting", "true");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishPhone1Default", "yesno", "Default Publish Home Phone Setting", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishPhone2Default", "yesno", "Default Publish Cell Phone Setting", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishMailingAddressDefault", "yesno", "Default Publish Mailing Address Setting", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishEmailDefault", "yesno", "Default Publish Email Setting", "false");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "InvertPublishSettings", "yesno", "Invert Publish Settings Display", "false");
+
+The following settings are new:
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", 
+"PublishNameVisibility", "roster_visibility", "Publish Name Checkbox Visibility", "hidden");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", 
+"PublishPhone1Visibility", "roster_visibility", "Publish Phone #1 Checkbox Visibility", "enabled");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", 
+"PublishPhone2Visibility", "roster_visibility", "Publish Phone #2 Checkbox Visibility", "enabled");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", 
+"PublishMailingAddressVisibility", "roster_visibility", "Publish Mailing Address Checkbox Visibility", "enabled");
+INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", 
+"PublishEmailVisibility", "roster_visibility", "Publish Email Checkbox Visibility", "enabled");
+
+Removed the "PublishNameLock" setting as it is superseded by "PublishNameVisibility"
+
+Add rosterconfig module entry to config.php
 
 TODO:
 

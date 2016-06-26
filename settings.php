@@ -10,6 +10,7 @@ require 'authcheck.php';
 
 echo "<br />
 <p><h3 style='text-align:center'><a href='" . pageLink("gensettings") . "'>General Settings</a></h3></p>
+<p><h3 style='text-align:center'><a href='" . pageLink("rosterconfig") . "'>Roster Configuration</a></h3></p>
 <p><h3 style='text-align:center'><a href='" . pageLink("filemgr") . "'>File Management</a></h3></p>
 <p><h3 style='text-align:center'><a href='" . pageLink("securefilemgr") . "'>Secure File Management</a></h3></p>
 <p><h3 style='text-align:center'><a href='" . pageLink("notification") . "'>Email Notification Setup</a></h3></p>
