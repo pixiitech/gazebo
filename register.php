@@ -24,7 +24,7 @@ else if ( isset( $_SESSION['Level'] ) && ( $_SESSION['Level'] > $level_disabled 
     echo "<script>window.location.href = '/';</script>";
 
 /* Connect to SQL Server */
-$con = connect_gazebo_DB();
+// $con = connect_gazebo_DB();
 
 $communityName = fetchSetting("Name", $con);
 
