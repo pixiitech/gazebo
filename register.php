@@ -1,19 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<?php require 'config.php'; 
-require_once 'library.php';
-session_start();?>
-<html>
-<head>
-<title>Register</title>
-<?php if (!isset($cms)){ include 'style-gazebo.php'; } ?>
-<?php require_once 'securimage/securimage.php'; ?>
-</head>
-<body>
-
-<?php if ( !isset($cms)) include "menu-web.php" ?>
-
 <?php
+$pagename = "register";
+require 'gazebo-header.php';
+
+if ( !isset($cms)) include "menu-web.php";
+require_once 'securimage/securimage.php';
+
 /* Redirect users that are already signed in */
 if ( isset( $cms ) )
 {
@@ -22,9 +13,6 @@ if ( isset( $cms ) )
 }
 else if ( isset( $_SESSION['Level'] ) && ( $_SESSION['Level'] > $level_disabled ) )
     echo "<script>window.location.href = '/';</script>";
-
-/* Connect to SQL Server */
-// $con = connect_gazebo_DB();
 
 $communityName = fetchSetting("Name", $con);
 
@@ -222,5 +210,3 @@ if ( !$success )
     </form></td></tr></table>";
 }
 ?>
-</body>
-</html>

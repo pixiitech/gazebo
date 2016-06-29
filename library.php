@@ -311,9 +311,9 @@ function fetchSubidx($subname, $con)
 function validateUnit($unit, $con)
 {
     $lUnit = strtolower($unit);
-    $result = mysqli_query($con, "SELECT Unit FROM Properties WHERE LOWER(Unit) = '{$lUnit}'");
-    $row = mysqli_fetch_array($result);
-    if (!$row)
+    $querystring = "SELECT Unit FROM Properties WHERE LOWER(Unit) = '{$lUnit}'";
+    $result = mysqli_query($con, $querystring);
+    if (!$result)
 	return false;
     else
 	return true;

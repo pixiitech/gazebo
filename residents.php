@@ -366,7 +366,6 @@ Mailing Address <input id='MailingAddress2' type='text' size='30' name='MailingA
 </td>
 </tr>";
 
-// $publishNameLock = fetchSetting( "PublishNameLock", $con );
 $invertPublishSettings = fetchSetting( "InvertPublishSettings", $con );
 
 if ( $_SESSION['Level'] >= $editlevel ) {
@@ -398,40 +397,6 @@ if ( $_SESSION['Level'] >= $editlevel ) {
 		}
 		$i++;
 	}
-
-// 	if ( $publishNameLock == 'true' ) {
-// 	    echo "<span hidden='hidden'>";
-// 	}
-// 	echo "<input type='checkbox' name='PublishName' id='PublishName' />&nbsp; ";
-// 	if ( $invertPublishSettings == 'true' ) {
-// 	    echo "DO NOT ";
-// 	}
-// 	echo "Publish Name and Unit # in Directory<br />";
-// 	if ( $publishNameLock == 'true' ) {
-// 	    echo "</span>";
-// 	}
-// 	echo "
-// &nbsp;&nbsp;&nbsp;&nbsp;<input id='PublishPhone1' name='PublishPhone1' type='checkbox' />&nbsp; ";
-// 	if ( $invertPublishSettings == 'true' ) {
-// 	    echo "DO NOT ";
-// 	}
-// 	echo "Publish Phone 1
-// 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-// 		<input id='PublishPhone2' name='PublishPhone2' type='checkbox' />&nbsp; ";
-// 	if ( $invertPublishSettings == 'true' ) {
-// 	    echo "DO NOT ";
-// 	}
-// 	echo "Publish Phone 2 &nbsp;<br />
-// 	&nbsp;&nbsp;&nbsp;&nbsp;<input id='PublishMailingAddress' name='PublishMailingAddress' type='checkbox' />&nbsp; ";
-// 	if ( $invertPublishSettings == 'true' ) {
-// 	    echo "DO NOT ";
-// 	}
-// 	echo "Publish Mailing Address &nbsp;
-// 		<input id='PublishEmail' name='PublishEmail' type='checkbox' />&nbsp; ";
-// 	if ( $invertPublishSettings == 'true' ) {
-// 	    echo "DO NOT ";
-// 	}
-// 	echo "Publish Email &nbsp;";
 }
 echo "</td></tr>";
 if (( $_SESSION['Level'] >= $editlevel ) && ( fetchSetting("ShowGuestInfo", $con) == 'true' )) {

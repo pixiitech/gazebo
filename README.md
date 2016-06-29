@@ -582,7 +582,6 @@ COMPLETED:
 DB CHANGES:
 The following settings have type changed to Type 'Roster':
 
-INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishNameLock", "yesno", "Lock Publish Name Setting", "true");
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishNameDefault", "yesno", "Default Publish Name Setting", "true");
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishPhone1Default", "yesno", "Default Publish Home Phone Setting", "false");
 INSERT INTO Settings (Type, Name, Format, Description, Value) VALUES ("Roster", "PublishPhone2Default", "yesno", "Default Publish Cell Phone Setting", "false");
