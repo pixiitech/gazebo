@@ -160,7 +160,7 @@ if ( isset( $_POST['Username'] ))
 	}
 	if ( $success )
 	{
-	    echo "Creating your new user account was successful! Please login with your new username {$_POST['Username']} and password. \n\r";
+	    echo "<h3>Creating your new user account was successful! Please login with your new username {$_POST['Username']} and password.</h3> \n\r";
 	    if ( isset( $expirationdate ))
 		echo "Account expires on " . $expirationdate . ".<br />";
 
