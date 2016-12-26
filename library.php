@@ -147,6 +147,11 @@ function pageTitle($pagename)
     return -1;
 }
 
+/* Determine if user is at or above security level */
+function gazebo_user_is($level) {
+  return ( isset($_SESSION['Level'] ) && ( $_SESSION['Level'] > $level ));
+}
+
 /*******Database connectors*******/
 /* Functions take one argument, type to allow for mysqli connections
    Return the object reference for either the Gazebo DB or Wordpress DB */

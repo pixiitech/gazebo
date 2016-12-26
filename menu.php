@@ -49,26 +49,7 @@ for ( $i = 0; $i < count($modules); $i++ )
 
 echo "</tr></tbody></table>";
 
-/* Below menu left area */
-echo "<span style='position: absolute'>";
-/* Show help icon */
-if ( !isset( $cms ) ) {
-    echo "<br />";
-}
-echo "<img src='{$gazebo_imagedir}help.png' onclick=\"window.open('";
-echo pageLink("help", "module={$pagename}");
-echo "','help','width=800, height=550, status=yes'); return false;\">";
-
-/* Show print icon */
-if ( isset($printable) ) {
-    echo "<img src='{$gazebo_imagedir}print.png' 
-		onClick='document.getElementById(\"printdata\").value = document.getElementById(\"printarea\").innerHTML;
-			 document.forms[\"printform\"].submit();' />";
-    echo "<form name='printform' method='post' action='" . pageLink("print") . "' target='_blank'>";
-    echo "<input type='hidden' name='printdata' id='printdata' />";
-    echo "</form>";
-}
-echo "</span>";
+require_once 'context-buttons.php';
 
 if ( !isset($cms)) echo "</p>";
 

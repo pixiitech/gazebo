@@ -198,17 +198,19 @@ textarea
 }
 </style>
 
-<?php 
+<?php
 
-if ( isset( $_SESSION['Level'] ) && ( $_SESSION['Level'] >= $level_security ) )
-    include 'menu.php';
-else if ( !isset($cms) )
-    include 'menu-web.php'; 
+if ( gazebo_user_is($level_security) )
+  include 'menu.php';
+else if ( isset($cms) )
+  include 'context-buttons.php';
+else
+  include 'menu-web.php';
 
 if ( $_SESSION['Level'] >= $editlevel )
 	echo "<h2 style='text-align:center'>Resident Management</h2>";
 else
-	echo "<h2 style='text-align:center'>Resident Directory</h2>";	
+	echo "<h2 style='text-align:center'>Resident Directory</h2>";
 
 require 'authcheck.php';
 
@@ -315,7 +317,7 @@ echo "</td>
 <td>
 <span class='formfields Insert Update'>";
 echo "Phone:<br />";
-if ( $_SESSION['Level'] >= $level_security ) {
+if ( gazebo_user_is($level_security) ) {
     echo "<select id='Phone3Type' name='Phone3Type' class='PhoneType'></select>
 <span class='Phone3StdFormatting'>(</span>
 <input class='telEntrySec3' id='Phone3-1' type='text' size='3' name='Phone3-1' />
@@ -399,7 +401,7 @@ if ( $_SESSION['Level'] >= $editlevel ) {
 	}
 }
 echo "</td></tr>";
-if (( $_SESSION['Level'] >= $editlevel ) && ( fetchSetting("ShowGuestInfo", $con) == 'true' )) {
+if (( gazebo_user_is($editlevel) ) && ( fetchSetting("ShowGuestInfo", $con) == 'true' )) {
 	echo "<tr class='formfields Insert Update'";
 	echo "><td>Guest Info<br />
 	<textarea id='GuestInfo' name='GuestInfo' cols='50' rows='2'></textarea></td>";
