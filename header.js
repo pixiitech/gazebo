@@ -77,13 +77,18 @@ function convertPhoneFieldStd(num) {
 }
 
 function contradict(b) {
-    if ( b == true ) {
-	return false;
-    }
-    else {
-	return true;
-    }
-
+  if ( b == "true") {
+    return false;
+  }
+  if ( b == "false") {
+    return true;
+  }
+  if ( b == true ) {
+    return false;
+  }
+  else {
+    return true;
+  }
 }
 
 $(document).ready(function(){

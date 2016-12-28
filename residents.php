@@ -49,6 +49,11 @@ foreach($fields as $key => $value) {
 	if (($value[2] == false) && !isset($_POST[$key])) {
 		$_POST[$key] = "";
 	}
+  if ($value[2] == true) {
+    echo "<script>";
+    echo "var default{$key} = '" . fetchSetting( $key . "Default", $con ) . "';";
+    echo "</script>";
+  }
 }
 ?>
 
@@ -63,16 +68,18 @@ var insertCallback = function() {
 		if (fetchSetting('InvertPublishSettings', $con) == 'true') {
 		  foreach ($fields as $key => $value) {
 		  	if ($value[2]) {
-			    echo "document.forms['recordinput'].elements['{$key}'].checked = contradict(default{$key});";
+          echo "$('#{$key}').prop('checked', contradict(default{$key}));";
+			    /* echo "document.forms['recordinput'].elements['{$key}'].checked = contradict(default{$key});"; */
 			  }
 		  }
-		} 
+		}
 		else {
 		  foreach ($fields as $key => $value) {
 		  	if ($value[2]) {
-			    echo "document.forms['recordinput'].elements['{$key}'].checked = default{$key};";
+          echo "$('#{$key}').prop('checked', default{$key});";
+			    /* echo "document.forms['recordinput'].elements['{$key}'].checked = default{$key};"; */
 			  }
-		  }			
+		  }
 		}
 ?>
 }
