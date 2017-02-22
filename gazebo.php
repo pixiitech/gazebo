@@ -206,13 +206,13 @@ function gazebo_filter($input) {
 
     $where .= $GLOBALS['wpdb']->prepare( " AND gazebo_minlevel <= %s", $userlevel );
 	    return $where;
-    } 
+    }
 function gazebo_logout() {
     $_SESSION['Level'] = 0;
     session_destroy();
 }
 
-function gazebo_login_filter($username, $password) {
+function gazebo_login_filter($username, $password=nil) {
     $username = trim(strtolower($username));
     //Resist SQL Injection attacks
     if ( strpos($username, ';') ) {
