@@ -51,12 +51,11 @@ $result = mysqli_query($con, $querystring);
 $SubdivTypes = array();
 while ( $row = mysqli_fetch_array($result) )
     array_push($SubdivTypes, array($row['Id'], $row['Name']));
-foreach(["SavedQuery", "Resname", "Tenantname", "Unit", "Address", "Subdivision"] as $key) {
+foreach(["Resname", "Tenantname", "Unit", "Address", "Subdivision"] as $key) {
 	if (!isset($_POST[$key])) {
 		$_POST[$key] = "";
 	}
 }
-$useSavedQuery = false;
 ?>
 <h2 style="text-align:center">Properties Management</h2>
 
@@ -127,7 +126,6 @@ require 'authcheck.php';
 
 echo "<form name='recordinput' method='post' action='" . pageLink("properties") . "'>
 <p class='center'>
-<input type='hidden' id='SavedQuery' name='SavedQuery' value=\"{$_POST['SavedQuery']}\" />
 <input id='fnList' type='radio' name='function' value='list' />List&nbsp;&nbsp;
 <input id='fnSearch' type='radio' name='function' value='search' />Search&nbsp;&nbsp;";
 if ($_SESSION['Level'] >= $editlevel)
@@ -234,7 +232,6 @@ switch ($_POST["function"])
 	else
 		echo "Property #{$_POST["Unit"]} failed to save.<br />";
 	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
 	break;
 
     case "update":
@@ -275,7 +272,6 @@ switch ($_POST["function"])
 	else
 		echo "Property #{$_POST["Unit"]} failed to save.<br />";
 	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
 	break;
     case "delete":
 	checkRadio("fnSearch", "true");
@@ -297,7 +293,6 @@ switch ($_POST["function"])
 	else
 		echo "Property #{$_POST["Unit"]} failed to save.<br />";
 	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
 	break;
    default:
 	break;
@@ -328,21 +323,16 @@ if (( $_POST['function'] == 'search' ) || ( $_POST['function'] == 'list' )) {
 		$lResname = strtolower($_POST['Resname']);
 		$querystring .= " AND ((LOWER(Residents.FirstName) LIKE '%{$lResname}%') OR
 				       (LOWER(Residents.LastName) LIKE '%{$lResname}%'))
- 				  AND Residents.Type = 0 AND Properties.Residx = Residents.Idx"; 
+ 				  AND Residents.Type = 0 AND Properties.Residx = Residents.Idx";
 	}
 	if ( $_POST['Tenantname'] != "" ) {
 		$lTenantname = strtolower($_POST['Tenantname']);
 		$querystring .= " AND ((LOWER(Residents.FirstName) LIKE '%{$lTenantname}%') OR
 				       (LOWER(Residents.LastName) LIKE '%{$lTenantname}%'))
-				AND Residents.Type = 1 AND Properties.Tenantidx = Residents.Idx"; 
+				AND Residents.Type = 1 AND Properties.Tenantidx = Residents.Idx";
 	}
 	debugText("Original Query:" . $querystring);
-	if ( $useSavedQuery == 'yes' ) {
-	    $querystring = stripslashes($_POST['SavedQuery']);
-	    debugText("Using Saved Query:" . $querystring);
-	}
-	echo "<script>document.forms['recordinput'].elements['SavedQuery'].value = \"{$querystring}\";</script>";
-	$result = mysqli_query($con, $querystring); 
+	$result = mysqli_query($con, $querystring);
 	$k=0;
 	$results=0;
 	$violations=0;

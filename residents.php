@@ -1,16 +1,15 @@
-<?php 
+<?php
 $pagename = "residents";
 $printable = true;
-require 'gazebo-header.php'; 
+require 'gazebo-header.php';
 
-foreach(['Idx', 'SavedQuery', 'Unit'] as $key) {
+foreach(['Idx', 'Unit'] as $key) {
 	if (!isset($_POST[$key])) {
 	  $_POST[$key] = "";
 	}
 }
-$useSavedQuery = false;
 $type = 0;
-//Resident fields here are 
+//Resident fields here are
 // DB fieldname => [0 - Associated publish boolean field name (null=not shown in roster),
 //					1 - searchability (null or an array of field names that are searched when processed),
 //					2 - publish (true=field is a publish boolean field)]
@@ -27,8 +26,8 @@ $fields = [
 	"Phone1Type" => ["PublishPhone1", null, false],
 	"Phone2Type" => ["PublishPhone2", null, false],
 	"Phone3Type" => [null, null, false],
-	"Phone4Type" => [null, null, false],	
-	"MailingAddress" => ["PublishMailingAddress", ["MailingAddress", "MailingAddress2"], false], 
+	"Phone4Type" => [null, null, false],
+	"MailingAddress" => ["PublishMailingAddress", ["MailingAddress", "MailingAddress2"], false],
 	"MailingAddress2" => ["PublishMailingAddress", null, false],
 	"City" => ["PublishMailingAddress", ["City"], false],
 	"State" => ["PublishMailingAddress", ["State"], false],
@@ -91,7 +90,7 @@ var searchCallback = function() {
 
 // fillInForm - called from various locations, fills in search/edit fields with record info or defaults
 // 		Arguments: fn - Number of form function to switch to (1 - 7)
-//			   args - Array of data to fill in each field. 
+//			   args - Array of data to fill in each field.
 //				  Format: [[FirstName, "first"], [LastName, "last"], ... ]
 function fillInForm(fn, args)
 {
@@ -112,7 +111,7 @@ function fillInForm(fn, args)
 		if (document.forms['recordinput'].elements[FieldArray[i][0] + '-1'].size >= 10) {
 		    document.forms['recordinput'].elements[FieldArray[i][0] + '-1'].value = FieldArray[i][1];
 		}
-		else {	    
+		else {
 		    document.forms['recordinput'].elements[FieldArray[i][0] + '-1'].value = FieldArray[i][1].substr(0, 3);
 		    document.forms['recordinput'].elements[FieldArray[i][0] + '-2'].value = FieldArray[i][1].substr(3, 3);
 		    document.forms['recordinput'].elements[FieldArray[i][0] + '-3'].value = FieldArray[i][1].substr(6, 4);
@@ -140,7 +139,7 @@ function fillInForm(fn, args)
         		if (selectObj.options[j].value == FieldArray[i][1]) {
             		    selectObj.options[j].selected = true;
 			    break;
-        		}	
+        		}
     		    }
 		}
 	    }
@@ -260,7 +259,6 @@ echo "<span name='flasherror' id='flasherror' class='flasherror'></span>";
 echo "<form name='recordinput' method='post' action='" . pageLink("residents") . "' enctype='multipart/form-data' ><p class='center'>
 <input type='hidden' name='MAX_FILE_SIZE' value='{$max_upload_size}' />
 <input type='hidden' id='Idx' size='2' name='Idx' hidden='hidden' />
-<input type='hidden' id='SavedQuery' name='SavedQuery' value=\"{$_POST['SavedQuery']}\" />
 <input id='fnList' type='radio' name='function' value='list' />List&nbsp;&nbsp;
 <input id='fnSearch' type='radio' name='function' value='search' />Search&nbsp;&nbsp;";
 if ($_SESSION['Level'] >= $editlevel)
@@ -278,11 +276,11 @@ echo "
 <tr class='formfields Search Insert Update Delete'>
 <td>
 <span class='formfields Delete'>Are you sure you want to delete resident </span>
-<span class='formfields Search Insert Update'>Name:&nbsp;</span> 
+<span class='formfields Search Insert Update'>Name:&nbsp;</span>
 <span class='formfields Search Insert Update Delete'>
-<span class='formfields Search Insert Update'>First&nbsp;</span> 
+<span class='formfields Search Insert Update'>First&nbsp;</span>
 <input id='FirstName' type='text' size='15' name='FirstName' />
-<span class='formfields Search Insert Update'>&nbsp;&nbsp;Last&nbsp; 
+<span class='formfields Search Insert Update'>&nbsp;&nbsp;Last&nbsp;
 <input id='LastName' type='text' size='15' name='LastName' />
 </span></span>
 <span class='formfields Delete'> ?</span>
@@ -494,7 +492,6 @@ switch ( $_POST['function']) {
 		}
 		$_GET['Idx'] = $_POST['Idx'];
 		$_POST['function'] = 'search';
-		$useSavedQuery = 'yes';
 		break;
 
   case "insert":
@@ -523,7 +520,7 @@ switch ( $_POST['function']) {
 			}
 			else
 			  $querystring .= "'{$_POST[$key]}', ";
-		}	
+		}
 		$querystring = substr($querystring, 0, strlen($querystring) - 2); //Chop off last comma space
 		$querystring .= ")";
 		debugText($querystring);
@@ -542,7 +539,6 @@ switch ( $_POST['function']) {
 		    echo "Resident {$_POST['FirstName']} {$_POST['LastName']} saved. Idx={$row['Idx']}<br />";
 		}
 		$_POST['function'] = 'search';
-		$useSavedQuery = 'yes';
 		break;
 
   case "delete":
@@ -565,7 +561,6 @@ switch ( $_POST['function']) {
 			echo "Resident #{$_POST["Idx"]} failed to save.<br />";
 
 		$_POST['function'] = 'search';
-		$useSavedQuery = 'yes';
 		break;
 
   default:
@@ -613,12 +608,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 
 	//Perform query
 	debugText("Original Query:" . $querystring);
-	if ( $useSavedQuery == 'yes' ) {
-	    $querystring = stripslashes($_POST['SavedQuery']);
-	    debugText("Using Saved Query:" . $querystring);
-	}
-	echo "<script>document.forms['recordinput'].elements['SavedQuery'].value = \"{$querystring}\";</script>";
-	$result = mysqli_query($con, $querystring); 
+	$result = mysqli_query($con, $querystring);
 	//Display table
 	$k=0;
 	$results=0;
@@ -657,7 +647,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		}
 		else {
 		    $type = 'owner';
-		}  
+		}
 		$anchor = "";
 
 		//Prepare link (roster view)
@@ -665,7 +655,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
         foreach($fields as $key => $value) {
         	//Non-admin login, publish field is specified, and publish field = 1
         	if ( $_SESSION['Level'] < $level_security ) {
-        	  if ($value[0] && $row[$value[0]]) { 
+        	  if ($value[0] && $row[$value[0]]) {
         	    $anchor .= "['{$key}', '{$row[$key]}'], ";
         	  }
         	}
@@ -766,13 +756,13 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 
 		//Display email
 		echo "<td>";
-		if (( trim($row['Email']) != "" ) && 
+		if (( trim($row['Email']) != "" ) &&
 		    (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail'] ))) {
 		    echo "<a href='mailto:{$row['Email']}'>" . $row['Email'] . "</a>";
 		}
 		if (( $row['LastName2'] != NULL) && ( $row['LastName2'] != "" ) ) {
 		    echo "<hr>";
-		    if (( trim($row['Email2']) != "" ) && 
+		    if (( trim($row['Email2']) != "" ) &&
 		        (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail'] ))) {
 		        echo "<a href='mailto:{$row['Email2']}'>" . $row['Email2'] . "</a>";
 		    }
@@ -781,9 +771,9 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 
 		//Delete link
 		if ( $_SESSION['Level'] >= $editlevel )
-		{ 
-		    echo "<td>";	
-    		    echo "<a href=\"#top\" onclick=\"fillInForm(5, [['Idx', '{$row['Idx']}'], ['FirstName', '{$row['FirstName']} {$row['LastName']}']]);\" >X</a>"; 
+		{
+		    echo "<td>";
+    		    echo "<a href=\"#top\" onclick=\"fillInForm(5, [['Idx', '{$row['Idx']}'], ['FirstName', '{$row['FirstName']} {$row['LastName']}']]);\" >X</a>";
 		    echo "</td>";
 		}
 		echo "</tr>";

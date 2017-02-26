@@ -1,6 +1,6 @@
-<?php 
+<?php
 $pagename = 'packages';
-require 'gazebo-header.php'; 
+require 'gazebo-header.php';
 ?>
 
 <script>
@@ -51,8 +51,8 @@ function fillInForm(fn, Idx, Unit, Recipient, Description, Type, ReceivedBy, Ret
 <?php
 function errorMessage($msg, $fn)
 {
-        echo sprintf("<script>fillInForm(%u, '%u', '%s', '%s', '%s', '%s', '%s', '%s');</script>", 
-	    $fn, $_POST['Idx'], $_POST['Unit'], $_POST['Recipient'], 
+        echo sprintf("<script>fillInForm(%u, '%u', '%s', '%s', '%s', '%s', '%s', '%s');</script>",
+	    $fn, $_POST['Idx'], $_POST['Unit'], $_POST['Recipient'],
 	    $_POST['Description'], $_POST['Type'], $_POST['ReceivedBy'], $_POST['ReturnedBy'] );
 
     echo("$msg" . "<br />");
@@ -62,7 +62,6 @@ require 'authcheck.php';
 
 echo "<form name='recordinput' method='post' action='" . pageLink("packages") . "' enctype='multipart/form-data' ><p class='center'>
 <input type='hidden' name='MAX_FILE_SIZE' value='{$max_upload_size}' />
-<input type='hidden' id='SavedQuery' name='SavedQuery' value=\"{$_POST['SavedQuery']}\" />
 <input id='fnList' type='radio' name='function' value='list' onClick='document.forms['recordinput'].reset(); this.checked=true;' />List&nbsp;&nbsp;
 <input id='fnSearch' type='radio' name='function' value='search' />Search&nbsp;&nbsp;
 <input id='fnInsert' type='radio' name='function' value='insert' onClick='document.forms['recordinput'].reset(); this.checked=true;' />Submit New&nbsp;&nbsp;
@@ -89,10 +88,10 @@ Package # <input id='Idx' type='text' size='5' name='Idx' />
 <input id='StartYear' type='text' size='2' name='StartYear' value='YY' onClick='if (this.value==\"YY\") this.value=\"\";' />&nbsp to:
 <input id='EndMonth' type='text' size='2' name='EndMonth' value='MM' onClick='if (this.value==\"MM\") this.value=\"\";' />/
 <input id='EndDay' type='text' size='2' name='EndDay' value='DD' onClick='if (this.value==\"DD\") this.value=\"\";' />/
-<input id='EndYear' type='text' size='2' name='EndYear' value='YY' onClick='if (this.value==\"YY\") this.value=\"\";' />&nbsp 
+<input id='EndYear' type='text' size='2' name='EndYear' value='YY' onClick='if (this.value==\"YY\") this.value=\"\";' />&nbsp
 <input id='AwaitingPickup' type='checkbox' name='AwaitingPickup' value='Yes' checked=\"true\" />Awaiting Pickup Only
 </td></tr><tr>
-<td class='formfields Search Insert Update'>Carrier:  
+<td class='formfields Search Insert Update'>Carrier:
 <select id='Type' name='Type'>
 <option value='None'></option>
 <option value='USPS'>USPS</option>
@@ -139,10 +138,10 @@ switch ($_POST["function"])
 	  errorMessage("Please specify a carrier type.", 3);
 	  break;
 	}
-	
+
 	//Save SQL Record
 	$curtime = getdate();
-	$sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " . 
+	$sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " .
 		$curtime['hours'] . ":" . $curtime['minutes'] . ":" . $curtime['seconds'];
 	//$_POST['Description'] = $mysql_real_escape_string($_POST['Description']);
 	//$_POST['Recipient'] = $mysql_real_escape_string($_POST['Recipient']);
@@ -178,7 +177,6 @@ switch ($_POST["function"])
 		    echo "Email failed to send: {$emailaddr}<br />";
 	}
 	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
 	break;
 
     case "update":
@@ -200,7 +198,7 @@ switch ($_POST["function"])
 
 	//Save SQL Record
 	$curtime = getdate();
-	$sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " . 
+	$sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " .
 		$curtime['hours'] . ":" . $curtime['minutes'] . ":" . $curtime['seconds'];
 
 	$querystring = "UPDATE Packages SET Unit={$_POST['Unit']}, PickupTime='{$_POST['PickupTime']}', Type='{$_POST['Type']}', Recipient='{$_POST['Recipient']}', ReceivedBy='{$_POST['ReceivedBy']}',
@@ -216,7 +214,6 @@ switch ($_POST["function"])
 	 	break;
         }
 	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
 	break;
 
     case "delete":
@@ -238,7 +235,6 @@ switch ($_POST["function"])
 	else
 		echo "Package #{$_POST["Idx"]} failed to save.<br />";
 	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
 	break;
     case "pickup":
 	if (( $_POST["Idx"] == "" ) || !(is_numeric( $_POST["Idx"] )))
@@ -252,7 +248,7 @@ switch ($_POST["function"])
 	  break;
 	}
 	$curtime = getdate();
-	$sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " . 
+	$sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " .
 		$curtime['hours'] . ":" . $curtime['minutes'] . ":" . $curtime['seconds'];
 	$querystring = "UPDATE Packages SET PickupTime = '{$sqltime}', ReturnedBy = '{$_SESSION['Username']}' WHERE Idx = {$_POST['Idx']}";
 	$result = mysql_query($querystring, $con);
@@ -261,7 +257,6 @@ switch ($_POST["function"])
 	else
 		echo "Package #{$_POST["Idx"]} failed to save.<br />";
 	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
 	break;
 
     default:
@@ -319,12 +314,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		$querystring .= " AND LOWER(ReturnedBy) LIKE '%{$lReturnedBy}%'";
 	}
 	debugText("Original Query:" . $querystring);
-	if ( $useSavedQuery == 'yes' ) {
-	    $querystring = stripslashes($_POST['SavedQuery']);
-	    debugText("Using Saved Query:" . $querystring);
-	}
-	echo "<script>document.forms['recordinput'].elements['SavedQuery'].value = \"{$querystring}\";</script>";
-	$result = mysql_query($querystring, $con); 
+	$result = mysql_query($querystring, $con);
 	$k=0;
 	$results=0;
 	echo "<thead><tr><th>Package#</th><th>Unit</th><th>For</th><th>Received Time</th><th>Received By</th><th>Pick-up Time</th><th>Returned By</th><th>Carrier</th>";
@@ -343,8 +333,8 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
                     $selectOpt = 2;
                 $picture = $imagedir . $row['Pic'];
                 echo "<td>";
-                echo sprintf("<a href=\"#top\" onclick=\"fillInForm(%u, '%u', '%s', '%s', '%s', '%s', '%s', '%s')\" >#%u</a>", 
-                    $selectOpt, $row['Idx'], $row['Unit'], mysql_real_escape_string($row['Recipient']), 
+                echo sprintf("<a href=\"#top\" onclick=\"fillInForm(%u, '%u', '%s', '%s', '%s', '%s', '%s', '%s')\" >#%u</a>",
+                    $selectOpt, $row['Idx'], $row['Unit'], mysql_real_escape_string($row['Recipient']),
                     mysql_real_escape_string($row['Description']), $row['Type'], $row['ReceivedBy'], $row['ReturnedBy'], $row['Idx'] );
                 echo "</td><td>";
                 echo $row['Unit'];
@@ -354,7 +344,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	    	$submitTime = parseTime($row['ReceiveTime']);
 	    	echo displayDate($submitTime['Month'], $submitTime['Day'], $submitTime['Year']);
 	    	echo " ";
-	    	echo displayTime($submitTime['Hour'], $submitTime['Minute']); 
+	    	echo displayTime($submitTime['Hour'], $submitTime['Minute']);
                 echo "</td><td>";
                 echo $row['ReceivedBy'];
                 echo "</td>";
@@ -366,7 +356,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	    	    $pickupTime = parseTime($row['PickupTime']);
 	    	    echo displayDate($pickupTime['Month'], $pickupTime['Day'], $pickupTime['Year']);
 	    	    echo " ";
-	    	    echo displayTime($pickupTime['Hour'], $pickupTime['Minute']); 
+	    	    echo displayTime($pickupTime['Hour'], $pickupTime['Minute']);
                     echo "</td><td>";
                     echo $row['ReturnedBy'];
                 }

@@ -2,7 +2,7 @@
 /*******Page link and security functions*******/
 
 /* pageLink - Page link generator
-   Returns a URL link to a specified Gazebo module in the form of: 
+   Returns a URL link to a specified Gazebo module in the form of:
 			    <WordPress> http://www.sitename.com/?page_id=<container page>&page=<pagename>&<args>
 			    <standalone> http://www.sitename.com/<pagename>.php?<args>
    Accepts three arguments: $pagename - Pagename set by $pagename in the module that a link is being requested for
@@ -39,13 +39,7 @@ function pageLink($pagename, $args = "", $container = NULL, $fullpath=false)
 				else if ( $pagename == 'securefile' ) {
 				    $thelink .= get_page_link(get_page_by_title($wp_binary_container)->ID);
 				}
-				else if ( $pagename == 'help' ) {
-				    $thelink .= get_page_link(get_page_by_title($wp_popup_container)->ID);
-				}
-				else if ( $pagename == 'resname' ) {
-				    $thelink .= get_page_link(get_page_by_title($wp_popup_container)->ID);
-				}
-				else if ( $pagename == 'eblaster' ) {
+        else if ( in_array($pagename, array('help', 'resname', 'eblaster')) ) {
 				    $thelink .= get_page_link(get_page_by_title($wp_popup_container)->ID);
 				}
 				else {
@@ -67,7 +61,7 @@ function pageLink($pagename, $args = "", $container = NULL, $fullpath=false)
 		    return $thelink . "&" . $args;
 		  else if ( $args != "" )
 			  return $thelink . "?" . $args;
-		  else 
+		  else
 			  return $thelink;
 		}
   return NULL;
@@ -166,7 +160,7 @@ function connect_gazebo_DB($type = "") {
         return $con_gazebo;
     }
     else {
-        // Connect to SQL Server 
+        // Connect to SQL Server
         $con = mysql_connect($sql_server, $sql_user, $sql_pass, true);
         if (!$con)
 	    die ("Could not connect to SQL Server: " . mysql_error() . "<br />");
@@ -233,7 +227,7 @@ function displayName($first, $last, $ucase, $lastfirst) {
 }
 
 function fetchResname($residx, $con = NULL, $ucase = 'false', $lastfirst = 'false')
-{	
+{
 	$closeit = false;
 	if ( $con == NULL )
 	{
@@ -293,7 +287,7 @@ function fetchResidentEmail($residx, $con, $num = 1)
 		return $row[$field];
 }
 function fetchSubdivision($subidx, $con)
-{	
+{
 	$result = mysqli_query($con, "SELECT Name from Subdivisions WHERE Id = {$subidx}");
 	$row = mysqli_fetch_array($result);
 	if (!$row)
@@ -710,7 +704,7 @@ function contradict($input) {
 	    return 'goodbye';
 	case 'goodbye':
 	    return 'hello';
-	case true: 
+	case true:
 	    return false;
 	case false:
 	    return true;
@@ -740,5 +734,5 @@ function customError($errno, $errstr) {
   echo "<b>Error:</b> [$errno] $errstr<br>";
   echo "Ending Script";
   die();
-} 
+}
 ?>

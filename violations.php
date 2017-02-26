@@ -1,6 +1,6 @@
-<?php 
+<?php
 $pagename = "violations";
-require 'gazebo-header.php'; 
+require 'gazebo-header.php';
 ?>
 
 <script>
@@ -139,7 +139,6 @@ function uploadPic()
 
 echo "<form name='recordinput' method='post' action='" . pageLink("violations") . "' enctype='multipart/form-data' ><p class='center'>
 <input type='hidden' name='MAX_FILE_SIZE' value='{$max_upload_size}' />
-<input type='hidden' id='SavedQuery' name='SavedQuery' value=\"{$_POST['SavedQuery']}\" />
 <input id='fnList' type='radio' name='function' value='list' onClick='fnList(); ' />List&nbsp;&nbsp;
 <input id='fnSearch' type='radio' name='function' value='search' checked='true' />Search&nbsp;&nbsp;
 <input id='fnInsert' type='radio' name='function' value='insert' />Submit New&nbsp;&nbsp;";
@@ -212,7 +211,7 @@ switch ($_POST["function"])
 
 	//Save SQL Record
 	$curtime = getdate();
-	$sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " . 
+	$sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " .
 		$curtime['hours'] . ":" . $curtime['minutes'] . ":" . $curtime['seconds'];
 	$_POST['Description'] = mysql_real_escape_string($_POST['Description']);
 	$_POST['Name'] = mysql_real_escape_string($_POST['Name']);
@@ -220,7 +219,7 @@ switch ($_POST["function"])
 	$_POST['Type'] = intval($_POST['Type']);
 	$querystring = "INSERT INTO Violations (Unit, Time, Tag, Type, Name, ReportedBy, Description, Pic) VALUES
 
-			({$_POST['Unit']}, '{$sqltime}', '{$_POST['Tag']}', {$_POST['Type']}, '{$_POST['Name']}', 
+			({$_POST['Unit']}, '{$sqltime}', '{$_POST['Tag']}', {$_POST['Type']}, '{$_POST['Name']}',
 			'{$_SESSION['Username']}', '{$_POST['Description']}', '{$_FILES['Pic']['name']}')";
 	debugText($querystring);
 	$result = mysql_query($querystring, $con);
@@ -232,7 +231,6 @@ switch ($_POST["function"])
 	 	break;
         }
 	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
 	break;
 
   case "update":
@@ -260,7 +258,7 @@ switch ($_POST["function"])
 
 	//Save SQL Record
 	$curtime = getdate();
-	$sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " . 
+	$sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " .
 		$curtime['hours'] . ":" . $curtime['minutes'] . ":" . $curtime['seconds'];
 	$typeVal = 0;
 	if ($_POST["Type"] == "Guest")
@@ -297,7 +295,6 @@ switch ($_POST["function"])
 	  	break;
 	}
 	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
 	break;
 
   case "delete":
@@ -320,7 +317,6 @@ switch ($_POST["function"])
 	else
 		echo "Violation #{$_POST["Idx"]} failed to save.<br />";
 	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
 	break;
   default:
 	break;
@@ -373,12 +369,7 @@ if (( $_POST['function'] == 'search' ) || ( $_POST['function'] == 'list' )) {
 		$querystring .= " AND TIME > DATE_SUB(CURDATE(), INTERVAL {$pkviolation_expiration} DAY)";
 	}
 	debugText("Original Query:" . $querystring);
-	if ( $useSavedQuery == 'yes' ) {
-	    $querystring = stripslashes($_POST['SavedQuery']);
-	    debugText("Using Saved Query:" . $querystring);
-	}
-	echo "<script>document.forms['recordinput'].elements['SavedQuery'].value = \"{$querystring}\";</script>";
-	$result = mysql_query($querystring, $con); 
+	$result = mysql_query($querystring, $con);
 	$k=0;
 	$results=0;
 	$violationTally = array();
@@ -391,7 +382,7 @@ if (( $_POST['function'] == 'search' ) || ( $_POST['function'] == 'list' )) {
 	echo "</tr></thead><tbody>";
 	while ( $row = mysql_fetch_array($result) )
 	{
-		$ordinal = getOrdinalViolation($row['Idx'], $row['Unit'], $con, $row['Type'] ); 
+		$ordinal = getOrdinalViolation($row['Idx'], $row['Unit'], $con, $row['Type'] );
 		$c = false;
 		switch ( $_POST['Ordinal'] )
 		{
@@ -427,7 +418,7 @@ if (( $_POST['function'] == 'search' ) || ( $_POST['function'] == 'list' )) {
 		echo "<td>";
        	 	echo sprintf("<a href=\"#top\" onclick=\"fillInForm(%u, '%u', '%u', '%s', '%u', '%s', '%s', '%s', '%s', '%s')\" >#%u</a>",
 		    $selectOpt, $row['Idx'],
-		    $row['Unit'], $row['Tag'], $row['Type'], $row['Name'], 
+		    $row['Unit'], $row['Tag'], $row['Type'], $row['Name'],
 		    $row['ReportedBy'], mysql_real_escape_string($row['Description']), mysql_real_escape_string($row['ActionLog']), $picture, $row['Idx'] );
 		echo "</td><td>";
 		echo $row['Unit'];
@@ -438,7 +429,7 @@ if (( $_POST['function'] == 'search' ) || ( $_POST['function'] == 'list' )) {
 	    	$submitTime = parseTime($row['Time']);
 	    	echo displayDate($submitTime['Month'], $submitTime['Day'], $submitTime['Year']);
 	    	echo " ";
-	    	echo displayTime($submitTime['Hour'], $submitTime['Minute']); 
+	    	echo displayTime($submitTime['Hour'], $submitTime['Minute']);
 		if ( expired($row['Time'], $con) ) {
 		    echo " (expired)</span>";
 		}
@@ -475,7 +466,7 @@ if (( $_POST['function'] == 'search' ) || ( $_POST['function'] == 'list' )) {
 		    $letter = lookupViolationLetter($row['Type'], $row['ActionStatus'] + 1, $con);
 		    echo sprintf("<a href=\"#top\" onclick=\"fillInForm(%u, '%u')\" style=\"float: right\"><img src='{$gazebo_imagedir}trashcan.png' alt='Delete' title='Delete'></a>", 5, $row['Idx'] );
 		    echo sprintf("<a href=\"formdocs.php?violationidx={$row['Idx']}&unitidx={$row['Unit']}&letter={$letter}\" style=\"float: right\"><img src='{$gazebo_imagedir}envelope.png' alt='Create Letter' 				title='Create Letter'></a>", 5, $row['Idx'] );
-		}	
+		}
 		echo "</td>";
 		echo "</tr>";
 		$results++;

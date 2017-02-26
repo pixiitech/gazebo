@@ -1,4 +1,4 @@
-<?php 
+<?php
 $pagename = "announce";
 require 'gazebo-header.php';
 ?>
@@ -101,15 +101,10 @@ textarea
 }
 </style>
 
-<?php 
+<?php
 require "authcheck.php";
 
-if (!isset($_POST['SavedQuery'])) {
-	$_POST['SavedQuery'] = "";
-}
-$useSavedQuery = false;
-
-//Announcement fields 
+//Announcement fields
 $fields = ["Text", "Icon", "Description", "Amenity", "StartTime", "EndTime", "Idx", "Subject", "CreatedBy", "Timecreated"];
 foreach($fields as $key) {
 	if (!isset($_POST[$key])) {
@@ -152,7 +147,6 @@ for ( $i = 1; $row = mysqli_fetch_array($result); $i++ )
 <?php
 
 echo "<br /><form name='recordinput' method='post' action='" . pageLink("announce") . "'><p class='center'>";
-echo "<input type='hidden' id='SavedQuery' name='SavedQuery' value=\"{$_POST['SavedQuery']}\" />";
 echo "<input id='fnList' type='radio' name='function' value='list' />List&nbsp;&nbsp;";
 echo "<input id='fnSearch' type='radio' name='function' value='search' />Search&nbsp;&nbsp;";
 echo "<input id='fnInsert' type='radio' name='function' value='insert' />Submit New&nbsp;&nbsp;";
@@ -190,7 +184,7 @@ for ( $i = 0; $i < 24; $i++ )
     for ( $i = 0; $i < 4; $i++ )
         echo "<option value='" . $i * 15 . "'>" . padInt2($i * 15) . "</option>";
     echo "</select>&nbsp;";
-echo "<select name='StartAMPM'"; 
+echo "<select name='StartAMPM'";
 if ( $_SESSION['24HrTime'] == 'on' ) {
     echo "hidden='hidden' ";
 }
@@ -219,7 +213,7 @@ echo "</select>:<select name='EndMinute'>";
 for ( $i = 0; $i < 4; $i++ )
     echo "<option value='" . $i * 15 . "'>" . padInt2($i * 15) . "</option>";
 echo "</select>";
-echo "<select name='EndAMPM'"; 
+echo "<select name='EndAMPM'";
 if ( $_SESSION['24HrTime'] == 'on' ) {
     echo "hidden='hidden' ";
 }
@@ -268,7 +262,7 @@ switch ($_POST["function"])
   case "insert":
 	//Save SQL Record
 	$curtime = getdate();
-	$cur_sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " . 
+	$cur_sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " .
 		$curtime['hours'] . ":" . $curtime['minutes'] . ":" . $curtime['seconds'];
 	if (( $_POST['StartAMPM'] == 'PM' ) && ( $_SESSION['24HrTime'] != 'on' )) {
 	    $_POST['StartHour'] += 12;
@@ -295,13 +289,12 @@ switch ($_POST["function"])
 	 	break;
         }
 	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
 	break;
 
   case "update":
 	//Save SQL Record
 	$curtime = getdate();
-	$cur_sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " . 
+	$cur_sqltime = $curtime['year'] . "-" . $curtime['mon'] . "-" . $curtime['mday'] . " " .
 		$curtime['hours'] . ":" . $curtime['minutes'] . ":" . $curtime['seconds'];
 	if (( $_POST['StartAMPM'] == 'PM' ) && ( $_SESSION['24HrTime'] != 'on' )) {
 	    $_POST['StartHour'] += 12;
@@ -327,7 +320,6 @@ switch ($_POST["function"])
 	 	break;
         }
 	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
 	break;
 
   case "delete":
@@ -339,7 +331,6 @@ switch ($_POST["function"])
 	else
 		echo "Event #{$_POST["Idx"]} failed to save.<br />";
 	$_POST['function'] = 'search';
-	$useSavedQuery = 'yes';
 	break;
   default:
 	break;
@@ -378,12 +369,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	}
 	$querystring .= " ORDER BY StartTime DESC";
 	debugText("Original Query:" . $querystring);
-	if ( $useSavedQuery == 'yes' ) {
-	    $querystring = stripslashes($_POST['SavedQuery']);
-	    debugText("Using Saved Query:" . $querystring);
-	}
-	echo "<script>document.forms['recordinput'].elements['SavedQuery'].value = \"{$querystring}\";</script>";
-	$result = mysqli_query($con, $querystring); 
+	$result = mysqli_query($con, $querystring);
 	$results=0;
 	while ( $row = mysqli_fetch_array( $result ) )
 	{
@@ -407,7 +393,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		echo "<img src='{$gazebo_imagedir}{$row['Icon']}' title='Event #{$row['Idx']}' style='height:40px; width:40px' />";
 	    echo "</td>";
             echo "<td><a href='#top' onclick=\"fillInForm(4, [['Idx', '{$row['Idx']}'], ['Text', '{$row['Text']}'],
-			['Description', '{$row['Description']}'], 
+			['Description', '{$row['Description']}'],
 			['StartYear', '{$startTime['Year']}'],
 			['StartMonth', '{$startTime['Month']}'], ['StartDay', '{$startTime['Day']}'],
 			['StartHour', '{$startTime['Hour']}'], ['StartMinute', '{$startTime['Minute']}'],
