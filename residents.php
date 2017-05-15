@@ -613,7 +613,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	$k=0;
 	$results=0;
 	echo "<div id='printarea'><table class='result sortable tablesorter' border=4>";
-	echo "<thead><tr><th>Name</th><th>Unit #</th><th>Phone 1</th><th>Phone 2</th><th>Mailing Address</th><th>Email</th>";
+	echo "<thead><tr><th>Name</th><th>Unit #</th><th>Phone 1</th><th>Mailing Address</th><th>Email</th>";
 	if ( $_SESSION['Level'] >= $editlevel )
 	    echo "<th>Del</th>";
 	echo "</tr></thead><tbody>";
@@ -649,6 +649,9 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		    $type = 'owner';
 		}
 		$anchor = "";
+    if ( $row['LastName2'] && $row['LastName2'] != '' ) {
+      $name2 = true;
+    }
 
 		//Prepare link (roster view)
         $anchor .= "<a href=\"#top\" onclick=\"fillInForm({$selectOpt}, [['Idx', '{$row['Idx']}'], ";
@@ -665,30 +668,29 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
         }
 		$anchor = substr($anchor, 0, strlen($anchor) - 2) . "]);\">";
 
-		//Begin record
+		//Begin record - row 1
 		echo "<tr>";
 
 		//Display name (admin and resident view)
 		echo "<td>";
 		echo $anchor;
 		echo displayName($row['FirstName'], $row['LastName'], $ucase, $lastfirst);
-		if (( $row['LastName2'] != NULL) && ( $row['LastName2'] != "" ) ) {
-		    echo "<hr>" . displayName($row['FirstName2'], $row['LastName2'], $ucase, $lastfirst);
-		}
 		echo "</a>";
 		echo "</td>";
 		//Display unit# and owner/tenant
-		echo "<td>";
+    $rowspan = ($name2 ? ' rowspan=2' : '');
+		echo "<td{$rowspan}>";
 		$units = fetchUnit($row['Idx'], $con, $type);
 		for ( $i = 0; $i < count($units); $i++ )
 		{
 		    echo "<span hidden='hidden'>" . padInt($units[$i], 5) . "</span>";  //hidden sort parameter
 		    if ( $_SESSION['Level'] >= $level_security ) {
-		        echo "Unit <a href='" . pageLink("properties", "Unit={$units[$i]}") . "'>" . $units[$i] . "</a> - " . ucfirst($type) . "<br />";
+          echo "<a href='" . pageLink("properties", "Unit={$units[$i]}") . "'>" . $units[$i] . "</a>";
 		    }
 		    else {
-		         echo "Unit " . $units[$i] . " - " . ucfirst($type) . "<br />";
+           echo $units[$i];
 		    }
+        echo "<br />";
 		}
 
 		echo "</td>";
@@ -697,60 +699,32 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		echo "<td>";
 		if ( $_SESSION['Level'] >= $level_security )
 		{
-		    echo $phone1;
+      echo $phone1;
 		}
 		else if ( $row['PublishPhone1'] ) {
-		    echo $phone1;
+      echo $phone1;
 		}
-		//Display Phone 3
-		if (( $row['LastName2'] != NULL) && ( $row['LastName2'] != "" ) ) {
-		    echo "<hr>";
-		    if ( $_SESSION['Level'] >= $level_security )
-		    {
-		        echo $phone3;
-		    }
-		    else if ( $row['PublishPhone1'] ) {
-		        echo $phone3;
-		    }
-		}
-		echo "</td>";
-
 		//Display Phone 2
-		if ( $row['LastName2'] == "" ) {
-		    echo "<td>";
-		}
-		else {
-		    echo "<td class='thinbottom'>";
-		}
 		if ( $_SESSION['Level'] >= $level_security )
 		{
-		    echo $phone2;
+      echo "<br />";
+      echo $phone2;
 		}
 		else if ( $row['PublishPhone2'] ) {
-		    echo $phone2;
-		}
-		//Display Phone 4
-		if (( $row['LastName2'] != NULL) && ( $row['LastName2'] != "" ) ) {
-		    echo "<hr>";
-		    if ( $_SESSION['Level'] >= $level_security )
-		    {
-		        echo $phone4;
-		    }
-		    else if ( $row['PublishPhone2'] ) {
-		        echo $phone4;
-		    }
+      echo "<br />";
+      echo $phone2;
 		}
 		echo "</td>";
 		//Display Address
-		echo "<td>";
+		echo "<td{$rowspan}>";
 		if ( $_SESSION['Level'] >= $level_security )
 		{
-		    if ( trim($row['MailingAddress']) != "" )
-		        echo $fullAddress;
+      if ( trim($row['MailingAddress']) != "" )
+        echo $fullAddress;
 		}
 		else {
-		    if (( $row['PublishMailingAddress'] ) && ( trim($row['MailingAddress']) != "" ))
-		        echo $fullAddress;
+      if (( $row['PublishMailingAddress'] ) && ( trim($row['MailingAddress']) != "" ))
+        echo $fullAddress;
 		}
 		echo "</td>";
 
@@ -760,23 +734,52 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		    (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail'] ))) {
 		    echo "<a href='mailto:{$row['Email']}'>" . $row['Email'] . "</a>";
 		}
-		if (( $row['LastName2'] != NULL) && ( $row['LastName2'] != "" ) ) {
-		    echo "<hr>";
-		    if (( trim($row['Email2']) != "" ) &&
-		        (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail'] ))) {
-		        echo "<a href='mailto:{$row['Email2']}'>" . $row['Email2'] . "</a>";
-		    }
-		}
 		echo "</td>";
 
 		//Delete link
 		if ( $_SESSION['Level'] >= $editlevel )
 		{
-		    echo "<td>";
-    		    echo "<a href=\"#top\" onclick=\"fillInForm(5, [['Idx', '{$row['Idx']}'], ['FirstName', '{$row['FirstName']} {$row['LastName']}']]);\" >X</a>";
-		    echo "</td>";
+      echo "<td{$rowspan}>";
+      echo "<a href=\"#top\" onclick=\"fillInForm(5, [['Idx', '{$row['Idx']}'], ['FirstName', '{$row['FirstName']} {$row['LastName']}']]);\" >X</a>";
+      echo "</td>";
 		}
 		echo "</tr>";
+
+    //Display row 2
+    if ($name2) {
+      echo "<tr>";
+      echo "<td>" . $anchor . displayName($row['FirstName2'], $row['LastName2'], $ucase, $lastfirst) . "</a></td>";
+      /* echo "<td></td>"; */
+
+      //Display Phone 3
+      echo "<td>";
+      if ( $_SESSION['Level'] >= $level_security )
+      {
+        echo $phone3;
+      }
+      else if ( $row['PublishPhone1'] ) {
+        echo $phone3;
+      }
+      //Display Phone 4
+      if ( $_SESSION['Level'] >= $level_security )
+      {
+        echo "<br />";
+        echo $phone4;
+      }
+      else if ( $row['PublishPhone2'] ) {
+        echo "<br />";
+        echo $phone4;
+      }
+      /* echo "<td></td>"; */
+
+      //Display Email 2
+      echo "<td>";
+      if (( trim($row['Email2']) != "" ) &&
+          (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail'] ))) {
+          echo "<a href='mailto:{$row['Email2']}'>" . $row['Email2'] . "</a>";
+      }
+      echo "</td>";
+    }
 		$results++;
 	}
 
