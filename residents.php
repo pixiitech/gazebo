@@ -613,9 +613,9 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	$k=0;
 	$results=0;
 	echo "<div id='printarea'><table class='result sortable tablesorter' border=4>";
-	echo "<thead><tr><th>Name</th><th>Unit #</th><th>Phone 1</th><th>Mailing Address</th><th>Email</th>";
+	echo "<thead><tr><th>Name</th><th>Unit #</th><th class='sortless'>Phone</th><th>Mailing Address</th><th>Email</th>";
 	if ( $_SESSION['Level'] >= $editlevel )
-	    echo "<th>Del</th>";
+	    echo "<th class='sortless'>Del</th>";
 	echo "</tr></thead><tbody>";
 	//Loop through data
 	while ( $row = mysqli_fetch_array($result) )
@@ -675,7 +675,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		echo "<td>";
 		echo $anchor;
 		echo displayName($row['FirstName'], $row['LastName'], $ucase, $lastfirst);
-		echo "</a>";
+		echo "<span hidden>" . displayName($row['FirstName2'], $row['LastName2'], $ucase, $lastfirst) . "</span></a>";
 		echo "</td>";
 		//Display unit# and owner/tenant
     $rowspan = ($name2 ? ' rowspan=2' : '');
@@ -730,10 +730,15 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 
 		//Display email
 		echo "<td>";
-		if (( trim($row['Email']) != "" ) &&
-		    (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail'] ))) {
-		    echo "<a href='mailto:{$row['Email']}'>" . $row['Email'] . "</a>";
-		}
+
+		if (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail'] )) {
+      if ( trim($row['Email']) != "" ) {
+          echo "<a href='mailto:{$row['Email']}'>" . $row['Email'] . "</a>";
+      }
+      if ( trim($row['Email2']) != "" ) {
+          echo "<span hidden>" . $row['Email2'] . "</span>";
+      }
+    }
 		echo "</td>";
 
 		//Delete link
@@ -748,8 +753,14 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
     //Display row 2
     if ($name2) {
       echo "<tr>";
-      echo "<td>" . $anchor . displayName($row['FirstName2'], $row['LastName2'], $ucase, $lastfirst) . "</a></td>";
-      /* echo "<td></td>"; */
+      echo "<td>";
+      echo $anchor;
+      echo "<span hidden>" . displayName($row['FirstName'], $row['LastName'], $ucase, $lastfirst) . "</span>";
+      echo displayName($row['FirstName2'], $row['LastName2'], $ucase, $lastfirst) . "</a>";
+      echo "</td>";
+      echo "<td hidden>";
+		    echo "<span hidden='hidden'>" . padInt($units[0], 5) . $units[0] . "</span>";  //hidden sort parameter
+      echo "</td>";
 
       //Display Phone 3
       echo "<td>";
@@ -770,17 +781,35 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
         echo "<br />";
         echo $phone4;
       }
-      /* echo "<td></td>"; */
+      echo "<td hidden>";
+		    echo "<span hidden='hidden'>";  //hidden sort parameter
+          if ( $_SESSION['Level'] >= $level_security )
+          {
+            if ( trim($row['MailingAddress']) != "" )
+              echo $fullAddress;
+          }
+          else {
+            if (( $row['PublishMailingAddress'] ) && ( trim($row['MailingAddress']) != "" ))
+              echo $fullAddress;
+          }
+        echo "</span>";
+      echo "</td>";
 
       //Display Email 2
       echo "<td>";
-      if (( trim($row['Email2']) != "" ) &&
-          (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail'] ))) {
-          echo "<a href='mailto:{$row['Email2']}'>" . $row['Email2'] . "</a>";
+      if (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail'] )) {
+        if ( trim($row['Email']) != "" ) {
+            echo "<span hidden>" . $row['Email'] . "</span>";
+        }
+        if ( trim($row['Email2']) != "" ) {
+            echo "<a href='mailto:{$row['Email2']}'>" . $row['Email2'] . "</a>";
+        }
       }
       echo "</td>";
+      echo "<td hidden></td>";
     }
 		$results++;
+    $name2 = false;
 	}
 
 	echo "</tbody></table>";
