@@ -8,7 +8,7 @@ if ( !isset($cms) ) // Standalone only
     /* User is authenticated by login.php, boot unauthorized users */
     if ( !isset($_SESSION['Level']) )
         die ("<p>This page requires a login.</p> <i><a href='login.php'>Return to Login Page</a></i><br />");
-    
+
     if ($_SESSION['Level'] == $level_disabled)
     {
         mysqli_close($con);
@@ -54,7 +54,7 @@ if ( $resourcetype == 'download' ) {
     if ( $resourcelevel <= $level ) {
 	$auth = true;
     }
-} 
-if (!$auth) 
+}
+if (!$auth)
     die ("You do not have authorization to view this page.<br />");
 ?>

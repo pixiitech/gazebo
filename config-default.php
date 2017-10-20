@@ -8,6 +8,7 @@ $sql_server = "localhost";
 $sql_db = "gazebo";
 
 //Basic info
+$commName = "Gazebo Demo Community"; //Shown on index.php
 $logoPic = "gazebo-wb2.png";
 $rootdir = "/var/www/wp-content/plugins/gazebo/";			//Root directory on local filesystem for saving files
 $maindir = "wp-content/plugins/gazebo/";		//Gazebo directory relative to main webserver directory
