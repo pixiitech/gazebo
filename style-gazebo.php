@@ -172,7 +172,7 @@ img.banner
 
 table.lbox
 {
-    margin-left:auto; 
+    margin-left:auto;
     margin-right:auto;
     border: 3px;
     background-color:{$colors["link-lbox-background-color"]};
@@ -182,7 +182,7 @@ table.lbox
 
 table.lbox-web
 {
-    margin-left:auto; 
+    margin-left:auto;
     margin-right:auto;
     border: 3px;
     background-color:{$colors["link-lbox-background-color"]};
@@ -194,7 +194,7 @@ table.main, p.main
 {
     width: 100%;
     text-align:center;
-    margin-left:auto; 
+    margin-left:auto;
     margin-right:auto;
     border: 3px;
     background-color:{$colors["table-background-color"]};
@@ -224,7 +224,7 @@ input.label
 }
 table.criteria, table.result
 {
-    margin-left:auto; 
+    margin-left:auto;
     margin-right:auto;
     border: 2px;
     border-style: solid;
@@ -235,7 +235,7 @@ table.criteria, table.result
 
 table.vendors
 {
-    margin-left:auto; 
+    margin-left:auto;
     margin-right:auto;
     border: 2px solid black;
     background-color: {$colors["table-background-color"]};
@@ -279,7 +279,7 @@ h1,h2, h3, h4
     border: white solid thin;
 }
 
-p 
+p
 {
     color: {$colors["text-color"]};
     background-color: {$colors["general-background-color"]};
@@ -319,7 +319,15 @@ body, div.module
     background-color: #aa7777;
     color: white;
     border-radius: 3px;
-}";
+}
+.registration-error
+{
+  color: #FF0000;
+}
+.captcha-container
+{
+}
+";
 }
 else {
     echo "p.center

@@ -312,10 +312,12 @@ function validateUnit($unit, $con)
     $lUnit = strtolower($unit);
     $querystring = "SELECT Unit FROM Properties WHERE LOWER(Unit) = '{$lUnit}'";
     $result = mysqli_query($con, $querystring);
-    if (!$result)
-	return false;
-    else
-	return true;
+    $row = mysqli_fetch_array($result);
+    if (!$row) {
+      return false;
+    } else {
+      return true;
+    }
 }
 function residentExists($i, $con)
 {
