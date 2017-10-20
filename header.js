@@ -214,9 +214,13 @@ $(document).ready(function(){
 	});
         $('.formfields').hide();
 
+  $('.registration-error').each(function(error) {
+    window.alert($(this).html(), 'Registration Error');
+  });
+
 	//Default function for all modules
 	var submit = document.getElementById('submitbutton');
-	if ( submit != null ) {	
+	if ( submit != null ) {
 	    submit.value = 'List';
 	}
 });

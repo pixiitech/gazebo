@@ -20,7 +20,6 @@ $tenant_expiration = fetchSetting( "TenantExpiration", $con ) * 60 * 60 * 24;
 
 $success = false;
 
-echo "<table class='main'><tr><td>";
 if ( isset( $_POST['Username'] ))
 {
 	$dualreg = fetchSetting( "DualRegistration", $con );
@@ -75,8 +74,8 @@ if ( isset( $_POST['Username'] ))
 	if ($image->check($_POST['captcha_code']) == false)
 	{
 	  // Captcha code was incorrect
-	  echo "<div class='registration-error'>The security code entered was incorrect. You may try again. <br />";
-	  echo "Please re-enter your password, confirm the password, and try again with a new captcha image</div>.";
+	  echo "<div class='registration-error'>The security code entered was incorrect. You may try again. ";
+	  echo "Please re-enter your password, confirm the password, and try again with a new captcha image.</div>";
 	}
 	//Other validations
 	else if ( userExists($_POST['Username'], $con) )
@@ -158,6 +157,7 @@ if ( isset( $_POST['Username'] ))
   }
 }
 
+echo "<table class='main'><tr><td>";
 if ( $success )
 {
   echo "<h3>Creating your new user account was successful! Please login with your new username {$_POST['Username']} and password.</h3> \n\r";
