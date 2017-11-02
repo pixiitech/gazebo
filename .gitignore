@@ -19,6 +19,8 @@ backups/*
 # Ignore pics
 images/community/*
 images/violation/*
+images/image_list.js
+images/.htaccess
 
 # Ignore customized files:
 docs/
