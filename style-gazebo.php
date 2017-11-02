@@ -334,7 +334,54 @@ else {
 {
     text-align: center;
     font-size: large;
-}";
+}
+
+table.result {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+
+table.result td.name, th.name
+{
+    width: 26%;
+    word-wrap: break-word;
+    border-collapse: collapse;
+}
+
+table.result td.unit, th.unit
+{
+    width: 7%;
+    word-wrap: break-word;
+    border-collapse: collapse;
+}
+
+table.result td.phone, th.phone
+{
+    width: 17%;
+    border-collapse: collapse;
+}
+
+table.result td.address, th.address
+{
+    width: 26%;
+    word-wrap: break-word;
+    border-collapse: collapse;
+}
+
+table.result td.email, th.email
+{
+    width: 20%;
+    word-wrap: break-word;
+    border-collapse: collapse;
+}
+
+table.result td.delete, th.delete
+{
+    width: 4%;
+    border-collapse: collapse;
+}
+";
 }
 
 if ( !isset( $cms ) ) //Standalone only

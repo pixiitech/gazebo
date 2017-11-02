@@ -613,9 +613,9 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	$k=0;
 	$results=0;
 	echo "<div id='printarea'><table class='result sortable tablesorter' border=4>";
-	echo "<thead><tr><th>Name</th><th>Unit #</th><th class='sortless'>Phone</th><th>Mailing Address</th><th>Email</th>";
+	echo "<thead><tr><th class='name'>Name</th><th class='unit'>Unit #</th><th class='phone sortless'>Phone</th><th class='address'>Mailing Address</th><th class='email'>Email</th>";
 	if ( $_SESSION['Level'] >= $editlevel )
-	    echo "<th class='sortless'>Del</th>";
+	    echo "<th class='delete sortless'>Del</th>";
 	echo "</tr></thead><tbody>";
 	//Loop through data
 	while ( $row = mysqli_fetch_array($result) )
@@ -672,14 +672,14 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		echo "<tr>";
 
 		//Display name (admin and resident view)
-		echo "<td>";
+		echo "<td class='name'>";
 		echo $anchor;
 		echo displayName($row['FirstName'], $row['LastName'], $ucase, $lastfirst);
 		echo "<span hidden>" . displayName($row['FirstName2'], $row['LastName2'], $ucase, $lastfirst) . "</span></a>";
 		echo "</td>";
 		//Display unit# and owner/tenant
     $rowspan = ($name2 ? ' rowspan=2' : '');
-		echo "<td{$rowspan}>";
+		echo "<td{$rowspan} class='unit'>";
 		$units = fetchUnit($row['Idx'], $con, $type);
 		for ( $i = 0; $i < count($units); $i++ )
 		{
@@ -696,7 +696,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		echo "</td>";
 		//Display home phone, cell phone, mailing address
 		//Display Phone 1
-		echo "<td>";
+    echo "<td class='phone'>";
 		if ( $_SESSION['Level'] >= $level_security )
 		{
       echo $phone1;
@@ -716,7 +716,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		}
 		echo "</td>";
 		//Display Address
-		echo "<td{$rowspan}>";
+		echo "<td{$rowspan} class='address'>";
 		if ( $_SESSION['Level'] >= $level_security )
 		{
       if ( trim($row['MailingAddress']) != "" )
@@ -729,7 +729,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		echo "</td>";
 
 		//Display email
-		echo "<td>";
+		echo "<td class='email'>";
 
 		if (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail'] )) {
       if ( trim($row['Email']) != "" ) {
@@ -744,7 +744,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 		//Delete link
 		if ( $_SESSION['Level'] >= $editlevel )
 		{
-      echo "<td{$rowspan}>";
+      echo "<td{$rowspan} class='delete'>";
       echo "<a href=\"#top\" onclick=\"fillInForm(5, [['Idx', '{$row['Idx']}'], ['FirstName', '{$row['FirstName']} {$row['LastName']}']]);\" >X</a>";
       echo "</td>";
 		}
@@ -753,17 +753,17 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
     //Display row 2
     if ($name2) {
       echo "<tr>";
-      echo "<td>";
+      echo "<td class='name'>";
       echo $anchor;
       echo "<span hidden>" . displayName($row['FirstName'], $row['LastName'], $ucase, $lastfirst) . "</span>";
       echo displayName($row['FirstName2'], $row['LastName2'], $ucase, $lastfirst) . "</a>";
       echo "</td>";
-      echo "<td hidden>";
+      echo "<td hidden class='name'>";
 		    echo "<span hidden='hidden'>" . padInt($units[0], 5) . $units[0] . "</span>";  //hidden sort parameter
       echo "</td>";
 
       //Display Phone 3
-      echo "<td>";
+      echo "<td class='phone'>";
       if ( $_SESSION['Level'] >= $level_security )
       {
         echo $phone3;
@@ -781,7 +781,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
         echo "<br />";
         echo $phone4;
       }
-      echo "<td hidden>";
+      echo "<td hidden class='address'>";
 		    echo "<span hidden='hidden'>";  //hidden sort parameter
           if ( $_SESSION['Level'] >= $level_security )
           {
@@ -796,7 +796,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
       echo "</td>";
 
       //Display Email 2
-      echo "<td>";
+      echo "<td hidden class='email'>";
       if (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail'] )) {
         if ( trim($row['Email']) != "" ) {
             echo "<span hidden>" . $row['Email'] . "</span>";
@@ -806,7 +806,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
         }
       }
       echo "</td>";
-      echo "<td hidden></td>";
+      echo "<td hidden class='delete'></td>";
     }
 		$results++;
     $name2 = false;
