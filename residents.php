@@ -572,6 +572,12 @@ if ( $_POST['function'] == 'search' ) {
 	echo "<h4 style='text-align:center'>Search Results:</h4>";
 }
 
+if ( $_POST['function'] == 'list' ) {
+	foreach($fields as $key => $value) {
+    $_POST[$key] = '';
+  }
+}
+
 if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
 	//Assemble Query
 	$querystring = "SELECT * FROM Residents" ;
