@@ -802,7 +802,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
       echo "</td>";
 
       //Display Email 2
-      echo "<td hidden class='email'>";
+      echo "<td class='email'>";
       if (( $_SESSION['Level'] >= $level_security ) || ( $row['PublishEmail'] )) {
         if ( trim($row['Email']) != "" ) {
             echo "<span hidden>" . $row['Email'] . "</span>";
