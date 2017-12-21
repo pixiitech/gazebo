@@ -261,14 +261,26 @@ if (($row_res != false) && ($row_res['Type'] == 0)) {
     }
   }
   echo "<input type='hidden' name='submitted' value='yes' />";
-  echo "<tr><th colspan='2'><h4>Resident Information</h4></th>";
-  echo "<th><strong>";
+  echo "<tr><td colspan='2'><h4>Resident Information</h4>";
+  if ($cms == 'wp') {
+    $profile_note = get_posts(array(
+      'name'        => 'Resident Profile Note',
+      'post_type'   => 'post',
+      'post_status' => 'publish',
+      'numberposts' => 1
+    ))[0];
+    if ($profile_note) {
+      echo $profile_note->post_content;
+    }
+  }
+  echo "</td>";
+  echo "<td><strong>";
   if ( $invertPublishSettings == "true" ) {
     echo "DO NOT Publish:";
   } else {
     echo "Publish?";
   }
-  echo "</strong></th></tr>";
+  echo "</strong></td></tr>";
   echo "<tr><td>Name</td><td><span title='If you are requesting a name change, please contact management.'>{$row_res['FirstName']} {$row_res['LastName']}";
   if ( $row_res['LastName2'] != "" ) {
     echo "<br />" . $row_res['FirstName2'] . " " . $row_res['LastName2'];
