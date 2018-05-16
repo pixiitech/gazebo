@@ -98,23 +98,26 @@ function fillInForm(fn, args)
 	for ( var i = 0; i < FieldArray.length; i++ ) {
 	    if (FieldArray[i][0] == 'Type')
 	    {
-		if (FieldArray[i][1] == 0)
-  	    	    document.forms['recordinput'].elements['typeOwner'].checked = true;
-		else if (FieldArray[i][1] == 1)
-  	    	    document.forms['recordinput'].elements['typeTenant'].checked = true;
+        if (FieldArray[i][1] == 0)
+          document.forms['recordinput'].elements['typeOwner'].checked = true;
+        else if (FieldArray[i][1] == 1)
+          document.forms['recordinput'].elements['typeTenant'].checked = true;
 	    }
 	    else if (((FieldArray[i][0] == 'Phone1') ||
-			(FieldArray[i][0] == 'Phone2') ||
-			(FieldArray[i][0] == 'Phone3') ||
-			(FieldArray[i][0] == 'Phone4')) &&
-			(document.forms['recordinput'].elements[FieldArray[i][0] + '-1'] != null)) {
-		if (document.forms['recordinput'].elements[FieldArray[i][0] + '-1'].size >= 10) {
-		    document.forms['recordinput'].elements[FieldArray[i][0] + '-1'].value = FieldArray[i][1];
-		}
-		else {
-		    document.forms['recordinput'].elements[FieldArray[i][0] + '-1'].value = FieldArray[i][1].substr(0, 3);
-		    document.forms['recordinput'].elements[FieldArray[i][0] + '-2'].value = FieldArray[i][1].substr(3, 3);
-		    document.forms['recordinput'].elements[FieldArray[i][0] + '-3'].value = FieldArray[i][1].substr(6, 4);
+              (FieldArray[i][0] == 'Phone2') ||
+              (FieldArray[i][0] == 'Phone3') ||
+              (FieldArray[i][0] == 'Phone4')) &&
+              (document.forms['recordinput'].elements[FieldArray[i][0] + '-1'] != null)) {
+        var phoneType = FieldArray.find(function(elm) {
+           return (elm[0] == FieldArray[i][0] + 'Type');
+        });
+
+        if (phoneType[1] == 'international') {
+          document.forms['recordinput'].elements[FieldArray[i][0] + '-1'].value = FieldArray[i][1];
+        } else {
+          document.forms['recordinput'].elements[FieldArray[i][0] + '-1'].value = FieldArray[i][1].substr(0, 3);
+          document.forms['recordinput'].elements[FieldArray[i][0] + '-2'].value = FieldArray[i][1].substr(3, 3);
+          document.forms['recordinput'].elements[FieldArray[i][0] + '-3'].value = FieldArray[i][1].substr(6, 4);
 		}
 	    }
 
@@ -223,17 +226,15 @@ require 'authcheck.php';
 $lastfirst = fetchSetting("DisplayLastFirst", $con);
 $ucase = fetchSetting("DisplayUppercaseNames", $con);
 
-if ( isset( $_POST['Phone1-1'] ) ) {
-	$_POST['Phone1'] = $_POST['Phone1-1'] . $_POST['Phone1-2'] . $_POST['Phone1-3'];
-}
-if ( isset( $_POST['Phone2-1'] ) ) {
-	$_POST['Phone2'] = $_POST['Phone2-1'] . $_POST['Phone2-2'] . $_POST['Phone2-3'];
-}
-if ( isset( $_POST['Phone3-1'] ) ) {
-	$_POST['Phone3'] = $_POST['Phone3-1'] . $_POST['Phone3-2'] . $_POST['Phone3-3'];
-}
-if ( isset( $_POST['Phone4-1'] ) ) {
-	$_POST['Phone4'] = $_POST['Phone4-1'] . $_POST['Phone4-2'] . $_POST['Phone4-3'];
+//Combine phone text
+for ($i = 1; $i <= 4; $i++) {
+  if ( isset( $_POST["Phone{$i}-1"] ) ) {
+    if ( $_POST["Phone{$i}Type"] == 'international' ) {
+      $_POST["Phone{$i}"] = $_POST["Phone{$i}-1"];
+    } else {
+      $_POST["Phone{$i}"] = $_POST["Phone{$i}-1"] . $_POST["Phone{$i}-2"] . $_POST["Phone{$i}-3"];
+    }
+  }
 }
 
 if ( $_POST['Idx'] == $_SESSION['Residx'] ) {
@@ -687,8 +688,7 @@ if (( $_POST['function'] == 'list' ) || ( $_POST['function'] == 'search' )) {
     $rowspan = ($name2 ? ' rowspan=2' : '');
 		echo "<td{$rowspan} class='unit'>";
 		$units = fetchUnit($row['Idx'], $con, $type);
-		for ( $i = 0; $i < count($units); $i++ )
-		{
+		for ( $i = 0; $i < count($units); $i++ ) {
 		    echo "<span hidden='hidden'>" . padInt($units[$i], 5) . "</span>";  //hidden sort parameter
 		    if ( $_SESSION['Level'] >= $level_security ) {
           echo "<a href='" . pageLink("properties", "Unit={$units[$i]}") . "'>" . $units[$i] . "</a>";

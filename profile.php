@@ -38,9 +38,18 @@ if ( isset($_POST['submitted']) )
   $PersInfo = array("Name", "MailingAddress", "MailingAddress2", "City", "State", "ZIP", "Country", "Phone1", "Phone2", "Phone3", "Phone4", "Phone1Type", "Phone2Type", "Phone3Type", "Phone4Type", "Email", "Email2", "GuestInfo");
   $title = "User " . $_SESSION['Username'] . " (" . $row_res['Name'] . " - Unit " . $unitlist[0] . ") has changed personal info";
   $notifytext = $title . ": \n\r";
-  foreach (Array('Phone1', 'Phone2', 'Phone3', 'Phone4') as $phone) {
-    $_POST[$phone] = $_POST["{$phone}-1"] . $_POST["{$phone}-2"] . $_POST["{$phone}-3"];
+
+  //Combine phone text
+  for ($i = 1; $i <= 4; $i++) {
+    if ( isset( $_POST["Phone{$i}-1"] ) ) {
+      if ( $_POST["Phone{$i}Type"] == 'international' ) {
+        $_POST["Phone{$i}"] = $_POST["Phone{$i}-1"];
+      } else {
+        $_POST["Phone{$i}"] = $_POST["Phone{$i}-1"] . $_POST["Phone{$i}-2"] . $_POST["Phone{$i}-3"];
+      }
+    }
   }
+
   foreach ( $PersInfo as $key ) {
     //Publish info
     if (isset($row_res['Publish' . $key]) &&
