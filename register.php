@@ -185,24 +185,76 @@ else
     <li>Update your email address for communication</li>
     </ul>
     <form name='register' method='post' action='" . pageLink("register") . "'>
-    Name: <input type='text' name='Name' size='25' required='required' value='{$_POST['Name']}' /><br />
-    Unit # <input type='text' name='Unit' size='5' required='required' value='{$_POST['Unit']}' /><br />";
-    if ( fetchSetting( "TenantRegistration", $con ) == "true" ) {
-      echo "<input type='radio' name='OwnerTenant' required='required' value='Owner'>&nbsp;Owner&nbsp;&nbsp;
-		<input type='radio' name='OwnerTenant' required='required' value='Tenant'>&nbsp;Tenant<br />";
-    }
-    else {
-      echo "<input type='hidden' name='OwnerTenant' value='Owner' />";
-    }
-    echo "New Username <input type='text' name='Username' size='15' required='required' value='{$_POST['Username']}' /><br />
-    New Password <input type='password' name='Password' size='15' required='required' /><br />
-    Confirm Password <input type='password' name='CPassword' required='required' size='15' /><br />
-    E-Mail <input type='email' name='Email' size='25' value='{$_POST['Email']}' /><br />
-    Captcha Image: <div>";
-    echo Securimage::getCaptchaHtml(array('securimage_path'=>$securimagedir, 'show_text_input'=>false, 'image_attributes'=>array('style'=>'captcha-container')));
-    echo "&nbsp;<br />Type the text in the picture: <input type='text' name='captcha_code' size='15' required='required' /></div>";
-    echo "<i>This is to ensure that you are a real human attempting to create an account.</i><br />
-    <input type='submit' value='Submit' /><input type='reset' value='Reset' />
+    <table style='border: none'>
+      <tr>
+        <td>
+          Name:
+        </td><td>
+          <input type='text' name='Name' size='25' required='required' value='{$_POST['Name']}' />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Unit #
+        </td><td>
+          <input type='text' name='Unit' size='5' required='required' value='{$_POST['Unit']}' />
+        </td>
+      </tr>
+      <tr>
+        <td colspan='2'>";
+        if ( fetchSetting( "TenantRegistration", $con ) == "true" ) {
+          echo "<input type='radio' name='OwnerTenant' required='required' value='Owner'>&nbsp;Owner&nbsp;&nbsp;
+        <input type='radio' name='OwnerTenant' required='required' value='Tenant'>&nbsp;Tenant<br />";
+        }
+        else {
+          echo "<input type='hidden' name='OwnerTenant' value='Owner' />";
+        }
+    echo "
+        </td>
+      </tr>
+      <tr>
+        <td>
+          New Username
+        </td><td>
+          <input type='text' name='Username' size='15' required='required' value='{$_POST['Username']}' />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          New Password
+        </td><td>
+          <input type='password' name='Password' size='15' required='required' />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Confirm Password
+        </td><td>
+          <input type='password' name='CPassword' required='required' size='15' />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          E-Mail
+        </td><td>
+          <input type='email' name='Email' size='25' value='{$_POST['Email']}' />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Captcha Image:
+        </td><td>";
+          echo Securimage::getCaptchaHtml(array('securimage_path'=>$securimagedir, 'show_text_input'=>false, 'image_attributes'=>array('style'=>'captcha-container')));
+          echo "&nbsp;<br />Type the text in the picture: <input type='text' name='captcha_code' size='15' required='required' /></div><br />";
+          echo "<i>This is to ensure that you are a real human attempting to create an account.</i>
+        </td>
+      </tr>
+      <tr>
+        <td colspan='2'>
+          <input type='submit' value='Submit' /><input type='reset' value='Reset' />
+        </td>
+      </tr>
+    </table>
     </form>";
 }
 echo "</td></tr></table>";
